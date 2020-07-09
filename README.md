@@ -1,2 +1,2 @@
 # QtOpenSSLEncryptor
-Qt C++ encryptor using OpenSSL library
+C++ Library based on Qt and OpenSSL
