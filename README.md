@@ -1,4 +1,4 @@
-## QtOpenSSLEncryptor
+## Qt OpenSSL Encryptor
 C++ Library based on Qt and OpenSSL
 
 ## Dependencies
