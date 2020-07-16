@@ -45,8 +45,8 @@ QByteArray Encrypt::encrypt_aes_block_cipher(const EVP_CIPHER* cipher, const EVP
     }
 
     /* Get salt and set password */
-    const unsigned char* m_salt = const_cast<unsigned char*>(reinterpret_cast<const unsigned char*>(salt.constData()));
-    const unsigned char* password = const_cast<unsigned char*>(reinterpret_cast<const unsigned char*>(passphrase.constData()));
+    const unsigned char* m_salt = reinterpret_cast<const unsigned char*>(salt.data());
+    const unsigned char* password = reinterpret_cast<const unsigned char*>(passphrase.constData());
 
     /* Set length of data */
     int plaintext_length = data.size();
@@ -147,8 +147,8 @@ QByteArray Encrypt::decrypt_aes_block_cipher(const EVP_CIPHER* cipher, const EVP
     }
 
     /* Get salt and password */
-    const unsigned char* m_salt = const_cast<unsigned char*>(reinterpret_cast<const unsigned char*>(salt.constData()));
-    const unsigned char* password = const_cast<unsigned char*>(reinterpret_cast<const unsigned char*>(passphrase.data()));
+    const unsigned char* m_salt = reinterpret_cast<const unsigned char*>(salt.data());
+    const unsigned char* password = reinterpret_cast<const unsigned char*>(passphrase.data());
 
     /* Set length of data */
     int data_length = data.size();
