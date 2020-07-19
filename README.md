@@ -13,3 +13,4 @@ This librarty supports next ciphers:
 * cbr
 * ccm
 * gcm
+* rsa
