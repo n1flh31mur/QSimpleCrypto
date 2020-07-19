@@ -38,6 +38,7 @@ void RSAEncryption::save_rsa_publicKey(const RSA* rsa, const QByteArray& publicK
     if (!PEM_write_bio_RSAPublicKey(bp_public, rsa)) {
         qCritical() << "Couldn't save public key. PEM_write_bio_RSAPublicKey() error: " << ERR_error_string(ERR_get_error(), nullptr);
     }
+    
     BIO_free_all(bp_public);
 }
 
