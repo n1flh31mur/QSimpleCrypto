@@ -12,9 +12,13 @@ This library requires no special dependencies except for **Qt 5.14 or newer** wi
 * ofb
 * cbr
 
+#
+
 **AEAD:**
 * ccm
 * gcm
+
+#
 
 **Also:**
 * rsa
