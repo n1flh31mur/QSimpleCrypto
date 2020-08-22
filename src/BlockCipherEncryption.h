@@ -1,3 +1,11 @@
+/**
+ * Copyright Copyright 2020 BrutalWizard (https://github.com/bru74lw1z4rd). All Rights Reserved.
+ *
+ * Licensed under the Apache License 2.0 (the "License"). You may not use
+ * this file except in compliance with the License. You can obtain a copy
+ * in the file LICENSE in the source distribution
+**/
+
 #ifndef ENCRYPT_H
 #define ENCRYPT_H
 
@@ -8,19 +16,24 @@
 #include <openssl/evp.h>
 #include <openssl/rand.h>
 
-class BlockCipherEncryption {
-public:
-    BlockCipherEncryption();
-    QByteArray generate_random_bytes(const int& size);
+// clang-format off
+namespace QSimpleCrypto
+{
+    class BlockCipherEncryption {
+    public:
+        BlockCipherEncryption();
+        QByteArray generate_random_bytes(const int& size);
 
-    QByteArray encrypt_aes_block_cipher(const EVP_CIPHER* cipher, const EVP_MD* md,
-        unsigned char key[], unsigned char iv[],
-        const int& rounds, const QByteArray& passphrase,
-        const QByteArray& salt, QByteArray data);
-    QByteArray decrypt_aes_block_cipher(const EVP_CIPHER* cipher, const EVP_MD* md,
-        unsigned char key[], unsigned char iv[],
-        const int& rounds, const QByteArray& passphrase,
-        const QByteArray& salt, QByteArray data);
-};
+        QByteArray encrypt_aes_block_cipher(QByteArray data, QByteArray key,
+            QByteArray iv = "", QByteArray password = "",
+            QByteArray salt = "", const int& rounds = 14,
+            const EVP_CIPHER* cipher = EVP_aes_256_cbc(), const EVP_MD* md = EVP_sha512());
+
+        QByteArray decrypt_aes_block_cipher(QByteArray data, QByteArray key,
+            QByteArray iv = "", QByteArray password = "",
+            QByteArray salt = "", const int& rounds = 14,
+            const EVP_CIPHER* cipher = EVP_aes_256_cbc(), const EVP_MD* md = EVP_sha512());
+    };
+} // namespace QSimpleCrypto
 
 #endif // ENCRYPT_H
