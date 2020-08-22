@@ -23,7 +23,7 @@ RSA* QSimpleCrypto::RSAEncryption::generate_rsa_keys(const int& bits, const int&
     /* Intilize big number */
     std::unique_ptr<BIGNUM, void (*)(BIGNUM*)> bigNumber { BN_new(), BN_free };
     if (bigNumber == nullptr) {
-        qCritical() << "Couldn't intilise bignum. BN_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't intilize bignum. BN_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return nullptr;
     }
 
@@ -52,7 +52,7 @@ void QSimpleCrypto::RSAEncryption::save_rsa_publicKey(const RSA* rsa, const QByt
     /* Intilize BIO to file public key */
     std::unique_ptr<BIO, void (*)(BIO*)> bioPublic { BIO_new_file(publicKeyFileName.data(), "w+"), BIO_free_all };
     if (bioPublic == nullptr) {
-        qCritical() << "Couldn't intilise bp_public. BIO_new_file() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't intilize bp_public. BIO_new_file() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return;
     }
 
@@ -75,7 +75,7 @@ void QSimpleCrypto::RSAEncryption::save_rsa_privateKey(RSA* rsa, const QByteArra
     /* Intilize BIO to file private key */
     std::unique_ptr<BIO, void (*)(BIO*)> bioPrivate { BIO_new_file(privateKeyFileName.data(), "w+"), BIO_free_all };
     if (bioPrivate == nullptr) {
-        qCritical() << "Couldn't intilise bp_private. BIO_new_file() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't intilize bp_private. BIO_new_file() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return;
     }
 

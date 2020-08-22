@@ -29,7 +29,7 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::encrypt_aes_gcm(QByteArray da
     /* Initialise cipcher */
     std::unique_ptr<EVP_CIPHER_CTX, void (*)(EVP_CIPHER_CTX*)> en { EVP_CIPHER_CTX_new(), EVP_CIPHER_CTX_free };
     if (en == nullptr) {
-        qCritical() << "Couldn't intilise evp cipher. EVP_CIPHER_CTX_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't intilize evp cipher. EVP_CIPHER_CTX_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
     }
 
@@ -116,7 +116,7 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::decrypt_aes_gcm(QByteArray da
     /* Initialise cipcher */
     std::unique_ptr<EVP_CIPHER_CTX, void (*)(EVP_CIPHER_CTX*)> de { EVP_CIPHER_CTX_new(), EVP_CIPHER_CTX_free };
     if (de.get() == nullptr) {
-        qCritical() << "Couldn't intilise evp cipher. EVP_CIPHER_CTX_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't intilize evp cipher. EVP_CIPHER_CTX_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
     }
 
@@ -201,7 +201,7 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::encrypt_aes_ccm(QByteArray da
     /* Initialise cipcher */
     std::unique_ptr<EVP_CIPHER_CTX, void (*)(EVP_CIPHER_CTX*)> en { EVP_CIPHER_CTX_new(), EVP_CIPHER_CTX_free };
     if (en == nullptr) {
-        qCritical() << "Couldn't intilise evp cipher. EVP_CIPHER_CTX_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't intilize evp cipher. EVP_CIPHER_CTX_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
     }
 
@@ -301,7 +301,7 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::decrypt_aes_ccm(QByteArray da
     std::unique_ptr<EVP_CIPHER_CTX, void (*)(EVP_CIPHER_CTX*)> de { EVP_CIPHER_CTX_new(), EVP_CIPHER_CTX_free };
 
     if (de.get() == nullptr) {
-        qCritical() << "Couldn't intilise evp cipher. EVP_CIPHER_CTX_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't intilize evp cipher. EVP_CIPHER_CTX_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
     }
 
