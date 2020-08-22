@@ -24,17 +24,17 @@ namespace QSimpleCrypto
 
         QByteArray encrypt_aes_gcm(const EVP_CIPHER* cipher, QByteArray data,
             QByteArray key, QByteArray iv,
-            QByteArray aad, QByteArray *tag);
+            QByteArray aad, QByteArray* tag);
         QByteArray decrypt_aes_gcm(const EVP_CIPHER* cipher, QByteArray data,
             QByteArray key, QByteArray iv,
-            QByteArray aad, QByteArray *tag);
+            QByteArray aad, QByteArray* tag);
 
         QByteArray encrypt_aes_ccm(const EVP_CIPHER* cipher, QByteArray data,
             QByteArray key, QByteArray iv,
-            QByteArray aad, QByteArray *tag);
+            QByteArray aad, QByteArray* tag);
         QByteArray decrypt_aes_ccm(const EVP_CIPHER* cipher, QByteArray data,
             QByteArray key, QByteArray iv,
-            QByteArray aad, QByteArray *tag);
+            QByteArray aad, QByteArray* tag);
     };
 } // namespace QSimpleCrypto
 

@@ -36,11 +36,11 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::encrypt_aes_gcm(const EVP_CIP
     }
 
     /* Set length of data */
-    int plainText_length = data.size();
-    int cipherText_length = 0;
+    int plainTextLength = data.size();
+    int cipherTextLength = 0;
 
     /* Initialise cipchertext. Here we will store encrypted data */
-    std::unique_ptr<unsigned char[]> ciphertext { new unsigned char[plainText_length]() };
+    std::unique_ptr<unsigned char[]> ciphertext { new unsigned char[plainTextLength]() };
     if (ciphertext == nullptr) {
         qCritical() << "Couldn't allocate memory for \'ciphertext\'.";
         return QByteArray();
@@ -65,7 +65,7 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::encrypt_aes_gcm(const EVP_CIP
         /*
          * Provide any AAD data. This can be called zero or more times as required
         */
-        if (!EVP_EncryptUpdate(en.get(), nullptr, &cipherText_length, reinterpret_cast<unsigned char*>(aad.data()), aad.length())) {
+        if (!EVP_EncryptUpdate(en.get(), nullptr, &cipherTextLength, reinterpret_cast<unsigned char*>(aad.data()), aad.length())) {
             qCritical() << "Couldn't provide aad data. EVP_EncryptUpdate() error: " << ERR_error_string(ERR_get_error(), nullptr);
             return QByteArray();
         }
@@ -75,7 +75,7 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::encrypt_aes_gcm(const EVP_CIP
      * Provide the message to be encrypted, and obtain the encrypted output.
      * EVP_EncryptUpdate can be called multiple times if necessary
     */
-    if (!EVP_EncryptUpdate(en.get(), ciphertext.get(), &cipherText_length, reinterpret_cast<const unsigned char*>(data.data()), plainText_length)) {
+    if (!EVP_EncryptUpdate(en.get(), ciphertext.get(), &cipherTextLength, reinterpret_cast<const unsigned char*>(data.data()), plainTextLength)) {
         qCritical() << "Couldn't provide message to be encrypted. EVP_EncryptUpdate() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
     }
@@ -84,7 +84,7 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::encrypt_aes_gcm(const EVP_CIP
      * Finalise the encryption. Normally ciphertext bytes may be written at
      * this stage, but this does not occur in GCM mode
     */
-    if (!EVP_EncryptFinal_ex(en.get(), ciphertext.get(), &plainText_length)) {
+    if (!EVP_EncryptFinal_ex(en.get(), ciphertext.get(), &plainTextLength)) {
         qCritical() << "Couldn't finalise encryption. EVP_EncryptFinal_ex() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
     }
@@ -96,9 +96,9 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::encrypt_aes_gcm(const EVP_CIP
     }
 
     /* Finilize data to be readable with qt */
-    QByteArray encrypted = QByteArray(reinterpret_cast<char*>(ciphertext.get()), cipherText_length);
+    QByteArray encryptedData = QByteArray(reinterpret_cast<char*>(ciphertext.get()), cipherTextLength);
 
-    return encrypted;
+    return encryptedData;
 }
 
 ///
@@ -125,11 +125,11 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::decrypt_aes_gcm(const EVP_CIP
     }
 
     /* Set length of data */
-    int cipherText_length = data.size();
-    int plainText_length = 0;
+    int cipherTextLength = data.size();
+    int plainTextLength = 0;
 
     /* Initialise cipchertext. Here we will store decrypted data */
-    std::unique_ptr<unsigned char[]> plainText { new unsigned char[cipherText_length]() };
+    std::unique_ptr<unsigned char[]> plainText { new unsigned char[cipherTextLength]() };
     if (plainText == nullptr) {
         qCritical() << "Couldn't allocate memory for \'plaintext.\'";
         return QByteArray();
@@ -152,7 +152,7 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::decrypt_aes_gcm(const EVP_CIP
         /*
          * Provide any AAD data. This can be called zero or more times as required
         */
-        if (!EVP_DecryptUpdate(de.get(), nullptr, &plainText_length, reinterpret_cast<unsigned char*>(aad.data()), aad.length())) {
+        if (!EVP_DecryptUpdate(de.get(), nullptr, &plainTextLength, reinterpret_cast<unsigned char*>(aad.data()), aad.length())) {
             qCritical() << "Couldn't provide aad data. EVP_DecryptUpdate() error: " << ERR_error_string(ERR_get_error(), nullptr);
             return QByteArray();
         }
@@ -162,7 +162,7 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::decrypt_aes_gcm(const EVP_CIP
      * Provide the message to be decrypted, and obtain the plaintext output.
      * EVP_DecryptUpdate can be called multiple times if necessary
     */
-    if (!EVP_DecryptUpdate(de.get(), plainText.get(), &plainText_length, reinterpret_cast<const unsigned char*>(data.data()), cipherText_length)) {
+    if (!EVP_DecryptUpdate(de.get(), plainText.get(), &plainTextLength, reinterpret_cast<const unsigned char*>(data.data()), cipherTextLength)) {
         qCritical() << "Couldn't provide message to be decrypted. EVP_DecryptUpdate() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
     }
@@ -177,15 +177,15 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::decrypt_aes_gcm(const EVP_CIP
      * Finalise the decryption. A positive return value indicates success,
      * anything else is a failure - the plaintext is not trustworthy.
     */
-    if (!EVP_DecryptFinal_ex(de.get(), plainText.get(), &cipherText_length)) {
+    if (!EVP_DecryptFinal_ex(de.get(), plainText.get(), &cipherTextLength)) {
         qCritical() << "Couldn't finalise decryption. EVP_DecryptFinal_ex() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
     }
 
     /* Finilize data to be readable with qt */
-    QByteArray decrypted = QByteArray(reinterpret_cast<char*>(plainText.get()), plainText_length);
+    QByteArray decryptedData = QByteArray(reinterpret_cast<char*>(plainText.get()), plainTextLength);
 
-    return decrypted;
+    return decryptedData;
 }
 
 ///
@@ -210,11 +210,11 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::encrypt_aes_ccm(const EVP_CIP
     }
 
     /* Set length of data */
-    int plainText_length = data.size();
-    int cipherText_length = 0;
+    int plainTextLength = data.size();
+    int cipherTextLength = 0;
 
     /* Initialise cipchertext. Here we will store encrypted data */
-    std::unique_ptr<unsigned char[]> cipherText { new unsigned char[plainText_length]() };
+    std::unique_ptr<unsigned char[]> cipherText { new unsigned char[plainTextLength]() };
     if (cipherText.get() == nullptr) {
         qCritical() << "Couldn't allocate memory for \'ciphertext\'.";
         return QByteArray();
@@ -243,7 +243,7 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::encrypt_aes_ccm(const EVP_CIP
     /* Check if we need to use aad */
     if (aad.length() > 0) {
         /* Provide the total plaintext length */
-        if (!EVP_EncryptUpdate(en.get(), nullptr, &cipherText_length, nullptr, plainText_length)) {
+        if (!EVP_EncryptUpdate(en.get(), nullptr, &cipherTextLength, nullptr, plainTextLength)) {
             qCritical() << "Couldn't provide total plaintext length. EVP_EncryptUpdate() error: " << ERR_error_string(ERR_get_error(), nullptr);
             return QByteArray();
         }
@@ -251,7 +251,7 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::encrypt_aes_ccm(const EVP_CIP
         /*
          * Provide any AAD data. This can be called zero or more times as required
         */
-        if (!EVP_EncryptUpdate(en.get(), nullptr, &cipherText_length, reinterpret_cast<unsigned char*>(aad.data()), aad.length())) {
+        if (!EVP_EncryptUpdate(en.get(), nullptr, &cipherTextLength, reinterpret_cast<unsigned char*>(aad.data()), aad.length())) {
             qCritical() << "Couldn't provide aad data. EVP_EncryptUpdate() error: " << ERR_error_string(ERR_get_error(), nullptr);
             return QByteArray();
         }
@@ -261,7 +261,7 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::encrypt_aes_ccm(const EVP_CIP
      * Provide the message to be encrypted, and obtain the encrypted output.
      * EVP_EncryptUpdate can be called multiple times if necessary
     */
-    if (!EVP_EncryptUpdate(en.get(), cipherText.get(), &cipherText_length, reinterpret_cast<const unsigned char*>(data.data()), plainText_length)) {
+    if (!EVP_EncryptUpdate(en.get(), cipherText.get(), &cipherTextLength, reinterpret_cast<const unsigned char*>(data.data()), plainTextLength)) {
         qCritical() << "Couldn't provide message to be encrypted. EVP_EncryptUpdate() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
     }
@@ -270,7 +270,7 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::encrypt_aes_ccm(const EVP_CIP
      * Finalise the encryption. Normally ciphertext bytes may be written at
      * this stage, but this does not occur in GCM mode
     */
-    if (!EVP_EncryptFinal_ex(en.get(), cipherText.get(), &plainText_length)) {
+    if (!EVP_EncryptFinal_ex(en.get(), cipherText.get(), &plainTextLength)) {
         qCritical() << "Couldn't finalise encryption. EVP_EncryptFinal_ex() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
     }
@@ -282,9 +282,9 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::encrypt_aes_ccm(const EVP_CIP
     }
 
     /* Finilize data to be readable with qt */
-    QByteArray encrypted = QByteArray(reinterpret_cast<char*>(cipherText.get()), cipherText_length);
+    QByteArray encryptedData = QByteArray(reinterpret_cast<char*>(cipherText.get()), cipherTextLength);
 
-    return encrypted;
+    return encryptedData;
 }
 
 ///
@@ -310,11 +310,11 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::decrypt_aes_ccm(const EVP_CIP
     }
 
     /* Set length of data */
-    int cipherText_length = data.size();
-    int plainText_length = 0;
+    int cipherTextLength = data.size();
+    int plainTextLength = 0;
 
     /* Initialise plaintext. Here we will store decrypted data */
-    std::unique_ptr<unsigned char[]> plainText { new unsigned char[cipherText_length]() };
+    std::unique_ptr<unsigned char[]> plainText { new unsigned char[cipherTextLength]() };
     if (plainText == nullptr) {
         qCritical() << "Couldn't allocate memory for \'plaintext\'.";
         return QByteArray();
@@ -341,7 +341,7 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::decrypt_aes_ccm(const EVP_CIP
     /* Check if we need to use aad */
     if (aad.length() > 0) {
         /* Provide the total ciphertext length */
-        if (!EVP_DecryptUpdate(de.get(), nullptr, &plainText_length, nullptr, cipherText_length)) {
+        if (!EVP_DecryptUpdate(de.get(), nullptr, &plainTextLength, nullptr, cipherTextLength)) {
             qCritical() << "Couldn't provide total plaintext length. EVP_DecryptUpdate() error: " << ERR_error_string(ERR_get_error(), nullptr);
             return QByteArray();
         }
@@ -349,7 +349,7 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::decrypt_aes_ccm(const EVP_CIP
         /*
          * Provide any AAD data. This can be called zero or more times as required
         */
-        if (!EVP_DecryptUpdate(de.get(), nullptr, &plainText_length, reinterpret_cast<unsigned char*>(aad.data()), aad.length())) {
+        if (!EVP_DecryptUpdate(de.get(), nullptr, &plainTextLength, reinterpret_cast<unsigned char*>(aad.data()), aad.length())) {
             qCritical() << "Couldn't provide aad data. EVP_DecryptUpdate() error: " << ERR_error_string(ERR_get_error(), nullptr);
             return QByteArray();
         }
@@ -359,7 +359,7 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::decrypt_aes_ccm(const EVP_CIP
      * Provide the message to be decrypted, and obtain the plaintext output.
      * EVP_DecryptUpdate can be called multiple times if necessary
     */
-    if (!EVP_DecryptUpdate(de.get(), plainText.get(), &plainText_length, reinterpret_cast<const unsigned char*>(data.data()), cipherText_length)) {
+    if (!EVP_DecryptUpdate(de.get(), plainText.get(), &plainTextLength, reinterpret_cast<const unsigned char*>(data.data()), cipherTextLength)) {
         qCritical() << "Couldn't provide message to be decrypted. EVP_DecryptUpdate() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
     }
@@ -368,13 +368,13 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::decrypt_aes_ccm(const EVP_CIP
      * Finalise the decryption. A positive return value indicates success,
      * anything else is a failure - the plaintext is not trustworthy.
     */
-    if (!EVP_DecryptFinal_ex(de.get(), plainText.get(), &cipherText_length)) {
+    if (!EVP_DecryptFinal_ex(de.get(), plainText.get(), &cipherTextLength)) {
         qCritical() << "Couldn't finalise decryption. EVP_DecryptFinal_ex() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
     }
 
     /* Finilize data to be readable with qt */
-    QByteArray decrypted = QByteArray(reinterpret_cast<char*>(plainText.get()), plainText_length);
+    QByteArray decryptedData = QByteArray(reinterpret_cast<char*>(plainText.get()), plainTextLength);
 
-    return decrypted;
+    return decryptedData;
 }
