@@ -46,7 +46,7 @@ QByteArray QSimpleCrypto::BlockCipherEncryption::encrypt_aes_block_cipher(
     /* Initialise cipcher */
     std::unique_ptr<EVP_CIPHER_CTX, void (*)(EVP_CIPHER_CTX*)> en { EVP_CIPHER_CTX_new(), EVP_CIPHER_CTX_free };
     if (en == nullptr) {
-        qCritical() << "Couldn't intilise evp cipher. EVP_CIPHER_CTX_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't intilize evp cipher. EVP_CIPHER_CTX_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
     }
 
@@ -122,7 +122,7 @@ QByteArray QSimpleCrypto::BlockCipherEncryption::decrypt_aes_block_cipher(
     /* Initialise cipcher */
     std::unique_ptr<EVP_CIPHER_CTX, void (*)(EVP_CIPHER_CTX*)> de { EVP_CIPHER_CTX_new(), EVP_CIPHER_CTX_free };
     if (de == nullptr) {
-        qCritical() << "Couldn't intilise evp cipher. EVP_CIPHER_CTX_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't intilize evp cipher. EVP_CIPHER_CTX_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
     }
 
