@@ -16,25 +16,26 @@
 #include <openssl/evp.h>
 #include <openssl/rand.h>
 
+// clang-format off
 namespace QSimpleCrypto
 {
     class AuthenticatedEncryption {
     public:
         AuthenticatedEncryption();
 
-        QByteArray encrypt_aes_gcm(const EVP_CIPHER* cipher, QByteArray data,
-            QByteArray key, QByteArray iv,
-            QByteArray aad, QByteArray* tag);
-        QByteArray decrypt_aes_gcm(const EVP_CIPHER* cipher, QByteArray data,
-            QByteArray key, QByteArray iv,
-            QByteArray aad, QByteArray* tag);
+        QByteArray encrypt_aes_gcm(QByteArray data, QByteArray key,
+            QByteArray iv, QByteArray* tag,
+            QByteArray aad, const EVP_CIPHER* cipher = EVP_aes_256_gcm());
+        QByteArray decrypt_aes_gcm(QByteArray data, QByteArray key,
+            QByteArray iv, QByteArray* tag,
+            QByteArray aad = "", const EVP_CIPHER* cipher = EVP_aes_256_gcm());
 
-        QByteArray encrypt_aes_ccm(const EVP_CIPHER* cipher, QByteArray data,
-            QByteArray key, QByteArray iv,
-            QByteArray aad, QByteArray* tag);
-        QByteArray decrypt_aes_ccm(const EVP_CIPHER* cipher, QByteArray data,
-            QByteArray key, QByteArray iv,
-            QByteArray aad, QByteArray* tag);
+        QByteArray encrypt_aes_ccm(QByteArray data, QByteArray key,
+            QByteArray iv, QByteArray* tag,
+            QByteArray aad= "", const EVP_CIPHER* cipher = EVP_aes_256_ccm());
+        QByteArray decrypt_aes_ccm(QByteArray data, QByteArray key,
+            QByteArray iv, QByteArray* tag,
+            QByteArray aad = "", const EVP_CIPHER* cipher = EVP_aes_256_ccm());
     };
 } // namespace QSimpleCrypto
 

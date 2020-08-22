@@ -22,14 +22,12 @@ QSimpleCrypto::AuthenticatedEncryption::AuthenticatedEncryption()
 /// \param tag - auth tag
 /// \return
 ///
-QByteArray QSimpleCrypto::AuthenticatedEncryption::encrypt_aes_gcm(const EVP_CIPHER* cipher, QByteArray data,
-    QByteArray key, QByteArray iv,
-    QByteArray aad, QByteArray* tag)
+QByteArray QSimpleCrypto::AuthenticatedEncryption::encrypt_aes_gcm(QByteArray data, QByteArray key,
+    QByteArray iv, QByteArray* tag,
+    QByteArray aad, const EVP_CIPHER* cipher)
 {
-    /* Create cipher */
-    std::unique_ptr<EVP_CIPHER_CTX, void (*)(EVP_CIPHER_CTX*)> en { EVP_CIPHER_CTX_new(), EVP_CIPHER_CTX_free };
-
     /* Initialise cipcher */
+    std::unique_ptr<EVP_CIPHER_CTX, void (*)(EVP_CIPHER_CTX*)> en { EVP_CIPHER_CTX_new(), EVP_CIPHER_CTX_free };
     if (en == nullptr) {
         qCritical() << "Couldn't intilise evp cipher. EVP_CIPHER_CTX_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
@@ -39,7 +37,7 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::encrypt_aes_gcm(const EVP_CIP
     int plainTextLength = data.size();
     int cipherTextLength = 0;
 
-    /* Initialise cipchertext. Here we will store encrypted data */
+    /* Initialise cipcher text. Here we will store encrypted data */
     std::unique_ptr<unsigned char[]> ciphertext { new unsigned char[plainTextLength]() };
     if (ciphertext == nullptr) {
         qCritical() << "Couldn't allocate memory for \'ciphertext\'.";
@@ -81,7 +79,7 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::encrypt_aes_gcm(const EVP_CIP
     }
 
     /*
-     * Finalise the encryption. Normally ciphertext bytes may be written at
+     * Finalise the encryption. Normally cipher text bytes may be written at
      * this stage, but this does not occur in GCM mode
     */
     if (!EVP_EncryptFinal_ex(en.get(), ciphertext.get(), &plainTextLength)) {
@@ -111,14 +109,12 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::encrypt_aes_gcm(const EVP_CIP
 /// \param tag - auth tag
 /// \return
 ///
-QByteArray QSimpleCrypto::AuthenticatedEncryption::decrypt_aes_gcm(const EVP_CIPHER* cipher, QByteArray data,
-    QByteArray key, QByteArray iv,
-    QByteArray aad, QByteArray* tag)
+QByteArray QSimpleCrypto::AuthenticatedEncryption::decrypt_aes_gcm(QByteArray data, QByteArray key,
+    QByteArray iv, QByteArray* tag,
+    QByteArray aad, const EVP_CIPHER* cipher)
 {
-    /* Create cipher */
-    std::unique_ptr<EVP_CIPHER_CTX, void (*)(EVP_CIPHER_CTX*)> de { EVP_CIPHER_CTX_new(), EVP_CIPHER_CTX_free };
-
     /* Initialise cipcher */
+    std::unique_ptr<EVP_CIPHER_CTX, void (*)(EVP_CIPHER_CTX*)> de { EVP_CIPHER_CTX_new(), EVP_CIPHER_CTX_free };
     if (de.get() == nullptr) {
         qCritical() << "Couldn't intilise evp cipher. EVP_CIPHER_CTX_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
@@ -128,7 +124,7 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::decrypt_aes_gcm(const EVP_CIP
     int cipherTextLength = data.size();
     int plainTextLength = 0;
 
-    /* Initialise cipchertext. Here we will store decrypted data */
+    /* Initialise plain text. Here we will store decrypted data */
     std::unique_ptr<unsigned char[]> plainText { new unsigned char[cipherTextLength]() };
     if (plainText == nullptr) {
         qCritical() << "Couldn't allocate memory for \'plaintext.\'";
@@ -159,7 +155,7 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::decrypt_aes_gcm(const EVP_CIP
     }
 
     /*
-     * Provide the message to be decrypted, and obtain the plaintext output.
+     * Provide the message to be decrypted, and obtain the plain text output.
      * EVP_DecryptUpdate can be called multiple times if necessary
     */
     if (!EVP_DecryptUpdate(de.get(), plainText.get(), &plainTextLength, reinterpret_cast<const unsigned char*>(data.data()), cipherTextLength)) {
@@ -175,7 +171,7 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::decrypt_aes_gcm(const EVP_CIP
 
     /*
      * Finalise the decryption. A positive return value indicates success,
-     * anything else is a failure - the plaintext is not trustworthy.
+     * anything else is a failure - the plain text is not trustworthy.
     */
     if (!EVP_DecryptFinal_ex(de.get(), plainText.get(), &cipherTextLength)) {
         qCritical() << "Couldn't finalise decryption. EVP_DecryptFinal_ex() error: " << ERR_error_string(ERR_get_error(), nullptr);
@@ -198,9 +194,9 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::decrypt_aes_gcm(const EVP_CIP
 /// \param tag - auth tag
 /// \return
 ///
-QByteArray QSimpleCrypto::AuthenticatedEncryption::encrypt_aes_ccm(const EVP_CIPHER* cipher, QByteArray data,
-    QByteArray key, QByteArray iv,
-    QByteArray aad, QByteArray* tag)
+QByteArray QSimpleCrypto::AuthenticatedEncryption::encrypt_aes_ccm(QByteArray data, QByteArray key,
+    QByteArray iv, QByteArray* tag,
+    QByteArray aad, const EVP_CIPHER* cipher)
 {
     /* Initialise cipcher */
     std::unique_ptr<EVP_CIPHER_CTX, void (*)(EVP_CIPHER_CTX*)> en { EVP_CIPHER_CTX_new(), EVP_CIPHER_CTX_free };
@@ -213,7 +209,7 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::encrypt_aes_ccm(const EVP_CIP
     int plainTextLength = data.size();
     int cipherTextLength = 0;
 
-    /* Initialise cipchertext. Here we will store encrypted data */
+    /* Initialise cipcher text. Here we will store encrypted data */
     std::unique_ptr<unsigned char[]> cipherText { new unsigned char[plainTextLength]() };
     if (cipherText.get() == nullptr) {
         qCritical() << "Couldn't allocate memory for \'ciphertext\'.";
@@ -242,7 +238,7 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::encrypt_aes_ccm(const EVP_CIP
 
     /* Check if we need to use aad */
     if (aad.length() > 0) {
-        /* Provide the total plaintext length */
+        /* Provide the total plain text length */
         if (!EVP_EncryptUpdate(en.get(), nullptr, &cipherTextLength, nullptr, plainTextLength)) {
             qCritical() << "Couldn't provide total plaintext length. EVP_EncryptUpdate() error: " << ERR_error_string(ERR_get_error(), nullptr);
             return QByteArray();
@@ -297,9 +293,9 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::encrypt_aes_ccm(const EVP_CIP
 /// \param tag - auth tag
 /// \return
 ///
-QByteArray QSimpleCrypto::AuthenticatedEncryption::decrypt_aes_ccm(const EVP_CIPHER* cipher, QByteArray data,
-    QByteArray key, QByteArray iv,
-    QByteArray aad, QByteArray* tag)
+QByteArray QSimpleCrypto::AuthenticatedEncryption::decrypt_aes_ccm(QByteArray data, QByteArray key,
+    QByteArray iv, QByteArray* tag,
+    QByteArray aad, const EVP_CIPHER* cipher)
 {
     /* Initialise cipcher */
     std::unique_ptr<EVP_CIPHER_CTX, void (*)(EVP_CIPHER_CTX*)> de { EVP_CIPHER_CTX_new(), EVP_CIPHER_CTX_free };
@@ -313,7 +309,7 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::decrypt_aes_ccm(const EVP_CIP
     int cipherTextLength = data.size();
     int plainTextLength = 0;
 
-    /* Initialise plaintext. Here we will store decrypted data */
+    /* Initialise plain text. Here we will store decrypted data */
     std::unique_ptr<unsigned char[]> plainText { new unsigned char[cipherTextLength]() };
     if (plainText == nullptr) {
         qCritical() << "Couldn't allocate memory for \'plaintext\'.";
