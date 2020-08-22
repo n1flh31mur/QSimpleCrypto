@@ -16,7 +16,6 @@
 #include <openssl/evp.h>
 #include <openssl/rand.h>
 
-// clang-format off
 namespace QSimpleCrypto
 {
     class BlockCipherEncryption {
@@ -34,6 +33,6 @@ namespace QSimpleCrypto
             QByteArray salt = "", const int& rounds = 14,
             const EVP_CIPHER* cipher = EVP_aes_256_cbc(), const EVP_MD* md = EVP_sha512());
     };
-} // namespace QSimpleCrypto
+} // namespace QSimpleCrypto 
 
 #endif // ENCRYPT_H
