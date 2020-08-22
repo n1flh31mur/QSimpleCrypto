@@ -1,28 +1,43 @@
-﻿#include "RSAEncryption.h"
+﻿/**
+ * Copyright Copyright 2020 BrutalWizard (https://github.com/bru74lw1z4rd). All Rights Reserved.
+ *
+ * Licensed under the Apache License 2.0 (the "License"). You may not use
+ * this file except in compliance with the License. You can obtain a copy
+ * in the file LICENSE in the source distribution
+**/
 
-RSAEncryption::RSAEncryption()
+#include "RSAEncryption.h"
+
+QSimpleCrypto::RSAEncryption::RSAEncryption()
 {
 }
 
 ///
 /// \brief RSAEncryption::generate_rsa_keys
 /// \param bits - key size (1024 to 4096)
-/// \param rsa_bignum - The exponent is an odd number, typically 3, 17 or 65537.
+/// \param rsaBigNumber - The exponent is an odd number, typically 3, 17 or 65537.
 /// \return returned value must be cleaned up with 'RSA_free(rsa);' to avoid memory leak
 ///
-RSA* RSAEncryption::generate_rsa_keys(const int& bits, const int& rsa_bignum)
+RSA* QSimpleCrypto::RSAEncryption::generate_rsa_keys(const int& bits, const int& rsaBigNumber)
 {
-    BIGNUM* bne = BN_new();
-    if (!BN_set_word(bne, rsa_bignum)) {
+    /* Intilize big number */
+    std::unique_ptr<BIGNUM, void (*)(BIGNUM*)> bigNumber { BN_new(), BN_free };
+    if (bigNumber == nullptr) {
+        qCritical() << "Couldn't intilise bignum. BN_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        return nullptr;
+    }
+
+    if (!BN_set_word(bigNumber.get(), rsaBigNumber)) {
         qCritical() << "Couldn't generate bignum. BN_set_word() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        return nullptr;
     }
 
+    /* Intilize RSA */
     RSA* rsa = RSA_new();
-    if (!RSA_generate_key_ex(rsa, bits, bne, nullptr)) {
+    if (!RSA_generate_key_ex(rsa, bits, bigNumber.get(), nullptr)) {
         qCritical() << "Couldn't generate RSA. RSA_generate_key_ex() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        return nullptr;
     }
-
-    BN_free(bne);
 
     return rsa;
 }
@@ -32,34 +47,42 @@ RSA* RSAEncryption::generate_rsa_keys(const int& bits, const int& rsa_bignum)
 /// \param rsa - openssl RSA structure
 /// \param publicKeyFileName - file name of public key file
 ///
-void RSAEncryption::save_rsa_publicKey(const RSA* rsa, const QByteArray& publicKeyFileName)
+void QSimpleCrypto::RSAEncryption::save_rsa_publicKey(const RSA* rsa, const QByteArray& publicKeyFileName)
 {
-    BIO* bp_public = BIO_new_file(publicKeyFileName.data(), "w+");
-    if (!PEM_write_bio_RSAPublicKey(bp_public, rsa)) {
+    /* Intilize BIO to file public key */
+    std::unique_ptr<BIO, void (*)(BIO*)> bioPublic { BIO_new_file(publicKeyFileName.data(), "w+"), BIO_free_all };
+    if (bioPublic == nullptr) {
+        qCritical() << "Couldn't intilise bp_public. BIO_new_file() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        return;
+    }
+
+    /* Write public key on file */
+    if (!PEM_write_bio_RSAPublicKey(bioPublic.get(), rsa)) {
         qCritical() << "Couldn't save public key. PEM_write_bio_RSAPublicKey() error: " << ERR_error_string(ERR_get_error(), nullptr);
     }
-    
-    BIO_free_all(bp_public);
 }
 
 ///
 /// \brief RSAEncryption::save_rsa_privateKey
 /// \param rsa - openssl RSA structure
 /// \param privateKeyFileName - file name of private key file
-/// \param passphrase - private key password
+/// \param password - private key password
 /// \param cipher - evp cipher. Can be used with openssl evp chipers (ecb, cbc, cfb, ofb, ctr) - 128, 192, 256. Example: EVP_aes_256_ecb()
-/// \param key - key of evp cipher
-/// \param key_length
 ///
-void RSAEncryption::save_rsa_privateKey(RSA* rsa, const QByteArray& privateKeyFileName, QString passphrase,
-    const EVP_CIPHER* cipher, unsigned char key[], const int& key_length)
+void QSimpleCrypto::RSAEncryption::save_rsa_privateKey(RSA* rsa, const QByteArray& privateKeyFileName,
+    QByteArray password, const EVP_CIPHER* cipher)
 {
-    BIO* bp_private = BIO_new_file(privateKeyFileName.data(), "w+");
-    if (!PEM_write_bio_RSAPrivateKey(bp_private, rsa, cipher, key, key_length, nullptr, &passphrase)) {
-        qCritical() << "Couldn't save private key. PEM_write_bio_RSAPrivateKey() error: " << ERR_error_string(ERR_get_error(), nullptr);
+    /* Intilize BIO to file private key */
+    std::unique_ptr<BIO, void (*)(BIO*)> bioPrivate { BIO_new_file(privateKeyFileName.data(), "w+"), BIO_free_all };
+    if (bioPrivate == nullptr) {
+        qCritical() << "Couldn't intilise bp_private. BIO_new_file() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        return;
     }
 
-    BIO_free_all(bp_private);
+    /* Write private key to file */
+    if (!PEM_write_bio_RSAPrivateKey(bioPrivate.get(), rsa, cipher, reinterpret_cast<unsigned char*>(password.data()), password.size(), nullptr, nullptr)) {
+        qCritical() << "Couldn't save private key. PEM_write_bio_RSAPrivateKey() error: " << ERR_error_string(ERR_get_error(), nullptr);
+    }
 }
 
 ///
@@ -67,8 +90,9 @@ void RSAEncryption::save_rsa_privateKey(RSA* rsa, const QByteArray& privateKeyFi
 /// \param rsaKeyFilePath
 /// \return
 ///
-QByteArray RSAEncryption::get_rsa_key(const QString& rsaKeyFilePath)
+QByteArray QSimpleCrypto::RSAEncryption::get_rsa_key_from_file(const QString& rsaKeyFilePath)
 {
+    /* Get RSA from file and return all file lines */
     QFile rsaKeyFile(rsaKeyFilePath);
     if (rsaKeyFile.open(QIODevice::ReadOnly)) {
         return rsaKeyFile.readAll();
@@ -80,65 +104,76 @@ QByteArray RSAEncryption::get_rsa_key(const QString& rsaKeyFilePath)
 }
 
 ///
-/// \brief RSAEncryption::public_encrypt
-/// \param plaintext - text that will be encrypted
+/// \brief QSimpleCrypto::RSAEncryption::decrypt
+/// \param plaintext - text that must be encrypted
 /// \param rsa - openssl RSA structure
-/// \param padding - RSA padding can be used with: RSA_PKCS1_PADDING, RSA_NO_PADDING and etc
+/// \param decryptType - public or decrypt type. (PUBLIC_DECRYPT, PRIVATE_DECRYPT)
+/// \param padding  - RSA padding can be used with: RSA_PKCS1_PADDING, RSA_NO_PADDING and etc
 /// \return
 ///
-QByteArray RSAEncryption::encrypt(const int& encrypt_type, QByteArray plaintext, RSA* rsa, int padding)
+
+QByteArray QSimpleCrypto::RSAEncryption::encrypt(QByteArray plainText, RSA* rsa, const int& encryptType, const int& padding)
 {
-    unsigned char* ciphertext;
-    if (!(ciphertext = reinterpret_cast<unsigned char*>(malloc(size_t(RSA_size(rsa)))))) {
+    /* Intilize array we will save encrypted data */
+    std::unique_ptr<unsigned char[]> cipherText { new unsigned char[RSA_size(rsa)]() };
+
+    if (cipherText == nullptr) {
         qCritical() << "Couldn't allocate memory for \'ciphertext\'.";
+        return "";
     }
 
+    /* Result of encryption operation */
     int result = 0;
 
-    if (encrypt_type == PUBLIC_ENCRYPT) {
-        result = RSA_public_encrypt(plaintext.size(), reinterpret_cast<unsigned char*>(plaintext.data()), ciphertext, rsa, padding);
-    } else if (encrypt_type == PRIVATE_ENCRYPT) {
-        result = RSA_private_encrypt(plaintext.size(), reinterpret_cast<unsigned char*>(plaintext.data()), ciphertext, rsa, padding);
+    if (encryptType == PUBLIC_ENCRYPT) {
+        result = RSA_public_encrypt(plainText.size(), reinterpret_cast<unsigned char*>(plainText.data()), cipherText.get(), rsa, padding);
+    } else if (encryptType == PRIVATE_ENCRYPT) {
+        result = RSA_private_encrypt(plainText.size(), reinterpret_cast<unsigned char*>(plainText.data()), cipherText.get(), rsa, padding);
     }
 
     if (result <= -1) {
         qCritical() << "Couldn't encrypt data. Error: " << ERR_error_string(ERR_get_error(), nullptr);
     }
 
-    const QByteArray& encrypted = QByteArray(reinterpret_cast<char*>(ciphertext), RSA_size(rsa));
+    /* Get encrypted data */
+    const QByteArray& encryptedData = QByteArray(reinterpret_cast<char*>(cipherText.get()), RSA_size(rsa));
 
-    free(ciphertext);
-    return encrypted;
+    return encryptedData;
 }
 
 ///
-/// \brief RSAEncryption::private_decrypt
-/// \param ciphertext - text that will be decrypted
+/// \brief QSimpleCrypto::RSAEncryption::decrypt
+/// \param cipherText - text that must be decrypted
 /// \param rsa - openssl RSA structure
-/// \param padding - RSA padding can be used with: RSA_PKCS1_PADDING, RSA_NO_PADDING and etc
+/// \param decryptType - public or decrypt type. (PUBLIC_DECRYPT, PRIVATE_DECRYPT)
+/// \param padding  - RSA padding can be used with: RSA_PKCS1_PADDING, RSA_NO_PADDING and etc
 /// \return
 ///
-QByteArray RSAEncryption::decrypt(const int& decrypt_type, QByteArray ciphertext, RSA* rsa, int padding)
+QByteArray QSimpleCrypto::RSAEncryption::decrypt(QByteArray cipherText, RSA* rsa, const int& decryptType, const int& padding)
 {
-    unsigned char* plaintext;
-    if (!(plaintext = reinterpret_cast<unsigned char*>(malloc(size_t(ciphertext.size()))))) {
+    /* Intilize array we will save decrypted data */
+    std::unique_ptr<unsigned char[]> plainText { new unsigned char[cipherText.size()]() };
+
+    if (plainText == nullptr) {
         qCritical() << "Couldn't allocate memory for \'plaintext\'.";
+        return "";
     }
 
+    /* Result of decryption operation */
     int result = 0;
 
-    if (decrypt_type == PUBLIC_DECRYPT) {
-        result = RSA_public_decrypt(RSA_size(rsa), reinterpret_cast<unsigned char*>(ciphertext.data()), plaintext, rsa, padding);
-    } else if (decrypt_type == PRIVATE_DECRYPT) {
-        result = RSA_private_decrypt(RSA_size(rsa), reinterpret_cast<unsigned char*>(ciphertext.data()), plaintext, rsa, padding);
+    if (decryptType == PUBLIC_DECRYPT) {
+        result = RSA_public_decrypt(RSA_size(rsa), reinterpret_cast<unsigned char*>(cipherText.data()), plainText.get(), rsa, padding);
+    } else if (decryptType == PRIVATE_DECRYPT) {
+        result = RSA_private_decrypt(RSA_size(rsa), reinterpret_cast<unsigned char*>(cipherText.data()), plainText.get(), rsa, padding);
     }
 
     if (result <= -1) {
         qCritical() << "Couldn't decrypt data. Error: " << ERR_error_string(ERR_get_error(), nullptr);
     }
 
-    const QByteArray& decrypted = QByteArray(reinterpret_cast<char*>(plaintext));
+    /* Get decrypted data */
+    const QByteArray& decryptedData = QByteArray(reinterpret_cast<char*>(plainText.get()));
 
-    free(plaintext);
-    return decrypted;
+    return decryptedData;
 }
