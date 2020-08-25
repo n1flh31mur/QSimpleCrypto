@@ -56,7 +56,7 @@ RSA* QSimpleCrypto::RSAEncryption::generate_rsa_keys(const int& bits, const int&
 ///
 void QSimpleCrypto::RSAEncryption::save_rsa_publicKey(const RSA* rsa, const QByteArray& publicKeyFileName)
 {
-    /* Intilize BIO to file public key */
+    /* Intilize BIO */
     std::unique_ptr<BIO, void (*)(BIO*)> bioPublic { BIO_new_file(publicKeyFileName.data(), "w+"), BIO_free_all };
     if (bioPublic == nullptr) {
         qCritical() << "Couldn't intilize bp_public. BIO_new_file() error: " << ERR_error_string(ERR_get_error(), nullptr);
@@ -79,7 +79,7 @@ void QSimpleCrypto::RSAEncryption::save_rsa_publicKey(const RSA* rsa, const QByt
 void QSimpleCrypto::RSAEncryption::save_rsa_privateKey(RSA* rsa, const QByteArray& privateKeyFileName,
     QByteArray password, const EVP_CIPHER* cipher)
 {
-    /* Intilize BIO to file private key */
+    /* Intilize BIO */
     std::unique_ptr<BIO, void (*)(BIO*)> bioPrivate { BIO_new_file(privateKeyFileName.data(), "w+"), BIO_free_all };
     if (bioPrivate == nullptr) {
         qCritical() << "Couldn't intilize bp_private. BIO_new_file() error: " << ERR_error_string(ERR_get_error(), nullptr);
@@ -121,7 +121,7 @@ QByteArray QSimpleCrypto::RSAEncryption::get_rsa_key_from_file(const QString& rs
 
 QByteArray QSimpleCrypto::RSAEncryption::encrypt(QByteArray plainText, RSA* rsa, const int& encryptType, const int& padding)
 {
-    /* Intilize array we will save encrypted data */
+    /* Intilize array where encrypted data will be saved */
     std::unique_ptr<unsigned char[]> cipherText { new unsigned char[RSA_size(rsa)]() };
     if (cipherText == nullptr) {
         qCritical() << "Couldn't allocate memory for \'ciphertext\'.";
@@ -131,6 +131,7 @@ QByteArray QSimpleCrypto::RSAEncryption::encrypt(QByteArray plainText, RSA* rsa,
     /* Result of encryption operation */
     int result = 0;
 
+    /* Encrypt */
     if (encryptType == PUBLIC_ENCRYPT) {
         result = RSA_public_encrypt(plainText.size(), reinterpret_cast<unsigned char*>(plainText.data()), cipherText.get(), rsa, padding);
     } else if (encryptType == PRIVATE_ENCRYPT) {
@@ -157,7 +158,7 @@ QByteArray QSimpleCrypto::RSAEncryption::encrypt(QByteArray plainText, RSA* rsa,
 ///
 QByteArray QSimpleCrypto::RSAEncryption::decrypt(QByteArray cipherText, RSA* rsa, const int& decryptType, const int& padding)
 {
-    /* Intilize array we will save decrypted data */
+    /* Intilize array where decrypted data will be saved */
     std::unique_ptr<unsigned char[]> plainText { new unsigned char[cipherText.size()]() };
     if (plainText == nullptr) {
         qCritical() << "Couldn't allocate memory for \'plaintext\'.";
@@ -167,6 +168,7 @@ QByteArray QSimpleCrypto::RSAEncryption::decrypt(QByteArray cipherText, RSA* rsa
     /* Result of decryption operation */
     int result = 0;
 
+    /* Decrypt */
     if (decryptType == PUBLIC_DECRYPT) {
         result = RSA_public_decrypt(RSA_size(rsa), reinterpret_cast<unsigned char*>(cipherText.data()), plainText.get(), rsa, padding);
     } else if (decryptType == PRIVATE_DECRYPT) {
