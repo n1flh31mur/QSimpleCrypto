@@ -25,7 +25,7 @@ namespace QSimpleCrypto
         X509Encryption();
 
         X509* generate_self_signed_certificate(const RSA* rsa, const QMap<QByteArray, QByteArray> &additionalData,
-            QString passphrase = "", const QByteArray& keyFileName = "", const QByteArray& certificateFileName = "",
+            const QByteArray& keyFileName = "", const QByteArray& certificateFileName = "", QString password = "",
             const EVP_MD* md = EVP_sha512(), const EVP_CIPHER* cipher = nullptr,
             const long& serialNumber = 1, const long& version = 3, const long& notBefore = 0, const long& notAfter = 31536000L);
     };
