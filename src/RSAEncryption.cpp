@@ -27,13 +27,20 @@ RSA* QSimpleCrypto::RSAEncryption::generate_rsa_keys(const int& bits, const int&
         return nullptr;
     }
 
+    /* Set big number */
     if (!BN_set_word(bigNumber.get(), rsaBigNumber)) {
         qCritical() << "Couldn't generate bignum. BN_set_word() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return nullptr;
     }
 
     /* Intilize RSA */
-    RSA* rsa = RSA_new();
+    RSA* rsa = nullptr;
+    if (!(rsa = RSA_new())) {
+        qCritical() << "Couldn't intilize x509. X509_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        return nullptr;
+    }
+
+    /* Generate key pair and store it in RSA */
     if (!RSA_generate_key_ex(rsa, bits, bigNumber.get(), nullptr)) {
         qCritical() << "Couldn't generate RSA. RSA_generate_key_ex() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return nullptr;
@@ -116,7 +123,6 @@ QByteArray QSimpleCrypto::RSAEncryption::encrypt(QByteArray plainText, RSA* rsa,
 {
     /* Intilize array we will save encrypted data */
     std::unique_ptr<unsigned char[]> cipherText { new unsigned char[RSA_size(rsa)]() };
-
     if (cipherText == nullptr) {
         qCritical() << "Couldn't allocate memory for \'ciphertext\'.";
         return "";
@@ -153,7 +159,6 @@ QByteArray QSimpleCrypto::RSAEncryption::decrypt(QByteArray cipherText, RSA* rsa
 {
     /* Intilize array we will save decrypted data */
     std::unique_ptr<unsigned char[]> plainText { new unsigned char[cipherText.size()]() };
-
     if (plainText == nullptr) {
         qCritical() << "Couldn't allocate memory for \'plaintext\'.";
         return "";
