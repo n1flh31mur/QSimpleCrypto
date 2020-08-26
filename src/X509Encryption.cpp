@@ -44,9 +44,15 @@ X509* QSimpleCrypto::X509Encryption::generate_self_signed_certificate(const RSA*
 
     /* Intilize private key */
     std::unique_ptr<EVP_PKEY, void (*)(EVP_PKEY*)> keyStore { EVP_PKEY_new(), EVP_PKEY_free };
+    if (keyStore == nullptr) {
+        qCritical() << "Couldn't intilize keyStore. EVP_PKEY_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        return nullptr;
+    }
 
     /* Sign rsa key */
-    EVP_PKEY_assign_RSA(keyStore.get(), rsa);
+    if (!EVP_PKEY_assign_RSA(keyStore.get(), rsa)) {
+        qCritical() << "Couldn't assign rsa. EVP_PKEY_assign_RSA() error: " << ERR_error_string(ERR_get_error(), nullptr);
+    }
 
     /* Set certificate serial number. */
     if (!ASN1_INTEGER_set(X509_get_serialNumber(x509), serialNumber)) {
@@ -98,7 +104,10 @@ X509* QSimpleCrypto::X509Encryption::generate_self_signed_certificate(const RSA*
 
     /* Write private key file on disk. If needed */
     if (!keyFileName.isEmpty()) {
+        /* Intilize BIO */
         std::unique_ptr<BIO, void (*)(BIO*)> keyFile { BIO_new_file(keyFileName.data(), "w+"), BIO_free_all };
+
+        /* Write file */
         if (!PEM_write_bio_PrivateKey(keyFile.get(), keyStore.get(), cipher, reinterpret_cast<unsigned char*>(password.data()), password.size(), nullptr, nullptr)) {
             qCritical() << "Couldn't write key file on disk. PEM_write_bio_PrivateKey() error: " << ERR_error_string(ERR_get_error(), nullptr);
         }
@@ -106,7 +115,10 @@ X509* QSimpleCrypto::X509Encryption::generate_self_signed_certificate(const RSA*
 
     /* Write certificate file on disk. If needed */
     if (!certificateFileName.isEmpty()) {
+        /* Intilize BIO */
         std::unique_ptr<BIO, void (*)(BIO*)> certFile { BIO_new_file(certificateFileName.data(), "w+"), BIO_free_all };
+
+        /* Write file */
         if (!PEM_write_bio_X509(certFile.get(), x509)) {
             qCritical() << "Couldn't write certificate file on disk. PEM_write_bio_X509() error: " << ERR_error_string(ERR_get_error(), nullptr);
         }
