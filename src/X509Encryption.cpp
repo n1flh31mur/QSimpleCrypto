@@ -16,13 +16,8 @@ QSimpleCrypto::X509Encryption::X509Encryption()
 /// \brief QSimpleCrypto::X509Encryption::generate_self_signed_certificate
 /// \param rsa - OpenSSL RSA
 /// \param additionalData - Additional data of X509 certificate. (ST, OU and another data)
-/// \param keyFileName - Name of private key file. Leave "", if don't need to save it
 /// \param certificateFileName - Name of certificatefile. Leave "", if don't need to save it
-/// \param password - Certificate password
 /// \param md - Certificate Signature Algorith. Example: EVP_sha512()
-/// \param cipher - OpenSSL cipher algorithm. Example: EVP_aes_256_cbc()
-/// \param key - Cipher key.
-/// \param key_length - Cipher key length.
 /// \param serialNumber - X509 Certificate serial number.
 /// \param version - X509 Certificate version
 /// \param notBefore - X509 start date
@@ -30,8 +25,7 @@ QSimpleCrypto::X509Encryption::X509Encryption()
 /// \return - Returned value must be cleaned with X509_free()
 ///
 X509* QSimpleCrypto::X509Encryption::generate_self_signed_certificate(const RSA* rsa, const QMap<QByteArray, QByteArray>& additionalData,
-    const QByteArray& keyFileName, const QByteArray& certificateFileName, QString password,
-    const EVP_MD* md, const EVP_CIPHER* cipher,
+    const QByteArray& certificateFileName, const EVP_MD* md,
     const long& serialNumber, const long& version,
     const long& notBefore, const long& notAfter)
 {
@@ -42,7 +36,7 @@ X509* QSimpleCrypto::X509Encryption::generate_self_signed_certificate(const RSA*
         return nullptr;
     }
 
-    /* Intilize private key */
+    /* Intilize EVP_PKEY */
     std::unique_ptr<EVP_PKEY, void (*)(EVP_PKEY*)> keyStore { EVP_PKEY_new(), EVP_PKEY_free };
     if (keyStore == nullptr) {
         qCritical() << "Couldn't intilize keyStore. EVP_PKEY_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
@@ -52,16 +46,19 @@ X509* QSimpleCrypto::X509Encryption::generate_self_signed_certificate(const RSA*
     /* Sign rsa key */
     if (!EVP_PKEY_assign_RSA(keyStore.get(), rsa)) {
         qCritical() << "Couldn't assign rsa. EVP_PKEY_assign_RSA() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        return nullptr;
     }
 
     /* Set certificate serial number. */
     if (!ASN1_INTEGER_set(X509_get_serialNumber(x509), serialNumber)) {
         qCritical() << "Couldn't set serial number. ASN1_INTEGER_set() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        return nullptr;
     }
 
     /* Set certificate version */
     if (!X509_set_version(x509, version)) {
         qCritical() << "Couldn't set version. X509_set_version() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        return nullptr;
     }
 
     /* Set certificate creation and expiration date */
@@ -71,6 +68,7 @@ X509* QSimpleCrypto::X509Encryption::generate_self_signed_certificate(const RSA*
     /* Set certificate public key */
     if (!X509_set_pubkey(x509, keyStore.get())) {
         qCritical() << "Couldn't set public key. X509_set_pubkey() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        return nullptr;
     }
 
     /* Intilize issuer name */
@@ -87,7 +85,7 @@ X509* QSimpleCrypto::X509Encryption::generate_self_signed_certificate(const RSA*
         certificateInformationList.next();
 
         /* Set additional data */
-        if (!X509_NAME_add_entry_by_txt(x509Name, certificateInformationList.key().data(), MBSTRING_ASC, reinterpret_cast<const unsigned char*>(certificateInformationList.value().data()), -1, -1, 0)) {
+        if (!X509_NAME_add_entry_by_txt(x509Name, certificateInformationList.key().data(), MBSTRING_UTF8, reinterpret_cast<const unsigned char*>(certificateInformationList.value().data()), -1, -1, 0)) {
             qCritical() << "Couldn't set additional information. X509_NAME_add_entry_by_txt() error: " << ERR_error_string(ERR_get_error(), nullptr);
         }
     }
@@ -95,22 +93,13 @@ X509* QSimpleCrypto::X509Encryption::generate_self_signed_certificate(const RSA*
     /* Set certificate info */
     if (!X509_set_issuer_name(x509, x509Name)) {
         qCritical() << "Couldn't set issuer name. X509_set_issuer_name() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        return nullptr;
     }
 
     /* Sign certificate */
     if (!X509_sign(x509, keyStore.get(), md)) {
         qCritical() << "Couldn't sign x509. X509_sign() error: " << ERR_error_string(ERR_get_error(), nullptr);
-    }
-
-    /* Write private key file on disk. If needed */
-    if (!keyFileName.isEmpty()) {
-        /* Intilize BIO */
-        std::unique_ptr<BIO, void (*)(BIO*)> keyFile { BIO_new_file(keyFileName.data(), "w+"), BIO_free_all };
-
-        /* Write file */
-        if (!PEM_write_bio_PrivateKey(keyFile.get(), keyStore.get(), cipher, reinterpret_cast<unsigned char*>(password.data()), password.size(), nullptr, nullptr)) {
-            qCritical() << "Couldn't write key file on disk. PEM_write_bio_PrivateKey() error: " << ERR_error_string(ERR_get_error(), nullptr);
-        }
+        return nullptr;
     }
 
     /* Write certificate file on disk. If needed */
@@ -118,7 +107,7 @@ X509* QSimpleCrypto::X509Encryption::generate_self_signed_certificate(const RSA*
         /* Intilize BIO */
         std::unique_ptr<BIO, void (*)(BIO*)> certFile { BIO_new_file(certificateFileName.data(), "w+"), BIO_free_all };
 
-        /* Write file */
+        /* Write file on disk */
         if (!PEM_write_bio_X509(certFile.get(), x509)) {
             qCritical() << "Couldn't write certificate file on disk. PEM_write_bio_X509() error: " << ERR_error_string(ERR_get_error(), nullptr);
         }
