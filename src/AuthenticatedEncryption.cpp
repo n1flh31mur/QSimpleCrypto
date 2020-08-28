@@ -26,33 +26,31 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::encrypt_aes_gcm(QByteArray da
     QByteArray iv, QByteArray* tag,
     QByteArray aad, const EVP_CIPHER* cipher)
 {
-    /* Initialise cipcher */
+    /* Initialize cipcher */
     std::unique_ptr<EVP_CIPHER_CTX, void (*)(EVP_CIPHER_CTX*)> en { EVP_CIPHER_CTX_new(), EVP_CIPHER_CTX_free };
     if (en == nullptr) {
         qCritical() << "Couldn't intilize evp cipher. EVP_CIPHER_CTX_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
     }
 
-    /* Set length of data */
+    /* Set data length */
     int plainTextLength = data.size();
     int cipherTextLength = 0;
 
-    /* Initialise cipcher text. Here we will store encrypted data */
+    /* Initialize cipcher text. Here we will store encrypted data */
     std::unique_ptr<unsigned char[]> ciphertext { new unsigned char[plainTextLength]() };
     if (ciphertext == nullptr) {
         qCritical() << "Couldn't allocate memory for \'ciphertext\'.";
         return QByteArray();
     }
 
-    /* Initialise the encryption operation. */
+    /* Initialize the encryption operation. */
     if (!EVP_EncryptInit_ex(en.get(), cipher, nullptr, reinterpret_cast<unsigned char*>(key.data()), reinterpret_cast<unsigned char*>(iv.data()))) {
-        qCritical() << "Couldn't initialise encryption operation. EVP_EncryptInit_ex() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't Initialize encryption operation. EVP_EncryptInit_ex() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
     }
 
-    /*
-     * Set IV length if default 12 bytes (96 bits) is not appropriate
-    */
+    /* Set IV length if default 12 bytes (96 bits) is not appropriate */
     if (!EVP_CIPHER_CTX_ctrl(en.get(), EVP_CTRL_GCM_SET_IVLEN, iv.length(), nullptr)) {
         qCritical() << "Couldn't set IV length. EVP_CIPHER_CTX_ctrl() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
@@ -60,9 +58,7 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::encrypt_aes_gcm(QByteArray da
 
     /* Check if we need to use aad */
     if (aad.length() > 0) {
-        /*
-         * Provide any AAD data. This can be called zero or more times as required
-        */
+        /* Provide any AAD data. This can be called zero or more times as required */
         if (!EVP_EncryptUpdate(en.get(), nullptr, &cipherTextLength, reinterpret_cast<unsigned char*>(aad.data()), aad.length())) {
             qCritical() << "Couldn't provide aad data. EVP_EncryptUpdate() error: " << ERR_error_string(ERR_get_error(), nullptr);
             return QByteArray();
@@ -79,15 +75,15 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::encrypt_aes_gcm(QByteArray da
     }
 
     /*
-     * Finalise the encryption. Normally cipher text bytes may be written at
+     * Finalize the encryption. Normally cipher text bytes may be written at
      * this stage, but this does not occur in GCM mode
     */
     if (!EVP_EncryptFinal_ex(en.get(), ciphertext.get(), &plainTextLength)) {
-        qCritical() << "Couldn't finalise encryption. EVP_EncryptFinal_ex() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't finalize encryption. EVP_EncryptFinal_ex() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
     }
 
-    /* Get the tag */
+    /* Get tag */
     if (!EVP_CIPHER_CTX_ctrl(en.get(), EVP_CTRL_GCM_GET_TAG, tag->length(), reinterpret_cast<unsigned char*>(tag->data()))) {
         qCritical() << "Couldn't get tag. EVP_CIPHER_CTX_ctrl() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
@@ -113,27 +109,27 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::decrypt_aes_gcm(QByteArray da
     QByteArray iv, QByteArray* tag,
     QByteArray aad, const EVP_CIPHER* cipher)
 {
-    /* Initialise cipcher */
+    /* Initialize cipcher */
     std::unique_ptr<EVP_CIPHER_CTX, void (*)(EVP_CIPHER_CTX*)> de { EVP_CIPHER_CTX_new(), EVP_CIPHER_CTX_free };
     if (de.get() == nullptr) {
         qCritical() << "Couldn't intilize evp cipher. EVP_CIPHER_CTX_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
     }
 
-    /* Set length of data */
+    /* Set data length */
     int cipherTextLength = data.size();
     int plainTextLength = 0;
 
-    /* Initialise plain text. Here we will store decrypted data */
+    /* Initialize plain text. Here we will store decrypted data */
     std::unique_ptr<unsigned char[]> plainText { new unsigned char[cipherTextLength]() };
     if (plainText == nullptr) {
         qCritical() << "Couldn't allocate memory for \'plaintext.\'";
         return QByteArray();
     }
 
-    /* Initialise the decryption operation. */
+    /* Initialize the decryption operation. */
     if (!EVP_DecryptInit_ex(de.get(), cipher, nullptr, reinterpret_cast<unsigned char*>(key.data()), reinterpret_cast<unsigned char*>(iv.data()))) {
-        qCritical() << "Couldn't initialise decryption operation. EVP_DecryptInit_ex() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't Initialize decryption operation. EVP_DecryptInit_ex() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
     }
 
@@ -145,9 +141,7 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::decrypt_aes_gcm(QByteArray da
 
     /* Check if we need to use aad */
     if (aad.length() > 0) {
-        /*
-         * Provide any AAD data. This can be called zero or more times as required
-        */
+        /* Provide any AAD data. This can be called zero or more times as required */
         if (!EVP_DecryptUpdate(de.get(), nullptr, &plainTextLength, reinterpret_cast<unsigned char*>(aad.data()), aad.length())) {
             qCritical() << "Couldn't provide aad data. EVP_DecryptUpdate() error: " << ERR_error_string(ERR_get_error(), nullptr);
             return QByteArray();
@@ -170,11 +164,11 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::decrypt_aes_gcm(QByteArray da
     }
 
     /*
-     * Finalise the decryption. A positive return value indicates success,
+     * Finalize the decryption. A positive return value indicates success,
      * anything else is a failure - the plain text is not trustworthy.
     */
     if (!EVP_DecryptFinal_ex(de.get(), plainText.get(), &cipherTextLength)) {
-        qCritical() << "Couldn't finalise decryption. EVP_DecryptFinal_ex() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't finalize decryption. EVP_DecryptFinal_ex() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
     }
 
@@ -198,33 +192,31 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::encrypt_aes_ccm(QByteArray da
     QByteArray iv, QByteArray* tag,
     QByteArray aad, const EVP_CIPHER* cipher)
 {
-    /* Initialise cipcher */
+    /* Initialize cipcher */
     std::unique_ptr<EVP_CIPHER_CTX, void (*)(EVP_CIPHER_CTX*)> en { EVP_CIPHER_CTX_new(), EVP_CIPHER_CTX_free };
     if (en == nullptr) {
         qCritical() << "Couldn't intilize evp cipher. EVP_CIPHER_CTX_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
     }
 
-    /* Set length of data */
+    /* Set data length */
     int plainTextLength = data.size();
     int cipherTextLength = 0;
 
-    /* Initialise cipcher text. Here we will store encrypted data */
+    /* Initialize cipcher text. Here we will store encrypted data */
     std::unique_ptr<unsigned char[]> cipherText { new unsigned char[plainTextLength]() };
     if (cipherText.get() == nullptr) {
         qCritical() << "Couldn't allocate memory for \'ciphertext\'.";
         return QByteArray();
     }
 
-    /* Initialise the encryption operation. */
+    /* Initialize the encryption operation. */
     if (!EVP_EncryptInit_ex(en.get(), cipher, nullptr, reinterpret_cast<unsigned char*>(key.data()), reinterpret_cast<unsigned char*>(iv.data()))) {
-        qCritical() << "Couldn't initialise encryption operation. EVP_EncryptInit_ex() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't Initialize encryption operation. EVP_EncryptInit_ex() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
     }
 
-    /*
-     * Set IV length if default 12 bytes (96 bits) is not appropriate
-    */
+    /* Set IV length if default 12 bytes (96 bits) is not appropriate */
     if (!EVP_CIPHER_CTX_ctrl(en.get(), EVP_CTRL_CCM_SET_IVLEN, iv.length(), nullptr)) {
         qCritical() << "Couldn't set IV length. EVP_CIPHER_CTX_ctrl() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
@@ -244,9 +236,7 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::encrypt_aes_ccm(QByteArray da
             return QByteArray();
         }
 
-        /*
-         * Provide any AAD data. This can be called zero or more times as required
-        */
+        /* Provide any AAD data. This can be called zero or more times as required */
         if (!EVP_EncryptUpdate(en.get(), nullptr, &cipherTextLength, reinterpret_cast<unsigned char*>(aad.data()), aad.length())) {
             qCritical() << "Couldn't provide aad data. EVP_EncryptUpdate() error: " << ERR_error_string(ERR_get_error(), nullptr);
             return QByteArray();
@@ -263,15 +253,15 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::encrypt_aes_ccm(QByteArray da
     }
 
     /*
-     * Finalise the encryption. Normally ciphertext bytes may be written at
+     * Finalize the encryption. Normally ciphertext bytes may be written at
      * this stage, but this does not occur in GCM mode
     */
     if (!EVP_EncryptFinal_ex(en.get(), cipherText.get(), &plainTextLength)) {
-        qCritical() << "Couldn't finalise encryption. EVP_EncryptFinal_ex() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't finalize encryption. EVP_EncryptFinal_ex() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
     }
 
-    /* Get the tag */
+    /* Get tag */
     if (!EVP_CIPHER_CTX_ctrl(en.get(), EVP_CTRL_CCM_GET_TAG, tag->length(), reinterpret_cast<unsigned char*>(tag->data()))) {
         qCritical() << "Couldn't get tag. EVP_CIPHER_CTX_ctrl() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
@@ -297,7 +287,7 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::decrypt_aes_ccm(QByteArray da
     QByteArray iv, QByteArray* tag,
     QByteArray aad, const EVP_CIPHER* cipher)
 {
-    /* Initialise cipcher */
+    /* Initialize cipcher */
     std::unique_ptr<EVP_CIPHER_CTX, void (*)(EVP_CIPHER_CTX*)> de { EVP_CIPHER_CTX_new(), EVP_CIPHER_CTX_free };
 
     if (de.get() == nullptr) {
@@ -305,20 +295,20 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::decrypt_aes_ccm(QByteArray da
         return QByteArray();
     }
 
-    /* Set length of data */
+    /* Set data length */
     int cipherTextLength = data.size();
     int plainTextLength = 0;
 
-    /* Initialise plain text. Here we will store decrypted data */
+    /* Initialize plain text. Here we will store decrypted data */
     std::unique_ptr<unsigned char[]> plainText { new unsigned char[cipherTextLength]() };
     if (plainText == nullptr) {
         qCritical() << "Couldn't allocate memory for \'plaintext\'.";
         return QByteArray();
     }
 
-    /* Initialise the decryption operation. */
+    /* Initialize the decryption operation. */
     if (!EVP_DecryptInit_ex(de.get(), cipher, nullptr, reinterpret_cast<unsigned char*>(key.data()), reinterpret_cast<unsigned char*>(iv.data()))) {
-        qCritical() << "Couldn't initialise decryption operation. EVP_DecryptInit_ex() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't Initialize decryption operation. EVP_DecryptInit_ex() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
     }
 
@@ -342,9 +332,7 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::decrypt_aes_ccm(QByteArray da
             return QByteArray();
         }
 
-        /*
-         * Provide any AAD data. This can be called zero or more times as required
-        */
+        /* Provide any AAD data. This can be called zero or more times as required */
         if (!EVP_DecryptUpdate(de.get(), nullptr, &plainTextLength, reinterpret_cast<unsigned char*>(aad.data()), aad.length())) {
             qCritical() << "Couldn't provide aad data. EVP_DecryptUpdate() error: " << ERR_error_string(ERR_get_error(), nullptr);
             return QByteArray();
@@ -361,11 +349,11 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::decrypt_aes_ccm(QByteArray da
     }
 
     /*
-     * Finalise the decryption. A positive return value indicates success,
+     * Finalize the decryption. A positive return value indicates success,
      * anything else is a failure - the plaintext is not trustworthy.
     */
     if (!EVP_DecryptFinal_ex(de.get(), plainText.get(), &cipherTextLength)) {
-        qCritical() << "Couldn't finalise decryption. EVP_DecryptFinal_ex() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't finalize decryption. EVP_DecryptFinal_ex() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
     }
 
