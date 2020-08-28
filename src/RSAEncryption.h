@@ -6,8 +6,8 @@
  * in the file LICENSE in the source distribution
 **/
 
-#ifndef ENCRYPT_RSA_H
-#define ENCRYPT_RSA_H
+#ifndef RsaEncryption_H
+#define RsaEncryption_H
 
 #include <QDebug>
 #include <QFile>
@@ -28,17 +28,17 @@ namespace QSimpleCrypto
     public:
         RSAEncryption();
 
-        RSA* generate_rsa_keys(const int& bits, const int& rsaBigNumber);
+        RSA* generateRsaKeys(const int& bits, const int& rsaBigNumber);
 
-        void save_rsa_publicKey(const RSA* rsa, const QByteArray& publicKeyFileName);
-        void save_rsa_privateKey(RSA* rsa, const QByteArray& privateKeyFileName,
-            QByteArray password = "", const EVP_CIPHER* cipher = nullptr);
+        void savePublicKey(RSA *rsa, const QByteArray& publicKeyFileName);
+        void savePrivateKey(RSA* rsa, const QByteArray& privateKeyFileName, QByteArray password = "", const EVP_CIPHER* cipher = nullptr);
 
-        QByteArray get_rsa_key_from_file(const QString& rsaKeyFilePath);
+        EVP_PKEY* getPublicKeyFromFile(const QByteArray& filePath);
+        EVP_PKEY* getPrivateKeyFromFile(const QByteArray& filePath, const QByteArray& password= "");
 
         QByteArray encrypt(QByteArray plainText, RSA* rsa, const int& encryptType = PUBLIC_ENCRYPT, const int& padding = RSA_PKCS1_PADDING);
         QByteArray decrypt(QByteArray cipherText, RSA* rsa, const int& decryptType = PRIVATE_DECRYPT, const int& padding = RSA_PKCS1_PADDING);
     };
 } // namespace QSimpleCrypto
 
-#endif // ENCRYPT_RSA_H
+#endif // RsaEncryption_H

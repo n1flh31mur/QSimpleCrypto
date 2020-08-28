@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Copyright Copyright 2020 BrutalWizard (https://github.com/bru74lw1z4rd). All Rights Reserved.
  *
  * Licensed under the Apache License 2.0 (the "License"). You may not use
@@ -13,23 +13,23 @@ QSimpleCrypto::RSAEncryption::RSAEncryption()
 }
 
 ///
-/// \brief RSAEncryption::generate_rsa_keys
+/// \brief RSAEncryption::generateRsaKeys
 /// \param bits - key size (1024 to 4096)
 /// \param rsaBigNumber - The exponent is an odd number, typically 3, 17 or 65537.
-/// \return returned value must be cleaned up with 'RSA_free(rsa);' to avoid memory leak
+/// \return - returned value must be cleaned up with 'RSA_free()' to avoid memory leak
 ///
-RSA* QSimpleCrypto::RSAEncryption::generate_rsa_keys(const int& bits, const int& rsaBigNumber)
+RSA* QSimpleCrypto::RSAEncryption::generateRsaKeys(const int& bits, const int& rsaBigNumber)
 {
     /* Intilize big number */
     std::unique_ptr<BIGNUM, void (*)(BIGNUM*)> bigNumber { BN_new(), BN_free };
     if (bigNumber == nullptr) {
-        qCritical() << "Couldn't intilize bignum. BN_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't intilize bigNumber. BN_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return nullptr;
     }
 
     /* Set big number */
     if (!BN_set_word(bigNumber.get(), rsaBigNumber)) {
-        qCritical() << "Couldn't generate bignum. BN_set_word() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't set bigNumber. BN_set_word() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return nullptr;
     }
 
@@ -50,75 +50,117 @@ RSA* QSimpleCrypto::RSAEncryption::generate_rsa_keys(const int& bits, const int&
 }
 
 ///
-/// \brief RSAEncryption::save_rsa_publicKey
+/// \brief RSAEncryption::savePublicKey
 /// \param rsa - openssl RSA structure
 /// \param publicKeyFileName - file name of public key file
 ///
-void QSimpleCrypto::RSAEncryption::save_rsa_publicKey(const RSA* rsa, const QByteArray& publicKeyFileName)
+void QSimpleCrypto::RSAEncryption::savePublicKey(RSA* rsa, const QByteArray& publicKeyFileName)
 {
     /* Intilize BIO */
-    std::unique_ptr<BIO, void (*)(BIO*)> bioPublic { BIO_new_file(publicKeyFileName.data(), "w+"), BIO_free_all };
-    if (bioPublic == nullptr) {
-        qCritical() << "Couldn't intilize bp_public. BIO_new_file() error: " << ERR_error_string(ERR_get_error(), nullptr);
+    std::unique_ptr<BIO, void (*)(BIO*)> bioPublicKey { BIO_new_file(publicKeyFileName.data(), "w+"), BIO_free_all };
+    if (bioPublicKey == nullptr) {
+        qCritical() << "Couldn't intilize bioPublicKey. BIO_new_file() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return;
     }
 
     /* Write public key on file */
-    if (!PEM_write_bio_RSAPublicKey(bioPublic.get(), rsa)) {
+    if (!PEM_write_bio_RSA_PUBKEY(bioPublicKey.get(), rsa)) {
         qCritical() << "Couldn't save public key. PEM_write_bio_RSAPublicKey() error: " << ERR_error_string(ERR_get_error(), nullptr);
     }
 }
 
 ///
-/// \brief RSAEncryption::save_rsa_privateKey
+/// \brief RSAEncryption::savePrivateKey
 /// \param rsa - openssl RSA structure
 /// \param privateKeyFileName - file name of private key file
 /// \param password - private key password
 /// \param cipher - evp cipher. Can be used with openssl evp chipers (ecb, cbc, cfb, ofb, ctr) - 128, 192, 256. Example: EVP_aes_256_ecb()
 ///
-void QSimpleCrypto::RSAEncryption::save_rsa_privateKey(RSA* rsa, const QByteArray& privateKeyFileName,
+void QSimpleCrypto::RSAEncryption::savePrivateKey(RSA* rsa, const QByteArray& privateKeyFileName,
     QByteArray password, const EVP_CIPHER* cipher)
 {
     /* Intilize BIO */
-    std::unique_ptr<BIO, void (*)(BIO*)> bioPrivate { BIO_new_file(privateKeyFileName.data(), "w+"), BIO_free_all };
-    if (bioPrivate == nullptr) {
-        qCritical() << "Couldn't intilize bp_private. BIO_new_file() error: " << ERR_error_string(ERR_get_error(), nullptr);
+    std::unique_ptr<BIO, void (*)(BIO*)> bioPrivateKey { BIO_new_file(privateKeyFileName.data(), "w+"), BIO_free_all };
+    if (bioPrivateKey == nullptr) {
+        qCritical() << "Couldn't intilize bioPrivateKey. BIO_new_file() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return;
     }
 
     /* Write private key to file */
-    if (!PEM_write_bio_RSAPrivateKey(bioPrivate.get(), rsa, cipher, reinterpret_cast<unsigned char*>(password.data()), password.size(), nullptr, nullptr)) {
+    if (!PEM_write_bio_RSAPrivateKey(bioPrivateKey.get(), rsa, cipher, reinterpret_cast<unsigned char*>(password.data()), password.size(), nullptr, nullptr)) {
         qCritical() << "Couldn't save private key. PEM_write_bio_RSAPrivateKey() error: " << ERR_error_string(ERR_get_error(), nullptr);
     }
 }
 
 ///
-/// \brief RSAEncryption::get_rsa_key - gets a key from a file
-/// \param rsaKeyFilePath
-/// \return
+/// \brief RSAEncryption::getPublicKeyFromFile - gets a key from a file
+/// \param filePath
+/// \return - returned value must be cleaned up with 'EVP_PKEY_free()' to avoid memory leak
 ///
-QByteArray QSimpleCrypto::RSAEncryption::get_rsa_key_from_file(const QString& rsaKeyFilePath)
+EVP_PKEY* QSimpleCrypto::RSAEncryption::getPublicKeyFromFile(const QByteArray& filePath)
 {
-    /* Get RSA from file and return all file lines */
-    QFile rsaKeyFile(rsaKeyFilePath);
-    if (rsaKeyFile.open(QIODevice::ReadOnly)) {
-        return rsaKeyFile.readAll();
-    } else {
-        qCritical() << "Couldn't open public key file. QFile.open() error: " << rsaKeyFile.errorString();
+    /* Intilize BIO */
+    std::unique_ptr<BIO, void (*)(BIO*)> bioPublicKey { BIO_new_file(filePath.data(), "r"), BIO_free_all };
+    if (bioPublicKey == nullptr) {
+        qCritical() << "Couldn't intilize bioPublicKey. BIO_new_file() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        return nullptr;
     }
 
-    return "";
+    /* Intilize EVP_PKEY */
+    EVP_PKEY* keyStore = nullptr;
+    if (!(keyStore = EVP_PKEY_new())) {
+        qCritical() << "Couldn't intilize keyStore. EVP_PKEY_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        return nullptr;
+    }
+
+    /* Write private key to file */
+    if (!PEM_read_bio_PUBKEY(bioPublicKey.get(), &keyStore, nullptr, nullptr)) {
+        qCritical() << "Couldn't read private key. PEM_read_bio_PrivateKey() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        return nullptr;
+    }
+
+    return keyStore;
 }
 
 ///
-/// \brief QSimpleCrypto::RSAEncryption::decrypt
+/// \brief RSAEncryption::getPrivateKeyFromFile - gets a key from a file
+/// \param filePath
+/// \param password
+/// \return - returned value must be cleaned up with 'EVP_PKEY_free()' to avoid memory leak
+///
+EVP_PKEY* QSimpleCrypto::RSAEncryption::getPrivateKeyFromFile(const QByteArray& filePath, const QByteArray& password)
+{
+    /* Intilize BIO */
+    std::unique_ptr<BIO, void (*)(BIO*)> bioPrivateKey { BIO_new_file(filePath.data(), "r"), BIO_free_all };
+    if (bioPrivateKey == nullptr) {
+        qCritical() << "Couldn't intilize bioPrivateKey. BIO_new_file() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        return nullptr;
+    }
+
+    /* Intilize EVP_PKEY */
+    EVP_PKEY* keyStore = nullptr;
+    if (!(keyStore = EVP_PKEY_new())) {
+        qCritical() << "Couldn't intilize keyStore. EVP_PKEY_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        return nullptr;
+    }
+
+    /* Write private key to file */
+    if (!PEM_read_bio_PrivateKey(bioPrivateKey.get(), &keyStore, nullptr, (void*)password.data())) {
+        qCritical() << "Couldn't read private key. PEM_read_bio_PrivateKey() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        return nullptr;
+    }
+
+    return keyStore;
+}
+
+///
+/// \brief QSimpleCrypto::RSAEncryption::encrypt
 /// \param plaintext - text that must be encrypted
 /// \param rsa - openssl RSA structure
 /// \param decryptType - public or decrypt type. (PUBLIC_DECRYPT, PRIVATE_DECRYPT)
 /// \param padding  - RSA padding can be used with: RSA_PKCS1_PADDING, RSA_NO_PADDING and etc
 /// \return
 ///
-
 QByteArray QSimpleCrypto::RSAEncryption::encrypt(QByteArray plainText, RSA* rsa, const int& encryptType, const int& padding)
 {
     /* Intilize array where encrypted data will be saved */
