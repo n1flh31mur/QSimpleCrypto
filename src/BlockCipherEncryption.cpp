@@ -43,7 +43,7 @@ QByteArray QSimpleCrypto::BlockCipherEncryption::encrypt_aes_block_cipher(
     QByteArray password, QByteArray salt,
     const int& rounds, const EVP_CIPHER* cipher, const EVP_MD* md)
 {
-    /* Initialise cipcher */
+    /* Initialize cipcher */
     std::unique_ptr<EVP_CIPHER_CTX, void (*)(EVP_CIPHER_CTX*)> en { EVP_CIPHER_CTX_new(), EVP_CIPHER_CTX_free };
     if (en == nullptr) {
         qCritical() << "Couldn't intilize evp cipher. EVP_CIPHER_CTX_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
@@ -53,12 +53,11 @@ QByteArray QSimpleCrypto::BlockCipherEncryption::encrypt_aes_block_cipher(
     unsigned char* m_key = reinterpret_cast<unsigned char*>(key.data());
     unsigned char* m_iv = reinterpret_cast<unsigned char*>(iv.data());
 
-    /* Set length of data */
-    int plainTextLength = data.size();
-    int cipherTextLength(plainTextLength + AES_BLOCK_SIZE);
+    /* Set data length */
+    int cipherTextLength(data.size() + AES_BLOCK_SIZE);
     int finalLength = 0;
 
-    /* Initialise cipchertext. Here we will store encrypted data */
+    /* Initialize cipchertext. Here we will store encrypted data */
     std::unique_ptr<unsigned char[]> cipherText { new unsigned char[cipherTextLength]() };
     if (cipherText == nullptr) {
         qCritical() << "Couldn't allocate memory for \'ciphertext\'.";
@@ -71,9 +70,9 @@ QByteArray QSimpleCrypto::BlockCipherEncryption::encrypt_aes_block_cipher(
         return QByteArray();
     }
 
-    /* Initialise the encryption operation. */
+    /* Initialize the encryption operation. */
     if (!EVP_EncryptInit_ex(en.get(), cipher, nullptr, m_key, m_iv)) {
-        qCritical() << "Couldn't initialise encryption operation. EVP_EncryptInit_ex() failed: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't Initialize encryption operation. EVP_EncryptInit_ex() failed: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
     }
 
@@ -81,23 +80,19 @@ QByteArray QSimpleCrypto::BlockCipherEncryption::encrypt_aes_block_cipher(
      * Provide the message to be encrypted, and obtain the encrypted output.
      * EVP_EncryptUpdate can be called multiple times if necessary
     */
-    if (!EVP_EncryptUpdate(en.get(), cipherText.get(), &cipherTextLength, reinterpret_cast<const unsigned char*>(data.data()), plainTextLength)) {
+    if (!EVP_EncryptUpdate(en.get(), cipherText.get(), &cipherTextLength, reinterpret_cast<const unsigned char*>(data.data()), data.size())) {
         qCritical() << "Couldn't provide message to be encrypted. EVP_EncryptUpdate() failed: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
     }
 
-    /*
-     * Finalise the encryption. Normally ciphertext bytes may be written at this stage
-    */
+    /* Finalize the encryption. Normally ciphertext bytes may be written at this stage */
     if (!EVP_EncryptFinal(en.get(), cipherText.get() + cipherTextLength, &finalLength)) {
-        qCritical() << "Couldn't finalise encryption. EVP_EncryptFinal_ex() failed: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't finalize encryption. EVP_EncryptFinal() failed: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
     }
 
     /* Finilize data to be readable with qt */
-    plainTextLength = cipherTextLength + finalLength;
-
-    QByteArray encryptedData = QByteArray(reinterpret_cast<char*>(cipherText.get()), plainTextLength);
+    QByteArray encryptedData = QByteArray(reinterpret_cast<char*>(cipherText.get()), cipherTextLength + finalLength);
 
     return encryptedData;
 }
@@ -119,7 +114,7 @@ QByteArray QSimpleCrypto::BlockCipherEncryption::decrypt_aes_block_cipher(
     QByteArray password, QByteArray salt,
     const int& rounds, const EVP_CIPHER* cipher, const EVP_MD* md)
 {
-    /* Initialise cipcher */
+    /* Initialize cipcher */
     std::unique_ptr<EVP_CIPHER_CTX, void (*)(EVP_CIPHER_CTX*)> de { EVP_CIPHER_CTX_new(), EVP_CIPHER_CTX_free };
     if (de == nullptr) {
         qCritical() << "Couldn't intilize evp cipher. EVP_CIPHER_CTX_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
@@ -129,12 +124,11 @@ QByteArray QSimpleCrypto::BlockCipherEncryption::decrypt_aes_block_cipher(
     unsigned char* m_key = reinterpret_cast<unsigned char*>(key.data());
     unsigned char* m_iv = reinterpret_cast<unsigned char*>(iv.data());
 
-    /* Set length of data */
-    int dataLength = data.size();
-    int plainTextLength(dataLength);
+    /* Set data length */
+    int plainTextLength(data.size());
     int finalLength = 0;
 
-    /* Initialise plaintext. Here we will store decrypted data */
+    /* Initialize plaintext. Here we will store decrypted data */
     std::unique_ptr<unsigned char[]> plainText { new unsigned char[plainTextLength + AES_BLOCK_SIZE]() };
     if (plainText == nullptr) {
         qCritical() << "Couldn't allocate memory for \'plaintext\'.";
@@ -147,9 +141,9 @@ QByteArray QSimpleCrypto::BlockCipherEncryption::decrypt_aes_block_cipher(
         return QByteArray();
     }
 
-    /* Initialise the decryption operation. */
+    /* Initialize the decryption operation. */
     if (!EVP_DecryptInit_ex(de.get(), cipher, nullptr, m_key, m_iv)) {
-        qCritical() << "Couldn't initialise decryption operation. EVP_DecryptInit_ex() failed: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't Initialize decryption operation. EVP_DecryptInit_ex() failed: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
     }
 
@@ -163,18 +157,16 @@ QByteArray QSimpleCrypto::BlockCipherEncryption::decrypt_aes_block_cipher(
     }
 
     /*
-     * Finalise the decryption. A positive return value indicates success,
+     * Finalize the decryption. A positive return value indicates success,
      * anything else is a failure - the plaintext is not trustworthy.
     */
-    if (!EVP_DecryptFinal_ex(de.get(), plainText.get() + plainTextLength, &finalLength)) {
-        qCritical() << "Couldn't finalise decryption. EVP_DecryptFinal_ex() failed: " << ERR_error_string(ERR_get_error(), nullptr);
+    if (!EVP_DecryptFinal(de.get(), plainText.get() + plainTextLength, &finalLength)) {
+        qCritical() << "Couldn't finalize decryption. EVP_DecryptFinal failed: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
     }
 
     /* Finilize data to be readable with qt */
-    dataLength = plainTextLength + finalLength;
-
-    QByteArray decryptedData = QByteArray(reinterpret_cast<char*>(plainText.get()), dataLength);
+    QByteArray decryptedData = QByteArray(reinterpret_cast<char*>(plainText.get()), plainTextLength + finalLength);
 
     return decryptedData;
 }
