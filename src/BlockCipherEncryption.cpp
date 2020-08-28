@@ -56,7 +56,7 @@ QByteArray QSimpleCrypto::BlockCipherEncryption::encryptAesBlockCipher(QByteArra
     int cipherTextLength(data.size() + AES_BLOCK_SIZE);
     int finalLength = 0;
 
-    /* Initialize cipchertext. Here we will store encrypted data */
+    /* Initialize cipchertext. Here encrypted data will be stored */
     std::unique_ptr<unsigned char[]> cipherText { new unsigned char[cipherTextLength]() };
     if (cipherText == nullptr) {
         qCritical() << "Couldn't allocate memory for \'ciphertext\'.";
@@ -126,7 +126,7 @@ QByteArray QSimpleCrypto::BlockCipherEncryption::decryptAesBlockCipher(QByteArra
     int plainTextLength(data.size());
     int finalLength = 0;
 
-    /* Initialize plaintext. Here we will store decrypted data */
+    /* Initialize plaintext. Here decrypted data will be stored */
     std::unique_ptr<unsigned char[]> plainText { new unsigned char[plainTextLength + AES_BLOCK_SIZE]() };
     if (plainText == nullptr) {
         qCritical() << "Couldn't allocate memory for \'plaintext\'.";

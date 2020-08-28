@@ -37,7 +37,7 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::encryptAesGcm(QByteArray data
     int plainTextLength = data.size();
     int cipherTextLength = 0;
 
-    /* Initialize cipcher text. Here we will store encrypted data */
+    /* Initialize cipcher text. Here encrypted data will be stored */
     std::unique_ptr<unsigned char[]> ciphertext { new unsigned char[plainTextLength]() };
     if (ciphertext == nullptr) {
         qCritical() << "Couldn't allocate memory for \'ciphertext\'.";
@@ -56,7 +56,7 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::encryptAesGcm(QByteArray data
         return QByteArray();
     }
 
-    /* Check if we need to use aad */
+    /* Check if aad need to be used */
     if (aad.length() > 0) {
         /* Provide any AAD data. This can be called zero or more times as required */
         if (!EVP_EncryptUpdate(en.get(), nullptr, &cipherTextLength, reinterpret_cast<unsigned char*>(aad.data()), aad.length())) {
@@ -120,7 +120,7 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::decryptAesGcm(QByteArray data
     int cipherTextLength = data.size();
     int plainTextLength = 0;
 
-    /* Initialize plain text. Here we will store decrypted data */
+    /* Initialize plain text. Here decrypted data will be stored */
     std::unique_ptr<unsigned char[]> plainText { new unsigned char[cipherTextLength]() };
     if (plainText == nullptr) {
         qCritical() << "Couldn't allocate memory for \'plaintext.\'";
@@ -139,7 +139,7 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::decryptAesGcm(QByteArray data
         return QByteArray();
     }
 
-    /* Check if we need to use aad */
+    /* Check if aad need to be used */
     if (aad.length() > 0) {
         /* Provide any AAD data. This can be called zero or more times as required */
         if (!EVP_DecryptUpdate(de.get(), nullptr, &plainTextLength, reinterpret_cast<unsigned char*>(aad.data()), aad.length())) {
@@ -203,7 +203,7 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::encryptAesCcm(QByteArray data
     int plainTextLength = data.size();
     int cipherTextLength = 0;
 
-    /* Initialize cipcher text. Here we will store encrypted data */
+    /* Initialize cipcher text. Here encrypted data will be stored */
     std::unique_ptr<unsigned char[]> cipherText { new unsigned char[plainTextLength]() };
     if (cipherText.get() == nullptr) {
         qCritical() << "Couldn't allocate memory for \'ciphertext\'.";
@@ -228,7 +228,7 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::encryptAesCcm(QByteArray data
         return QByteArray();
     }
 
-    /* Check if we need to use aad */
+    /* Check if aad need to be used */
     if (aad.length() > 0) {
         /* Provide the total plain text length */
         if (!EVP_EncryptUpdate(en.get(), nullptr, &cipherTextLength, nullptr, plainTextLength)) {
@@ -299,7 +299,7 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::decryptAesCcm(QByteArray data
     int cipherTextLength = data.size();
     int plainTextLength = 0;
 
-    /* Initialize plain text. Here we will store decrypted data */
+    /* Initialize plain text. Here decrypted data will be stored */
     std::unique_ptr<unsigned char[]> plainText { new unsigned char[cipherTextLength]() };
     if (plainText == nullptr) {
         qCritical() << "Couldn't allocate memory for \'plaintext\'.";
@@ -324,7 +324,7 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::decryptAesCcm(QByteArray data
         return QByteArray();
     }
 
-    /* Check if we need to use aad */
+    /* Check if aad need to be used */
     if (aad.length() > 0) {
         /* Provide the total ciphertext length */
         if (!EVP_DecryptUpdate(de.get(), nullptr, &plainTextLength, nullptr, cipherTextLength)) {
