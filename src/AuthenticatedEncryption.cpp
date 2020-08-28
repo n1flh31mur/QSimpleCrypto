@@ -13,7 +13,7 @@ QSimpleCrypto::AuthenticatedEncryption::AuthenticatedEncryption()
 }
 
 ///
-/// \brief QSimpleCrypto::AuthenticatedEncryption::encrypt_aes_gcm
+/// \brief QSimpleCrypto::AuthenticatedEncryption::encryptAesGcm
 /// \param cipher - can be used with openssl evp chipers (gcm) - 128, 192, 256. Example: EVP_aes_256_gcm()
 /// \param data - bytes that will be encrypted
 /// \param key
@@ -22,7 +22,7 @@ QSimpleCrypto::AuthenticatedEncryption::AuthenticatedEncryption()
 /// \param tag - auth tag
 /// \return
 ///
-QByteArray QSimpleCrypto::AuthenticatedEncryption::encrypt_aes_gcm(QByteArray data, QByteArray key,
+QByteArray QSimpleCrypto::AuthenticatedEncryption::encryptAesGcm(QByteArray data, QByteArray key,
     QByteArray iv, QByteArray* tag,
     QByteArray aad, const EVP_CIPHER* cipher)
 {
@@ -96,7 +96,7 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::encrypt_aes_gcm(QByteArray da
 }
 
 ///
-/// \brief QSimpleCrypto::AuthenticatedEncryption::decrypt_aes_gcm
+/// \brief QSimpleCrypto::AuthenticatedEncryption::decryptAesGcm
 /// \param cipher - can be used with openssl evp chipers (gcm) - 128, 192, 256. Example: EVP_aes_256_gcm()
 /// \param data - bytes that will be decrypted
 /// \param key
@@ -105,7 +105,7 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::encrypt_aes_gcm(QByteArray da
 /// \param tag - auth tag
 /// \return
 ///
-QByteArray QSimpleCrypto::AuthenticatedEncryption::decrypt_aes_gcm(QByteArray data, QByteArray key,
+QByteArray QSimpleCrypto::AuthenticatedEncryption::decryptAesGcm(QByteArray data, QByteArray key,
     QByteArray iv, QByteArray* tag,
     QByteArray aad, const EVP_CIPHER* cipher)
 {
@@ -179,7 +179,7 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::decrypt_aes_gcm(QByteArray da
 }
 
 ///
-/// \brief QSimpleCrypto::AuthenticatedEncryption::encrypt_aes_ccm
+/// \brief QSimpleCrypto::AuthenticatedEncryption::encryptAesCcm
 /// \param cipher - can be used with openssl evp chipers (ccm) - 128, 192, 256. Example: EVP_aes_256_ccm()
 /// \param data - bytes that will be decrypted
 /// \param key
@@ -188,7 +188,7 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::decrypt_aes_gcm(QByteArray da
 /// \param tag - auth tag
 /// \return
 ///
-QByteArray QSimpleCrypto::AuthenticatedEncryption::encrypt_aes_ccm(QByteArray data, QByteArray key,
+QByteArray QSimpleCrypto::AuthenticatedEncryption::encryptAesCcm(QByteArray data, QByteArray key,
     QByteArray iv, QByteArray* tag,
     QByteArray aad, const EVP_CIPHER* cipher)
 {
@@ -274,7 +274,7 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::encrypt_aes_ccm(QByteArray da
 }
 
 ///
-/// \brief QSimpleCrypto::AuthenticatedEncryption::decrypt_aes_ccm
+/// \brief QSimpleCrypto::AuthenticatedEncryption::decryptAesCcm
 /// \param cipher - can be used with openssl evp chipers (ccm) - 128, 192, 256. Example: EVP_aes_256_ccm()
 /// \param data - bytes that will be decrypted
 /// \param key
@@ -283,7 +283,7 @@ QByteArray QSimpleCrypto::AuthenticatedEncryption::encrypt_aes_ccm(QByteArray da
 /// \param tag - auth tag
 /// \return
 ///
-QByteArray QSimpleCrypto::AuthenticatedEncryption::decrypt_aes_ccm(QByteArray data, QByteArray key,
+QByteArray QSimpleCrypto::AuthenticatedEncryption::decryptAesCcm(QByteArray data, QByteArray key,
     QByteArray iv, QByteArray* tag,
     QByteArray aad, const EVP_CIPHER* cipher)
 {
