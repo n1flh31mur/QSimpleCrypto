@@ -16,24 +16,23 @@
 #include <openssl/evp.h>
 #include <openssl/rand.h>
 
-// clang-format off
 namespace QSimpleCrypto
 {
     class AuthenticatedEncryption {
     public:
         AuthenticatedEncryption();
 
-        QByteArray encrypt_aes_gcm(QByteArray data, QByteArray key,
+        QByteArray encryptAesGcm(QByteArray data, QByteArray key,
             QByteArray iv, QByteArray* tag,
             QByteArray aad, const EVP_CIPHER* cipher = EVP_aes_256_gcm());
-        QByteArray decrypt_aes_gcm(QByteArray data, QByteArray key,
+        QByteArray decryptAesGcm(QByteArray data, QByteArray key,
             QByteArray iv, QByteArray* tag,
             QByteArray aad = "", const EVP_CIPHER* cipher = EVP_aes_256_gcm());
 
-        QByteArray encrypt_aes_ccm(QByteArray data, QByteArray key,
+        QByteArray encryptAesCcm(QByteArray data, QByteArray key,
             QByteArray iv, QByteArray* tag,
             QByteArray aad= "", const EVP_CIPHER* cipher = EVP_aes_256_ccm());
-        QByteArray decrypt_aes_ccm(QByteArray data, QByteArray key,
+        QByteArray decryptAesCcm(QByteArray data, QByteArray key,
             QByteArray iv, QByteArray* tag,
             QByteArray aad = "", const EVP_CIPHER* cipher = EVP_aes_256_ccm());
     };

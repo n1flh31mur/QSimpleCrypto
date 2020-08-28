@@ -21,18 +21,18 @@ namespace QSimpleCrypto
     class BlockCipherEncryption {
     public:
         BlockCipherEncryption();
-        QByteArray generate_random_bytes(const int& size);
+        QByteArray generateRandomBytes(const int& size);
 
-        QByteArray encrypt_aes_block_cipher(QByteArray data, QByteArray key,
+        QByteArray encryptAesBlockCipher(QByteArray data, QByteArray key,
             QByteArray iv = "", QByteArray password = "",
             QByteArray salt = "", const int& rounds = 14,
             const EVP_CIPHER* cipher = EVP_aes_256_cbc(), const EVP_MD* md = EVP_sha512());
 
-        QByteArray decrypt_aes_block_cipher(QByteArray data, QByteArray key,
+        QByteArray decryptAesBlockCipher(QByteArray data, QByteArray key,
             QByteArray iv = "", QByteArray password = "",
             QByteArray salt = "", const int& rounds = 14,
             const EVP_CIPHER* cipher = EVP_aes_256_cbc(), const EVP_MD* md = EVP_sha512());
     };
-} // namespace QSimpleCrypto 
+} // namespace QSimpleCrypto
 
 #endif // ENCRYPT_H

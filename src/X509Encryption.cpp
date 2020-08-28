@@ -13,7 +13,7 @@ QSimpleCrypto::X509Encryption::X509Encryption()
 }
 
 ///
-/// \brief QSimpleCrypto::X509Encryption::generate_self_signed_certificate
+/// \brief QSimpleCrypto::X509Encryption::generateSelfSignedCertificate
 /// \param rsa - OpenSSL RSA
 /// \param additionalData - Additional data of X509 certificate. (ST, OU and another data)
 /// \param certificateFileName - Name of certificatefile. Leave "", if don't need to save it
@@ -22,9 +22,9 @@ QSimpleCrypto::X509Encryption::X509Encryption()
 /// \param version - X509 Certificate version
 /// \param notBefore - X509 start date
 /// \param notAfter - X509 end date
-/// \return - Returned value must be cleaned with X509_free()
+/// \return - returned value must be cleaned with X509_free()
 ///
-X509* QSimpleCrypto::X509Encryption::generate_self_signed_certificate(const RSA* rsa, const QMap<QByteArray, QByteArray>& additionalData,
+X509* QSimpleCrypto::X509Encryption::generateSelfSignedCertificate(const RSA* rsa, const QMap<QByteArray, QByteArray>& additionalData,
     const QByteArray& certificateFileName, const EVP_MD* md,
     const long& serialNumber, const long& version,
     const long& notBefore, const long& notAfter)
@@ -112,6 +112,6 @@ X509* QSimpleCrypto::X509Encryption::generate_self_signed_certificate(const RSA*
             qCritical() << "Couldn't write certificate file on disk. PEM_write_bio_X509() error: " << ERR_error_string(ERR_get_error(), nullptr);
         }
     }
-
+    
     return x509;
 }
