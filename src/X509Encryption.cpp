@@ -12,6 +12,31 @@ QSimpleCrypto::X509Encryption::X509Encryption()
 {
 }
 
+/////
+///// \brief QSimpleCrypto::X509Encryption::loadCertificateFromFile
+///// \param fileName
+///// \return
+/////
+X509* QSimpleCrypto::X509Encryption::loadCertificateFromFile(const QByteArray& fileName)
+{
+    /* Intilize X509 */
+    X509* x509 = nullptr;
+    if (!(x509 = X509_new())) {
+        qCritical() << "Couldn't intilize x509. X509_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        return nullptr;
+    }
+
+    /* Intilize BIO */
+    std::unique_ptr<BIO, void (*)(BIO*)> certFile { BIO_new_file(fileName.data(), "r+"), BIO_free_all };
+
+    /* Read file */
+    if (!PEM_read_bio_X509(certFile.get(), &x509, nullptr, nullptr)) {
+        qCritical() << "Couldn't read certificate file from disk. PEM_read_bio_X509() error: " << ERR_error_string(ERR_get_error(), nullptr);
+    }
+
+    return x509;
+}
+
 ///
 /// \brief QSimpleCrypto::X509Encryption::signCertificate
 /// \param endCertificate - certificate that will be signed
@@ -19,7 +44,7 @@ QSimpleCrypto::X509Encryption::X509Encryption()
 /// \param fileName - name of certificate file. Leave "", if don't need to save it
 /// \return
 ///
-X509* QSimpleCrypto::X509Encryption::signCertificate(X509* endCertificate, X509* caCertificate, EVP_PKEY* privateKey, const QByteArray& fileName)
+X509* QSimpleCrypto::X509Encryption::signCertificate(X509* endCertificate, X509* caCertificate, EVP_PKEY* caPrivateKey, const QByteArray& fileName)
 {
     /* Set issuer to CA's subject. */
     if (!X509_set_issuer_name(endCertificate, X509_get_subject_name(caCertificate))) {
@@ -28,7 +53,7 @@ X509* QSimpleCrypto::X509Encryption::signCertificate(X509* endCertificate, X509*
     }
 
     /* Sign the certificate with key. */
-    if (!X509_sign(endCertificate, privateKey, EVP_sha256())) {
+    if (!X509_sign(endCertificate, caPrivateKey, EVP_sha256())) {
         qCritical() << "Couldn't sign x509. X509_sign() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return nullptr;
     }
@@ -50,8 +75,8 @@ X509* QSimpleCrypto::X509Encryption::signCertificate(X509* endCertificate, X509*
 ///
 /// \brief QSimpleCrypto::X509Encryption::generateSelfSignedCertificate
 /// \param rsa - OpenSSL RSA
-/// \param additionalData - Additional data of X509 certificate. (ST, OU and another data)
-/// \param certificateFileName - Name of certificatefile. Leave "", if don't need to save it
+/// \param additionalData - additional data of X509 certificate. (ST, OU and another data)
+/// \param certificateFileName - name of certificate file. Leave "", if don't need to save it
 /// \param md - Certificate Signature Algorith. Example: EVP_sha512()
 /// \param serialNumber - X509 Certificate serial number.
 /// \param version - X509 Certificate version
@@ -147,6 +172,6 @@ X509* QSimpleCrypto::X509Encryption::generateSelfSignedCertificate(const RSA* rs
             qCritical() << "Couldn't write certificate file on disk. PEM_write_bio_X509() error: " << ERR_error_string(ERR_get_error(), nullptr);
         }
     }
-    
+
     return x509;
 }
