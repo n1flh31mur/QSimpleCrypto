@@ -13,6 +13,41 @@ QSimpleCrypto::X509Encryption::X509Encryption()
 }
 
 ///
+/// \brief QSimpleCrypto::X509Encryption::signCertificate
+/// \param endCertificate - certificate that will be signed
+/// \param caCertificate - certificate that will sign
+/// \param fileName - name of certificate file. Leave "", if don't need to save it
+/// \return
+///
+X509* QSimpleCrypto::X509Encryption::signCertificate(X509* endCertificate, X509* caCertificate, EVP_PKEY* privateKey, const QByteArray& fileName)
+{
+    /* Set issuer to CA's subject. */
+    if (!X509_set_issuer_name(endCertificate, X509_get_subject_name(caCertificate))) {
+        qCritical() << "Couldn't set issuer name for x509. X509_set_issuer_name() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        return nullptr;
+    }
+
+    /* Sign the certificate with key. */
+    if (!X509_sign(endCertificate, privateKey, EVP_sha256())) {
+        qCritical() << "Couldn't sign x509. X509_sign() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        return nullptr;
+    }
+
+    /* Write certificate file on disk. If needed */
+    if (!fileName.isEmpty()) {
+        /* Intilize BIO */
+        std::unique_ptr<BIO, void (*)(BIO*)> certFile { BIO_new_file(fileName.data(), "w+"), BIO_free_all };
+
+        /* Write file on disk */
+        if (!PEM_write_bio_X509(certFile.get(), endCertificate)) {
+            qCritical() << "Couldn't write certificate file on disk. PEM_write_bio_X509() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        }
+    }
+
+    return endCertificate;
+}
+
+///
 /// \brief QSimpleCrypto::X509Encryption::generateSelfSignedCertificate
 /// \param rsa - OpenSSL RSA
 /// \param additionalData - Additional data of X509 certificate. (ST, OU and another data)
