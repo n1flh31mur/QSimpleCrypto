@@ -6,19 +6,20 @@
  * in the file LICENSE in the source distribution
 **/
 
-#ifndef RsaEncryption_H
-#define RsaEncryption_H
+#ifndef QRSA_H
+#define QRSA_H
 
 #include <QDebug>
 #include <QFile>
 #include <QObject>
+
 #include <openssl/err.h>
 #include <openssl/pem.h>
 #include <openssl/rsa.h>
 
 namespace QSimpleCrypto
 {
-    class RSAEncryption {
+    class QRSA {
 
     #define PUBLIC_ENCRYPT 0
     #define PRIVATE_ENCRYPT 1
@@ -26,7 +27,7 @@ namespace QSimpleCrypto
     #define PRIVATE_DECRYPT 3
 
     public:
-        RSAEncryption();
+        QRSA();
 
         RSA* generateRsaKeys(const int& bits, const int& rsaBigNumber);
 
@@ -41,4 +42,4 @@ namespace QSimpleCrypto
     };
 } // namespace QSimpleCrypto
 
-#endif // RsaEncryption_H
+#endif // QRSA_H

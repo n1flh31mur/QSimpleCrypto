@@ -6,11 +6,12 @@
  * in the file LICENSE in the source distribution
 **/
 
-#ifndef ENCRYPT_H
-#define ENCRYPT_H
+#ifndef QBLOCKCIPHER_H
+#define QBLOCKCIPHER_H
 
 #include <QDebug>
 #include <QObject>
+
 #include <openssl/aes.h>
 #include <openssl/err.h>
 #include <openssl/evp.h>
@@ -18,9 +19,9 @@
 
 namespace QSimpleCrypto
 {
-    class BlockCipherEncryption {
+    class QBlockCipher {
     public:
-        BlockCipherEncryption();
+        QBlockCipher();
         QByteArray generateRandomBytes(const int& size);
 
         QByteArray encryptAesBlockCipher(QByteArray data, QByteArray key,
@@ -35,4 +36,4 @@ namespace QSimpleCrypto
     };
 } // namespace QSimpleCrypto
 
-#endif // ENCRYPT_H
+#endif // QBLOCKCIPHER_H

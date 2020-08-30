@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Copyright Copyright 2020 BrutalWizard (https://github.com/bru74lw1z4rd). All Rights Reserved.
  *
  * Licensed under the Apache License 2.0 (the "License"). You may not use
@@ -6,19 +6,19 @@
  * in the file LICENSE in the source distribution
 **/
 
-#include "RSAEncryption.h"
+#include "QRSA.h"
 
-QSimpleCrypto::RSAEncryption::RSAEncryption()
+QSimpleCrypto::QRSA::QRSA()
 {
 }
 
 ///
-/// \brief RSAEncryption::generateRsaKeys
+/// \brief QRSA::generateRsaKeys
 /// \param bits - key size (1024 to 4096)
 /// \param rsaBigNumber - The exponent is an odd number, typically 3, 17 or 65537.
 /// \return - returned value must be cleaned up with 'RSA_free()' to avoid memory leak
 ///
-RSA* QSimpleCrypto::RSAEncryption::generateRsaKeys(const int& bits, const int& rsaBigNumber)
+RSA* QSimpleCrypto::QRSA::generateRsaKeys(const int& bits, const int& rsaBigNumber)
 {
     /* Intilize big number */
     std::unique_ptr<BIGNUM, void (*)(BIGNUM*)> bigNumber { BN_new(), BN_free };
@@ -50,11 +50,11 @@ RSA* QSimpleCrypto::RSAEncryption::generateRsaKeys(const int& bits, const int& r
 }
 
 ///
-/// \brief RSAEncryption::savePublicKey
+/// \brief QRSA::savePublicKey
 /// \param rsa - openssl RSA structure
 /// \param publicKeyFileName - file name of public key file
 ///
-void QSimpleCrypto::RSAEncryption::savePublicKey(RSA* rsa, const QByteArray& publicKeyFileName)
+void QSimpleCrypto::QRSA::savePublicKey(RSA* rsa, const QByteArray& publicKeyFileName)
 {
     /* Intilize BIO */
     std::unique_ptr<BIO, void (*)(BIO*)> bioPublicKey { BIO_new_file(publicKeyFileName.data(), "w+"), BIO_free_all };
@@ -70,13 +70,13 @@ void QSimpleCrypto::RSAEncryption::savePublicKey(RSA* rsa, const QByteArray& pub
 }
 
 ///
-/// \brief RSAEncryption::savePrivateKey
+/// \brief QRSA::savePrivateKey
 /// \param rsa - openssl RSA structure
 /// \param privateKeyFileName - file name of private key file
 /// \param password - private key password
 /// \param cipher - evp cipher. Can be used with openssl evp chipers (ecb, cbc, cfb, ofb, ctr) - 128, 192, 256. Example: EVP_aes_256_ecb()
 ///
-void QSimpleCrypto::RSAEncryption::savePrivateKey(RSA* rsa, const QByteArray& privateKeyFileName,
+void QSimpleCrypto::QRSA::savePrivateKey(RSA* rsa, const QByteArray& privateKeyFileName,
     QByteArray password, const EVP_CIPHER* cipher)
 {
     /* Intilize BIO */
@@ -93,11 +93,11 @@ void QSimpleCrypto::RSAEncryption::savePrivateKey(RSA* rsa, const QByteArray& pr
 }
 
 ///
-/// \brief RSAEncryption::getPublicKeyFromFile - gets a key from a file
+/// \brief QRSA::getPublicKeyFromFile - gets a key from a file
 /// \param filePath
 /// \return - returned value must be cleaned up with 'EVP_PKEY_free()' to avoid memory leak
 ///
-EVP_PKEY* QSimpleCrypto::RSAEncryption::getPublicKeyFromFile(const QByteArray& filePath)
+EVP_PKEY* QSimpleCrypto::QRSA::getPublicKeyFromFile(const QByteArray& filePath)
 {
     /* Intilize BIO */
     std::unique_ptr<BIO, void (*)(BIO*)> bioPublicKey { BIO_new_file(filePath.data(), "r"), BIO_free_all };
@@ -123,12 +123,12 @@ EVP_PKEY* QSimpleCrypto::RSAEncryption::getPublicKeyFromFile(const QByteArray& f
 }
 
 ///
-/// \brief RSAEncryption::getPrivateKeyFromFile - gets a key from a file
+/// \brief QRSA::getPrivateKeyFromFile - gets a key from a file
 /// \param filePath
 /// \param password
 /// \return - returned value must be cleaned up with 'EVP_PKEY_free()' to avoid memory leak
 ///
-EVP_PKEY* QSimpleCrypto::RSAEncryption::getPrivateKeyFromFile(const QByteArray& filePath, const QByteArray& password)
+EVP_PKEY* QSimpleCrypto::QRSA::getPrivateKeyFromFile(const QByteArray& filePath, const QByteArray& password)
 {
     /* Intilize BIO */
     std::unique_ptr<BIO, void (*)(BIO*)> bioPrivateKey { BIO_new_file(filePath.data(), "r"), BIO_free_all };
@@ -154,14 +154,14 @@ EVP_PKEY* QSimpleCrypto::RSAEncryption::getPrivateKeyFromFile(const QByteArray& 
 }
 
 ///
-/// \brief QSimpleCrypto::RSAEncryption::encrypt
+/// \brief QSimpleCrypto::QRSA::encrypt
 /// \param plaintext - text that must be encrypted
 /// \param rsa - openssl RSA structure
 /// \param decryptType - public or decrypt type. (PUBLIC_DECRYPT, PRIVATE_DECRYPT)
 /// \param padding  - RSA padding can be used with: RSA_PKCS1_PADDING, RSA_NO_PADDING and etc
 /// \return
 ///
-QByteArray QSimpleCrypto::RSAEncryption::encrypt(QByteArray plainText, RSA* rsa, const int& encryptType, const int& padding)
+QByteArray QSimpleCrypto::QRSA::encrypt(QByteArray plainText, RSA* rsa, const int& encryptType, const int& padding)
 {
     /* Intilize array where encrypted data will be saved */
     std::unique_ptr<unsigned char[]> cipherText { new unsigned char[RSA_size(rsa)]() };
@@ -191,14 +191,14 @@ QByteArray QSimpleCrypto::RSAEncryption::encrypt(QByteArray plainText, RSA* rsa,
 }
 
 ///
-/// \brief QSimpleCrypto::RSAEncryption::decrypt
+/// \brief QSimpleCrypto::QRSA::decrypt
 /// \param cipherText - text that must be decrypted
 /// \param rsa - openssl RSA structure
 /// \param decryptType - public or decrypt type. (PUBLIC_DECRYPT, PRIVATE_DECRYPT)
 /// \param padding  - RSA padding can be used with: RSA_PKCS1_PADDING, RSA_NO_PADDING and etc
 /// \return
 ///
-QByteArray QSimpleCrypto::RSAEncryption::decrypt(QByteArray cipherText, RSA* rsa, const int& decryptType, const int& padding)
+QByteArray QSimpleCrypto::QRSA::decrypt(QByteArray cipherText, RSA* rsa, const int& decryptType, const int& padding)
 {
     /* Intilize array where decrypted data will be saved */
     std::unique_ptr<unsigned char[]> plainText { new unsigned char[cipherText.size()]() };

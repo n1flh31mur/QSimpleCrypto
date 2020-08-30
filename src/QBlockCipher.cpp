@@ -6,18 +6,18 @@
  * in the file LICENSE in the source distribution
 **/
 
-#include "BlockCipherEncryption.h"
+#include "QBlockCipher.h"
 
-QSimpleCrypto::BlockCipherEncryption::BlockCipherEncryption()
+QSimpleCrypto::QBlockCipher::QBlockCipher()
 {
 }
 
 ///
-/// \brief QSimpleCrypto::BlockCipherEncryption::generateRandomBytes - Can be used for 'Random delta (salt)'
+/// \brief QSimpleCrypto::QBlockCipher::generateRandomBytes - Can be used for 'Random delta (salt)'
 /// \param size - size of random bytes
 /// \return
 ///
-QByteArray QSimpleCrypto::BlockCipherEncryption::generateRandomBytes(const int& size)
+QByteArray QSimpleCrypto::QBlockCipher::generateRandomBytes(const int& size)
 {
     unsigned char arr[sizeof(size)];
     RAND_bytes(arr, sizeof(size));
@@ -27,7 +27,7 @@ QByteArray QSimpleCrypto::BlockCipherEncryption::generateRandomBytes(const int& 
 }
 
 ///
-/// \brief QSimpleCrypto::BlockCipherEncryption::encryptAesBlockCipher
+/// \brief QSimpleCrypto::QBlockCipher::encryptAesBlockCipher
 /// \param data - bytes (data) that will be encrypted
 /// \param key - AES key
 /// \param iv - intilization vector
@@ -38,7 +38,7 @@ QByteArray QSimpleCrypto::BlockCipherEncryption::generateRandomBytes(const int& 
 /// \param md - hash algroitm (sha, md and etc). Example: EVP_sha512()
 /// \return
 ///
-QByteArray QSimpleCrypto::BlockCipherEncryption::encryptAesBlockCipher(QByteArray data, QByteArray key,
+QByteArray QSimpleCrypto::QBlockCipher::encryptAesBlockCipher(QByteArray data, QByteArray key,
     QByteArray iv, QByteArray password, QByteArray salt,
     const int& rounds, const EVP_CIPHER* cipher, const EVP_MD* md)
 {
@@ -97,7 +97,7 @@ QByteArray QSimpleCrypto::BlockCipherEncryption::encryptAesBlockCipher(QByteArra
 }
 
 ///
-/// \brief QSimpleCrypto::BlockCipherEncryption::decryptAesBlockCipher
+/// \brief QSimpleCrypto::QBlockCipher::decryptAesBlockCipher
 /// \param data - bytes (data) that will be encrypted
 /// \param key - AES key
 /// \param iv - intilization vector
@@ -108,7 +108,7 @@ QByteArray QSimpleCrypto::BlockCipherEncryption::encryptAesBlockCipher(QByteArra
 /// \param md - hash algroitm (sha, md and etc). Example: EVP_sha512_256
 /// \return
 ///
-QByteArray QSimpleCrypto::BlockCipherEncryption::decryptAesBlockCipher(QByteArray data, QByteArray key,
+QByteArray QSimpleCrypto::QBlockCipher::decryptAesBlockCipher(QByteArray data, QByteArray key,
     QByteArray iv, QByteArray password, QByteArray salt,
     const int& rounds, const EVP_CIPHER* cipher, const EVP_MD* md)
 {

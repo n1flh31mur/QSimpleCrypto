@@ -6,11 +6,12 @@
  * in the file LICENSE in the source distribution
 **/
 
-#ifndef ENCRYPT_AEAD_H
-#define ENCRYPT_AEAD_H
+#ifndef QAEAD_H
+#define QAEAD_H
 
 #include <QDebug>
 #include <QObject>
+
 #include <openssl/aes.h>
 #include <openssl/err.h>
 #include <openssl/evp.h>
@@ -18,9 +19,9 @@
 
 namespace QSimpleCrypto
 {
-    class AuthenticatedEncryption {
+    class QAEAD {
     public:
-        AuthenticatedEncryption();
+        QAEAD();
 
         QByteArray encryptAesGcm(QByteArray data, QByteArray key,
             QByteArray iv, QByteArray* tag,
@@ -38,4 +39,4 @@ namespace QSimpleCrypto
     };
 } // namespace QSimpleCrypto
 
-#endif // ENCRYPT_AEAD_H
+#endif // QAEAD_H

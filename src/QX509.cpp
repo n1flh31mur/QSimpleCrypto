@@ -6,18 +6,18 @@
  * in the file LICENSE in the source distribution
 **/
 
-#include "X509Encryption.h"
+#include "QX509.h"
 
-QSimpleCrypto::X509Encryption::X509Encryption()
+QSimpleCrypto::QX509::QX509()
 {
 }
 
 /////
-///// \brief QSimpleCrypto::X509Encryption::loadCertificateFromFile
+///// \brief QSimpleCrypto::QX509::loadCertificateFromFile
 ///// \param fileName
 ///// \return
 /////
-X509* QSimpleCrypto::X509Encryption::loadCertificateFromFile(const QByteArray& fileName)
+X509* QSimpleCrypto::QX509::loadCertificateFromFile(const QByteArray& fileName)
 {
     /* Intilize X509 */
     X509* x509 = nullptr;
@@ -38,13 +38,13 @@ X509* QSimpleCrypto::X509Encryption::loadCertificateFromFile(const QByteArray& f
 }
 
 ///
-/// \brief QSimpleCrypto::X509Encryption::signCertificate
+/// \brief QSimpleCrypto::QX509::signCertificate
 /// \param endCertificate - certificate that will be signed
 /// \param caCertificate - certificate that will sign
 /// \param fileName - name of certificate file. Leave "", if don't need to save it
 /// \return
 ///
-X509* QSimpleCrypto::X509Encryption::signCertificate(X509* endCertificate, X509* caCertificate, EVP_PKEY* caPrivateKey, const QByteArray& fileName)
+X509* QSimpleCrypto::QX509::signCertificate(X509* endCertificate, X509* caCertificate, EVP_PKEY* caPrivateKey, const QByteArray& fileName)
 {
     /* Set issuer to CA's subject. */
     if (!X509_set_issuer_name(endCertificate, X509_get_subject_name(caCertificate))) {
@@ -73,7 +73,7 @@ X509* QSimpleCrypto::X509Encryption::signCertificate(X509* endCertificate, X509*
 }
 
 ///
-/// \brief QSimpleCrypto::X509Encryption::generateSelfSignedCertificate
+/// \brief QSimpleCrypto::QX509::generateSelfSignedCertificate
 /// \param rsa - OpenSSL RSA
 /// \param additionalData - additional data of X509 certificate. (ST, OU and another data)
 /// \param certificateFileName - name of certificate file. Leave "", if don't need to save it
@@ -84,7 +84,7 @@ X509* QSimpleCrypto::X509Encryption::signCertificate(X509* endCertificate, X509*
 /// \param notAfter - X509 end date
 /// \return - returned value must be cleaned with X509_free()
 ///
-X509* QSimpleCrypto::X509Encryption::generateSelfSignedCertificate(const RSA* rsa, const QMap<QByteArray, QByteArray>& additionalData,
+X509* QSimpleCrypto::QX509::generateSelfSignedCertificate(const RSA* rsa, const QMap<QByteArray, QByteArray>& additionalData,
     const QByteArray& certificateFileName, const EVP_MD* md,
     const long& serialNumber, const long& version,
     const long& notBefore, const long& notAfter)

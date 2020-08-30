@@ -6,23 +6,23 @@
  * in the file LICENSE in the source distribution
 **/
 
-#ifndef X509Encryption_H
-#define X509Encryption_H
+#ifndef QX509_H
+#define QX509_H
+
+#include <QDebug>
+#include <QMap>
+#include <QObject>
 
 #include <openssl/bio.h>
 #include <openssl/err.h>
 #include <openssl/pem.h>
 #include <openssl/x509.h>
 
-#include <QDebug>
-#include <QMap>
-#include <QObject>
-
 namespace QSimpleCrypto
 {
-    class X509Encryption {
+    class QX509 {
     public:
-        X509Encryption();
+        QX509();
 
         X509* loadCertificateFromFile(const QByteArray& fileName);
         X509* signCertificate(X509* endCertificate, X509* caCertificate, EVP_PKEY* caPrivateKey, const QByteArray& fileName = "");
@@ -34,4 +34,4 @@ namespace QSimpleCrypto
     };
 } // namespace QSimpleCrypto
 
-#endif // X509Encryption_H
+#endif // QX509_H
