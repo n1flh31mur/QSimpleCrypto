@@ -15,6 +15,7 @@ namespace QSimpleCrypto
 
         bool addCertificateToStore(X509_STORE* store, X509* x509);
         bool setDepth(X509_STORE* store, const int& depth);
+        bool setFlag(X509_STORE* store, const unsigned long& flag);
     };
 }
 
