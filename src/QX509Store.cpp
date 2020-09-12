@@ -29,6 +29,22 @@ bool QSimpleCrypto::QX509Store::addCertificateToStore(X509_STORE* ctx, X509* x50
 }
 
 ///
+/// \brief QSimpleCrypto::QX509Store::addLookup
+/// \param ctx - OpenSSL X509_STORE
+/// \param meth - OpenSSL X509_LOOKUP_METHOD. Example: X509_LOOKUP_file
+/// \return
+///
+bool QSimpleCrypto::QX509Store::addLookup(X509_STORE* ctx, X509_LOOKUP_METHOD* meth)
+{
+    if (!X509_STORE_add_lookup(ctx, meth)) {
+        qCritical() << "Couldn't add lookup to X509_STORE. X509_STORE_add_lookup() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        return false;
+    }
+
+    return true;
+}
+
+///
 /// \brief QSimpleCrypto::QX509Store::setCertificateDepth
 /// \param ctx - OpenSSL X509_STORE
 /// \param depth - Sets the maximum verification depth to depth. That is the maximum number of untrusted CA certificates that can appear in a chain. Example: 0
