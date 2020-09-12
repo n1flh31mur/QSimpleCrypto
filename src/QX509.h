@@ -17,12 +17,15 @@
 #include <openssl/err.h>
 #include <openssl/pem.h>
 #include <openssl/x509.h>
+#include <openssl/x509_vfy.h>
 
 namespace QSimpleCrypto
 {
     class QX509 {
     public:
         QX509();
+
+        X509 *validateCertificate(X509* x509, X509_STORE* store);
 
         X509* loadCertificateFromFile(const QByteArray& fileName);
         X509* signCertificate(X509* endCertificate, X509* caCertificate, EVP_PKEY* caPrivateKey, const QByteArray& fileName = "");

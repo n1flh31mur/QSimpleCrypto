@@ -12,6 +12,33 @@ QSimpleCrypto::QX509::QX509()
 {
 }
 
+///
+/// \brief QSimpleCrypto::QX509::validateCertificate
+/// \param x509 - OpenSSL X509
+/// \param store - trusted certificate must be added to X509_Store with 'addCertificateToStore(X509_STORE* ctx, X509* x509)'
+/// \return
+///
+X509* QSimpleCrypto::QX509::validateCertificate(X509* x509, X509_STORE* store)
+{
+    /* Intilize X509_STORE_CTX */
+    std::unique_ptr<X509_STORE_CTX, void (*)(X509_STORE_CTX*)> ctx { X509_STORE_CTX_new(), X509_STORE_CTX_free };
+    if (ctx == nullptr) {
+        qCritical() << "Couldn't intilize keyStore. EVP_PKEY_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        return nullptr;
+    }
+
+    /* Set up CTX for a subsequent verification operation */
+    X509_STORE_CTX_init(ctx.get(), store, x509, nullptr);
+
+    /* Verify X509 */
+    if (!X509_verify_cert(ctx.get())) {
+        qCritical() << "Couldn't intilize x509. X509_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        return nullptr;
+    }
+
+    return x509;
+}
+
 /////
 ///// \brief QSimpleCrypto::QX509::loadCertificateFromFile
 ///// \param fileName
@@ -131,7 +158,7 @@ X509* QSimpleCrypto::QX509::generateSelfSignedCertificate(const RSA* rsa, const 
         return nullptr;
     }
 
-    /* Intilize issuer name */
+    /* Intilize X509_NAME */
     X509_NAME* x509Name = X509_get_subject_name(x509);
     if (x509Name == nullptr) {
         qCritical() << "Couldn't intilize X509_NAME. X509_NAME() error: " << ERR_error_string(ERR_get_error(), nullptr);
