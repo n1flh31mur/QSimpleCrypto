@@ -116,8 +116,6 @@ bool QSimpleCrypto::QX509Store::setDefaultPaths(X509_STORE* ctx)
 ///
 bool QSimpleCrypto::QX509Store::loadLocations(X509_STORE* ctx, const QByteArray& filePath, const QByteArray& dirPath)
 {
-    qDebug() << "\n\n\n"
-             << filePath << dirPath << "\n\n\n";
     if (!X509_STORE_load_locations(ctx, filePath, dirPath)) {
         qCritical() << "Couldn't load locations for X509_STORE. X509_STORE_load_locations() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return false;
@@ -135,8 +133,6 @@ bool QSimpleCrypto::QX509Store::loadLocations(X509_STORE* ctx, const QByteArray&
 bool QSimpleCrypto::QX509Store::loadLocations(X509_STORE* ctx, const QFile& file)
 {
     QFileInfo info(file);
-
-    qDebug() << info.fileName().toLocal8Bit() << info.absoluteDir().path().toLocal8Bit();
 
     if (!X509_STORE_load_locations(ctx, info.fileName().toLocal8Bit(), info.absoluteDir().path().toLocal8Bit())) {
         qCritical() << "Couldn't load locations for X509_STORE. X509_STORE_load_locations() error: " << ERR_error_string(ERR_get_error(), nullptr);
