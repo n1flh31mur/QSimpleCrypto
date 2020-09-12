@@ -289,7 +289,6 @@ QByteArray QSimpleCrypto::QAEAD::decryptAesCcm(QByteArray data, QByteArray key,
 {
     /* Initialize cipcher */
     std::unique_ptr<EVP_CIPHER_CTX, void (*)(EVP_CIPHER_CTX*)> de { EVP_CIPHER_CTX_new(), EVP_CIPHER_CTX_free };
-
     if (de.get() == nullptr) {
         qCritical() << "Couldn't intilize evp cipher. EVP_CIPHER_CTX_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
