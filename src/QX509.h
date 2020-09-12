@@ -25,10 +25,9 @@ namespace QSimpleCrypto
     public:
         QX509();
 
-        X509 *validateCertificate(X509* x509, X509_STORE* store);
-
         X509* loadCertificateFromFile(const QByteArray& fileName);
         X509* signCertificate(X509* endCertificate, X509* caCertificate, EVP_PKEY* caPrivateKey, const QByteArray& fileName = "");
+        X509* validateCertificate(X509* x509, X509_STORE* store);
 
         X509* generateSelfSignedCertificate(const RSA* rsa, const QMap<QByteArray, QByteArray>& additionalData,
             const QByteArray& certificateFileName = "", const EVP_MD* md = EVP_sha512(),
