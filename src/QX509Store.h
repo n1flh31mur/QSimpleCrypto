@@ -10,6 +10,9 @@
 #define QX509STORE_H
 
 #include <QDebug>
+#include <QDir>
+#include <QFile>
+#include <QFileInfo>
 
 #include <openssl/err.h>
 #include <openssl/x509_vfy.h>
@@ -22,11 +25,16 @@ namespace QSimpleCrypto
     public:
         QX509Store();
 
-        bool addCertificateToStore(X509_STORE* store, X509* x509);
-        bool setDepth(X509_STORE* store, const int& depth);
-        bool setFlag(X509_STORE* store, const unsigned long& flag);
-        bool setPurpose(X509_STORE* store, const int& purpose);
-        bool setTrust(X509_STORE* store, const int& trust);
+        bool addCertificateToStore(X509_STORE* ctx, X509* x509);
+        bool setDepth(X509_STORE* ctx, const int& depth);
+        bool setFlag(X509_STORE* ctx, const unsigned long& flag);
+        bool setPurpose(X509_STORE* ctx, const int& purpose);
+        bool setTrust(X509_STORE* ctx, const int& trust);
+        bool setDefaultPaths(X509_STORE* ctx);
+
+        bool loadLocations(X509_STORE* ctx, const QByteArray& filePath, const QByteArray& dirPath);
+        bool loadLocations(X509_STORE* ctx, const QFile& file);
+        bool loadLocations(X509_STORE* ctx, const QFileInfo& fileInfo);
     };
 }
 
