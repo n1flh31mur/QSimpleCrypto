@@ -148,6 +148,7 @@ bool QSimpleCrypto::QX509Store::loadLocations(X509_STORE* ctx, const QByteArray&
 ///
 bool QSimpleCrypto::QX509Store::loadLocations(X509_STORE* ctx, const QFile& file)
 {
+    /* Intilize QFileInfo to read information about file*/
     QFileInfo info(file);
 
     if (!X509_STORE_load_locations(ctx, info.fileName().toLocal8Bit(), info.absoluteDir().path().toLocal8Bit())) {
