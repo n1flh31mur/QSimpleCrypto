@@ -42,7 +42,7 @@ QByteArray QSimpleCrypto::QBlockCipher::encryptAesBlockCipher(QByteArray data, Q
     QByteArray iv, QByteArray password, QByteArray salt,
     const int& rounds, const EVP_CIPHER* cipher, const EVP_MD* md)
 {
-    /* Initialize cipcher */
+    /* Initialize EVP_CIPHER_CTX */
     std::unique_ptr<EVP_CIPHER_CTX, void (*)(EVP_CIPHER_CTX*)> en { EVP_CIPHER_CTX_new(), EVP_CIPHER_CTX_free };
     if (en == nullptr) {
         qCritical() << "Couldn't intilize evp cipher. EVP_CIPHER_CTX_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
@@ -56,7 +56,7 @@ QByteArray QSimpleCrypto::QBlockCipher::encryptAesBlockCipher(QByteArray data, Q
     int cipherTextLength(data.size() + AES_BLOCK_SIZE);
     int finalLength = 0;
 
-    /* Initialize cipchertext. Here encrypted data will be stored */
+    /* Initialize cipcherText. Here encrypted data will be stored */
     std::unique_ptr<unsigned char[]> cipherText { new unsigned char[cipherTextLength]() };
     if (cipherText == nullptr) {
         qCritical() << "Couldn't allocate memory for \'ciphertext\'.";
@@ -69,9 +69,9 @@ QByteArray QSimpleCrypto::QBlockCipher::encryptAesBlockCipher(QByteArray data, Q
         return QByteArray();
     }
 
-    /* Initialize the encryption operation. */
+    /* Initialize encryption operation. */
     if (!EVP_EncryptInit_ex(en.get(), cipher, nullptr, m_key, m_iv)) {
-        qCritical() << "Couldn't Initialize encryption operation. EVP_EncryptInit_ex() failed: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't initialize encryption operation. EVP_EncryptInit_ex() failed: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
     }
 
@@ -112,7 +112,7 @@ QByteArray QSimpleCrypto::QBlockCipher::decryptAesBlockCipher(QByteArray data, Q
     QByteArray iv, QByteArray password, QByteArray salt,
     const int& rounds, const EVP_CIPHER* cipher, const EVP_MD* md)
 {
-    /* Initialize cipcher */
+    /* Initialize EVP_CIPHER_CTX */
     std::unique_ptr<EVP_CIPHER_CTX, void (*)(EVP_CIPHER_CTX*)> de { EVP_CIPHER_CTX_new(), EVP_CIPHER_CTX_free };
     if (de == nullptr) {
         qCritical() << "Couldn't intilize evp cipher. EVP_CIPHER_CTX_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
@@ -126,7 +126,7 @@ QByteArray QSimpleCrypto::QBlockCipher::decryptAesBlockCipher(QByteArray data, Q
     int plainTextLength(data.size());
     int finalLength = 0;
 
-    /* Initialize plaintext. Here decrypted data will be stored */
+    /* Initialize plainText. Here decrypted data will be stored */
     std::unique_ptr<unsigned char[]> plainText { new unsigned char[plainTextLength + AES_BLOCK_SIZE]() };
     if (plainText == nullptr) {
         qCritical() << "Couldn't allocate memory for \'plaintext\'.";
@@ -139,9 +139,9 @@ QByteArray QSimpleCrypto::QBlockCipher::decryptAesBlockCipher(QByteArray data, Q
         return QByteArray();
     }
 
-    /* Initialize the decryption operation. */
+    /* Initialize decryption operation. */
     if (!EVP_DecryptInit_ex(de.get(), cipher, nullptr, m_key, m_iv)) {
-        qCritical() << "Couldn't Initialize decryption operation. EVP_DecryptInit_ex() failed: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't initialize decryption operation. EVP_DecryptInit_ex() failed: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
     }
 
