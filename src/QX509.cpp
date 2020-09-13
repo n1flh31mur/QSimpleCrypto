@@ -12,33 +12,6 @@ QSimpleCrypto::QX509::QX509()
 {
 }
 
-///
-/// \brief QSimpleCrypto::QX509::validateCertificate
-/// \param x509 - OpenSSL X509
-/// \param store - trusted certificate must be added to X509_Store with 'addCertificateToStore(X509_STORE* ctx, X509* x509)'
-/// \return
-///
-X509* QSimpleCrypto::QX509::validateCertificate(X509* x509, X509_STORE* store)
-{
-    /* Intilize X509_STORE_CTX */
-    std::unique_ptr<X509_STORE_CTX, void (*)(X509_STORE_CTX*)> ctx { X509_STORE_CTX_new(), X509_STORE_CTX_free };
-    if (ctx == nullptr) {
-        qCritical() << "Couldn't intilize keyStore. EVP_PKEY_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
-        return nullptr;
-    }
-
-    /* Set up CTX for a subsequent verification operation */
-    X509_STORE_CTX_init(ctx.get(), store, x509, nullptr);
-
-    /* Verify X509 */
-    if (!X509_verify_cert(ctx.get())) {
-        qCritical() << "Couldn't intilize x509. X509_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
-        return nullptr;
-    }
-
-    return x509;
-}
-
 /////
 ///// \brief QSimpleCrypto::QX509::loadCertificateFromFile
 ///// \param fileName
@@ -46,14 +19,14 @@ X509* QSimpleCrypto::QX509::validateCertificate(X509* x509, X509_STORE* store)
 /////
 X509* QSimpleCrypto::QX509::loadCertificateFromFile(const QByteArray& fileName)
 {
-    /* Intilize X509 */
+    /* Initialize X509 */
     X509* x509 = nullptr;
     if (!(x509 = X509_new())) {
-        qCritical() << "Couldn't intilize x509. X509_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't initialize X509. X509_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return nullptr;
     }
 
-    /* Intilize BIO */
+    /* Initialize BIO */
     std::unique_ptr<BIO, void (*)(BIO*)> certFile { BIO_new_file(fileName.data(), "r+"), BIO_free_all };
 
     /* Read file */
@@ -68,26 +41,26 @@ X509* QSimpleCrypto::QX509::loadCertificateFromFile(const QByteArray& fileName)
 /// \brief QSimpleCrypto::QX509::signCertificate
 /// \param endCertificate - certificate that will be signed
 /// \param caCertificate - certificate that will sign
-/// \param fileName - name of certificate file. Leave "", if don't need to save it
+/// \param fileName - name of end certificate file that will be saved. Leave "", if don't need to save it
 /// \return
 ///
 X509* QSimpleCrypto::QX509::signCertificate(X509* endCertificate, X509* caCertificate, EVP_PKEY* caPrivateKey, const QByteArray& fileName)
 {
     /* Set issuer to CA's subject. */
     if (!X509_set_issuer_name(endCertificate, X509_get_subject_name(caCertificate))) {
-        qCritical() << "Couldn't set issuer name for x509. X509_set_issuer_name() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't set issuer name for X509. X509_set_issuer_name() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return nullptr;
     }
 
     /* Sign the certificate with key. */
     if (!X509_sign(endCertificate, caPrivateKey, EVP_sha256())) {
-        qCritical() << "Couldn't sign x509. X509_sign() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't sign X509. X509_sign() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return nullptr;
     }
 
     /* Write certificate file on disk. If needed */
     if (!fileName.isEmpty()) {
-        /* Intilize BIO */
+        /* Initialize BIO */
         std::unique_ptr<BIO, void (*)(BIO*)> certFile { BIO_new_file(fileName.data(), "w+"), BIO_free_all };
 
         /* Write file on disk */
@@ -97,6 +70,33 @@ X509* QSimpleCrypto::QX509::signCertificate(X509* endCertificate, X509* caCertif
     }
 
     return endCertificate;
+}
+
+///
+/// \brief QSimpleCrypto::QX509::validateCertificate
+/// \param x509 - OpenSSL X509
+/// \param store - trusted certificate must be added to X509_Store with 'addCertificateToStore(X509_STORE* ctx, X509* x509)'
+/// \return
+///
+X509* QSimpleCrypto::QX509::validateCertificate(X509* x509, X509_STORE* store)
+{
+    /* Initialize X509_STORE_CTX */
+    std::unique_ptr<X509_STORE_CTX, void (*)(X509_STORE_CTX*)> ctx { X509_STORE_CTX_new(), X509_STORE_CTX_free };
+    if (ctx == nullptr) {
+        qCritical() << "Couldn't initialize keyStore. EVP_PKEY_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        return nullptr;
+    }
+
+    /* Set up CTX for a subsequent verification operation */
+    X509_STORE_CTX_init(ctx.get(), store, x509, nullptr);
+
+    /* Verify X509 */
+    if (!X509_verify_cert(ctx.get())) {
+        qCritical() << "Couldn't initialize X509. X509_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        return nullptr;
+    }
+
+    return x509;
 }
 
 ///
@@ -116,17 +116,17 @@ X509* QSimpleCrypto::QX509::generateSelfSignedCertificate(const RSA* rsa, const 
     const long& serialNumber, const long& version,
     const long& notBefore, const long& notAfter)
 {
-    /* Intilize X509 */
+    /* Initialize X509 */
     X509* x509 = nullptr;
     if (!(x509 = X509_new())) {
-        qCritical() << "Couldn't intilize x509. X509_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't initialize X509. X509_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return nullptr;
     }
 
-    /* Intilize EVP_PKEY */
+    /* Initialize EVP_PKEY */
     std::unique_ptr<EVP_PKEY, void (*)(EVP_PKEY*)> keyStore { EVP_PKEY_new(), EVP_PKEY_free };
     if (keyStore == nullptr) {
-        qCritical() << "Couldn't intilize keyStore. EVP_PKEY_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't initialize keyStore. EVP_PKEY_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return nullptr;
     }
 
@@ -158,10 +158,10 @@ X509* QSimpleCrypto::QX509::generateSelfSignedCertificate(const RSA* rsa, const 
         return nullptr;
     }
 
-    /* Intilize X509_NAME */
+    /* Initialize X509_NAME */
     X509_NAME* x509Name = X509_get_subject_name(x509);
     if (x509Name == nullptr) {
-        qCritical() << "Couldn't intilize X509_NAME. X509_NAME() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't initialize X509_NAME. X509_NAME() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return nullptr;
     }
 
@@ -185,13 +185,13 @@ X509* QSimpleCrypto::QX509::generateSelfSignedCertificate(const RSA* rsa, const 
 
     /* Sign certificate */
     if (!X509_sign(x509, keyStore.get(), md)) {
-        qCritical() << "Couldn't sign x509. X509_sign() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't sign X509. X509_sign() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return nullptr;
     }
 
     /* Write certificate file on disk. If needed */
     if (!certificateFileName.isEmpty()) {
-        /* Intilize BIO */
+        /* Initialize BIO */
         std::unique_ptr<BIO, void (*)(BIO*)> certFile { BIO_new_file(certificateFileName.data(), "w+"), BIO_free_all };
 
         /* Write file on disk */
