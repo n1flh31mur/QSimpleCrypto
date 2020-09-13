@@ -20,10 +20,10 @@ QSimpleCrypto::QRSA::QRSA()
 ///
 RSA* QSimpleCrypto::QRSA::generateRsaKeys(const int& bits, const int& rsaBigNumber)
 {
-    /* Intilize big number */
+    /* Initialize big number */
     std::unique_ptr<BIGNUM, void (*)(BIGNUM*)> bigNumber { BN_new(), BN_free };
     if (bigNumber == nullptr) {
-        qCritical() << "Couldn't intilize bigNumber. BN_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't initialize bigNumber. BN_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return nullptr;
     }
 
@@ -33,10 +33,10 @@ RSA* QSimpleCrypto::QRSA::generateRsaKeys(const int& bits, const int& rsaBigNumb
         return nullptr;
     }
 
-    /* Intilize RSA */
+    /* Initialize RSA */
     RSA* rsa = nullptr;
     if (!(rsa = RSA_new())) {
-        qCritical() << "Couldn't intilize x509. X509_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't initialize x509. X509_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return nullptr;
     }
 
@@ -56,10 +56,10 @@ RSA* QSimpleCrypto::QRSA::generateRsaKeys(const int& bits, const int& rsaBigNumb
 ///
 void QSimpleCrypto::QRSA::savePublicKey(RSA* rsa, const QByteArray& publicKeyFileName)
 {
-    /* Intilize BIO */
+    /* Initialize BIO */
     std::unique_ptr<BIO, void (*)(BIO*)> bioPublicKey { BIO_new_file(publicKeyFileName.data(), "w+"), BIO_free_all };
     if (bioPublicKey == nullptr) {
-        qCritical() << "Couldn't intilize bioPublicKey. BIO_new_file() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't initialize bioPublicKey. BIO_new_file() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return;
     }
 
@@ -79,10 +79,10 @@ void QSimpleCrypto::QRSA::savePublicKey(RSA* rsa, const QByteArray& publicKeyFil
 void QSimpleCrypto::QRSA::savePrivateKey(RSA* rsa, const QByteArray& privateKeyFileName,
     QByteArray password, const EVP_CIPHER* cipher)
 {
-    /* Intilize BIO */
+    /* Initialize BIO */
     std::unique_ptr<BIO, void (*)(BIO*)> bioPrivateKey { BIO_new_file(privateKeyFileName.data(), "w+"), BIO_free_all };
     if (bioPrivateKey == nullptr) {
-        qCritical() << "Couldn't intilize bioPrivateKey. BIO_new_file() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't initialize bioPrivateKey. BIO_new_file() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return;
     }
 
@@ -99,17 +99,17 @@ void QSimpleCrypto::QRSA::savePrivateKey(RSA* rsa, const QByteArray& privateKeyF
 ///
 EVP_PKEY* QSimpleCrypto::QRSA::getPublicKeyFromFile(const QByteArray& filePath)
 {
-    /* Intilize BIO */
+    /* Initialize BIO */
     std::unique_ptr<BIO, void (*)(BIO*)> bioPublicKey { BIO_new_file(filePath.data(), "r"), BIO_free_all };
     if (bioPublicKey == nullptr) {
-        qCritical() << "Couldn't intilize bioPublicKey. BIO_new_file() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't initialize bioPublicKey. BIO_new_file() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return nullptr;
     }
 
-    /* Intilize EVP_PKEY */
+    /* Initialize EVP_PKEY */
     EVP_PKEY* keyStore = nullptr;
     if (!(keyStore = EVP_PKEY_new())) {
-        qCritical() << "Couldn't intilize keyStore. EVP_PKEY_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't initialize keyStore. EVP_PKEY_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return nullptr;
     }
 
@@ -130,17 +130,17 @@ EVP_PKEY* QSimpleCrypto::QRSA::getPublicKeyFromFile(const QByteArray& filePath)
 ///
 EVP_PKEY* QSimpleCrypto::QRSA::getPrivateKeyFromFile(const QByteArray& filePath, const QByteArray& password)
 {
-    /* Intilize BIO */
+    /* Initialize BIO */
     std::unique_ptr<BIO, void (*)(BIO*)> bioPrivateKey { BIO_new_file(filePath.data(), "r"), BIO_free_all };
     if (bioPrivateKey == nullptr) {
-        qCritical() << "Couldn't intilize bioPrivateKey. BIO_new_file() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't initialize bioPrivateKey. BIO_new_file() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return nullptr;
     }
 
-    /* Intilize EVP_PKEY */
+    /* Initialize EVP_PKEY */
     EVP_PKEY* keyStore = nullptr;
     if (!(keyStore = EVP_PKEY_new())) {
-        qCritical() << "Couldn't intilize keyStore. EVP_PKEY_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't initialize keyStore. EVP_PKEY_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return nullptr;
     }
 
@@ -163,7 +163,7 @@ EVP_PKEY* QSimpleCrypto::QRSA::getPrivateKeyFromFile(const QByteArray& filePath,
 ///
 QByteArray QSimpleCrypto::QRSA::encrypt(QByteArray plainText, RSA* rsa, const int& encryptType, const int& padding)
 {
-    /* Intilize array where encrypted data will be saved */
+    /* Initialize array. Here encrypted data will be saved */
     std::unique_ptr<unsigned char[]> cipherText { new unsigned char[RSA_size(rsa)]() };
     if (cipherText == nullptr) {
         qCritical() << "Couldn't allocate memory for \'ciphertext\'.";
@@ -171,15 +171,16 @@ QByteArray QSimpleCrypto::QRSA::encrypt(QByteArray plainText, RSA* rsa, const in
     }
 
     /* Result of encryption operation */
-    int result = 0;
+    short int result = 0;
 
-    /* Encrypt */
+    /* Execute encryption operation */
     if (encryptType == PUBLIC_ENCRYPT) {
         result = RSA_public_encrypt(plainText.size(), reinterpret_cast<unsigned char*>(plainText.data()), cipherText.get(), rsa, padding);
     } else if (encryptType == PRIVATE_ENCRYPT) {
         result = RSA_private_encrypt(plainText.size(), reinterpret_cast<unsigned char*>(plainText.data()), cipherText.get(), rsa, padding);
     }
 
+    /* Check for result */
     if (result <= -1) {
         qCritical() << "Couldn't encrypt data. Error: " << ERR_error_string(ERR_get_error(), nullptr);
     }
@@ -200,7 +201,7 @@ QByteArray QSimpleCrypto::QRSA::encrypt(QByteArray plainText, RSA* rsa, const in
 ///
 QByteArray QSimpleCrypto::QRSA::decrypt(QByteArray cipherText, RSA* rsa, const int& decryptType, const int& padding)
 {
-    /* Intilize array where decrypted data will be saved */
+    /* Initialize array. Here decrypted data will be saved */
     std::unique_ptr<unsigned char[]> plainText { new unsigned char[cipherText.size()]() };
     if (plainText == nullptr) {
         qCritical() << "Couldn't allocate memory for \'plaintext\'.";
@@ -208,15 +209,16 @@ QByteArray QSimpleCrypto::QRSA::decrypt(QByteArray cipherText, RSA* rsa, const i
     }
 
     /* Result of decryption operation */
-    int result = 0;
+    short int result = 0;
 
-    /* Decrypt */
+    /* Execute decryption operation */
     if (decryptType == PUBLIC_DECRYPT) {
         result = RSA_public_decrypt(RSA_size(rsa), reinterpret_cast<unsigned char*>(cipherText.data()), plainText.get(), rsa, padding);
     } else if (decryptType == PRIVATE_DECRYPT) {
         result = RSA_private_decrypt(RSA_size(rsa), reinterpret_cast<unsigned char*>(cipherText.data()), plainText.get(), rsa, padding);
     }
 
+    /* Check for result */
     if (result <= -1) {
         qCritical() << "Couldn't decrypt data. Error: " << ERR_error_string(ERR_get_error(), nullptr);
     }
