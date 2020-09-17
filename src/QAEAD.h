@@ -9,6 +9,8 @@
 #ifndef QAEAD_H
 #define QAEAD_H
 
+#include "QSimpleCrypto_global.h"
+
 #include <QDebug>
 #include <QObject>
 
@@ -19,7 +21,7 @@
 
 namespace QSimpleCrypto
 {
-    class QAEAD {
+    class QSIMPLECRYPTO_EXPORT QAEAD {
     public:
         QAEAD();
 
@@ -32,7 +34,7 @@ namespace QSimpleCrypto
 
         QByteArray encryptAesCcm(QByteArray data, QByteArray key,
             QByteArray iv, QByteArray* tag,
-            QByteArray aad= "", const EVP_CIPHER* cipher = EVP_aes_256_ccm());
+            QByteArray aad = "", const EVP_CIPHER* cipher = EVP_aes_256_ccm());
         QByteArray decryptAesCcm(QByteArray data, QByteArray key,
             QByteArray iv, QByteArray* tag,
             QByteArray aad = "", const EVP_CIPHER* cipher = EVP_aes_256_ccm());

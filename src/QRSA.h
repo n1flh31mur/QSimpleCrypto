@@ -9,6 +9,8 @@
 #ifndef QRSA_H
 #define QRSA_H
 
+#include "QSimpleCrypto_global.h"
+
 #include <QDebug>
 #include <QFile>
 #include <QObject>
@@ -19,7 +21,7 @@
 
 namespace QSimpleCrypto
 {
-    class QRSA {
+    class QSIMPLECRYPTO_EXPORT QRSA {
 
     #define PUBLIC_ENCRYPT 0
     #define PRIVATE_ENCRYPT 1
@@ -35,7 +37,7 @@ namespace QSimpleCrypto
         void savePrivateKey(RSA* rsa, const QByteArray& privateKeyFileName, QByteArray password = "", const EVP_CIPHER* cipher = nullptr);
 
         EVP_PKEY* getPublicKeyFromFile(const QByteArray& filePath);
-        EVP_PKEY* getPrivateKeyFromFile(const QByteArray& filePath, const QByteArray& password= "");
+        EVP_PKEY* getPrivateKeyFromFile(const QByteArray& filePath, const QByteArray& password = "");
 
         QByteArray encrypt(QByteArray plainText, RSA* rsa, const int& encryptType = PUBLIC_ENCRYPT, const int& padding = RSA_PKCS1_PADDING);
         QByteArray decrypt(QByteArray cipherText, RSA* rsa, const int& decryptType = PRIVATE_DECRYPT, const int& padding = RSA_PKCS1_PADDING);

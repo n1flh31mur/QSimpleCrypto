@@ -9,6 +9,8 @@
 #ifndef QX509STORE_H
 #define QX509STORE_H
 
+#include "QSimpleCrypto_global.h"
+
 #include <QDebug>
 #include <QDir>
 #include <QFile>
@@ -20,8 +22,7 @@
 
 namespace QSimpleCrypto
 {
-    class QX509Store
-    {
+    class QSIMPLECRYPTO_EXPORT QX509Store {
     public:
         QX509Store();
 

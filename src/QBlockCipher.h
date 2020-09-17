@@ -9,6 +9,8 @@
 #ifndef QBLOCKCIPHER_H
 #define QBLOCKCIPHER_H
 
+#include "QSimpleCrypto_global.h"
+
 #include <QDebug>
 #include <QObject>
 
@@ -19,7 +21,7 @@
 
 namespace QSimpleCrypto
 {
-    class QBlockCipher {
+    class QSIMPLECRYPTO_EXPORT QBlockCipher {
     public:
         QBlockCipher();
         QByteArray generateRandomBytes(const int& size);

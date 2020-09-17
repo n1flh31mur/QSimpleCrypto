@@ -9,6 +9,8 @@
 #ifndef QX509_H
 #define QX509_H
 
+#include "QSimpleCrypto_global.h"
+
 #include <QDebug>
 #include <QMap>
 #include <QObject>
@@ -21,7 +23,7 @@
 
 namespace QSimpleCrypto
 {
-    class QX509 {
+    class QSIMPLECRYPTO_EXPORT QX509 {
     public:
         QX509();
 
