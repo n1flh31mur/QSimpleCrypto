@@ -29,6 +29,6 @@ This library requires no special dependencies except for **Qt 5.14 or newer** wi
 
 #
 
-#### Certificate
+#### Certificates
 - [X509](https://en.wikipedia.org/wiki/X.509)
 
