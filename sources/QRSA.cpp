@@ -6,7 +6,7 @@
  * in the file LICENSE in the source distribution
 **/
 
-#include "QRSA.h"
+#include "include/QRSA.h"
 
 QSimpleCrypto::QRSA::QRSA()
 {

@@ -6,7 +6,7 @@
  * in the file LICENSE in the source distribution
 **/
 
-#include "QX509.h"
+#include "include/QX509.h"
 
 QSimpleCrypto::QX509::QX509()
 {

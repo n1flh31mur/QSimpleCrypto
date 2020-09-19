@@ -6,7 +6,7 @@
  * in the file LICENSE in the source distribution
 **/
 
-#include "QBlockCipher.h"
+#include "include/QBlockCipher.h"
 
 QSimpleCrypto::QBlockCipher::QBlockCipher()
 {

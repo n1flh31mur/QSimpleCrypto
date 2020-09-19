@@ -6,7 +6,7 @@
  * in the file LICENSE in the source distribution
 **/
 
-#include "QAEAD.h"
+#include "include/QAEAD.h"
 
 QSimpleCrypto::QAEAD::QAEAD()
 {

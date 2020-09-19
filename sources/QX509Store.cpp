@@ -6,7 +6,7 @@
  * in the file LICENSE in the source distribution
 **/
 
-#include "QX509Store.h"
+#include "include/QX509Store.h"
 
 QSimpleCrypto::QX509Store::QX509Store()
 {
