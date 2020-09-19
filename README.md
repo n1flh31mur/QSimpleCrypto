@@ -32,3 +32,12 @@ This library requires no special dependencies except for **Qt 5.14 or newer** wi
 #### Certificates
 - [X509](https://en.wikipedia.org/wiki/X.509)
 
+#
+
+### Build
+
+```
+cd <projectDirecoty>
+qmake
+make
+```
