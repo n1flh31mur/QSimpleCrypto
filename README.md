@@ -68,4 +68,4 @@ int main() {
 }
 ```
 
-More info about functions on wiki.
+More information you can find on wiki.
