@@ -88,11 +88,14 @@ X509* QSimpleCrypto::QX509::validateCertificate(X509* x509, X509_STORE* store)
     }
 
     /* Set up CTX for a subsequent verification operation */
-    X509_STORE_CTX_init(ctx.get(), store, x509, nullptr);
+    if (!X509_STORE_CTX_init(ctx.get(), store, x509, nullptr)) {
+        qCritical() << "Couldn't init X509_STORE_CTX. X509_STORE_CTX_init() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        return nullptr;
+    }
 
     /* Verify X509 */
     if (!X509_verify_cert(ctx.get())) {
-        qCritical() << "Couldn't initialize X509. X509_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't verify cert. X509_verify_cert() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return nullptr;
     }
 
