@@ -29,3 +29,12 @@ unix {
     target.path = $$[QT_INSTALL_PLUGINS]/generic
 }
 !isEmpty(target.path): INSTALLS += target
+
+# Add OpenSSL lib
+unix:!macx: LIBS += -L$$PWD/../../../Qt/Tools/OpenSSL/binary/lib/ -lcrypto
+
+INCLUDEPATH += $$PWD/../../../Qt/Tools/OpenSSL/binary/include/openssl
+DEPENDPATH += $$PWD/../../../Qt/Tools/OpenSSL/binary/include/openssl
+
+unix:!macx: PRE_TARGETDEPS += $$PWD/../../../Qt/Tools/OpenSSL/binary/lib/libcrypto.a
+unix:!macx: PRE_TARGETDEPS += $$PWD/../../../Qt/Tools/OpenSSL/binary/lib/libssl.a
