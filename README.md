@@ -4,7 +4,7 @@ Small cryptographic C++ library based on Qt and OpenSSL
 #
 
 ### Dependencies
-This library requires no special dependencies except for [https://www.qt.io/](**Qt**) with the [**OpenSSL (version 1.1.1 or later)**](https://www.openssl.org/).
+This library requires no special dependencies except for [**Qt**](https://www.qt.io/) with the [**OpenSSL (version 1.1.1 or later)**](https://www.openssl.org/).
 
 #
 
