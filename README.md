@@ -4,7 +4,7 @@ Small cryptographic C++ library based on Qt and OpenSSL
 #
 
 ### Dependencies
-This library requires no special dependencies except for [**Qt**](https://www.qt.io/) with the [**OpenSSL (version 1.1.1 or later)**](https://www.openssl.org/).
+This library requires no special dependencies except of [**Qt**](https://www.qt.io/) with the [**OpenSSL (version 1.1.1 or later)**](https://www.openssl.org/).
 
 #
 
@@ -38,6 +38,34 @@ This library requires no special dependencies except for [**Qt**](https://www.qt
 
 ```
 cd <projectDirecoty>
-qmake
+qmake QSimpleCrypto.pro 
 make
 ```
+
+#
+
+### How to use
+
+* To use this library, you need to add **OpenSSL** to your project.
+ 
+
+**Example:**
+```cpp
+#include <QDebug>
+#include <QByteArray>
+
+#include "QAEAD.h"
+
+int main() {
+    QByteArray key = "AABBCCEEFFGGHHKKLLMMNNOOPPRRSSTT";
+    QByteArray iv = "AABBCCEEFFGGHHKKLLMMNNOOPPRRSSTT";
+    QByteArray aad = "AABBCCDDEEFF";
+    QByteArray tag = "AABBCCDDEEFF";
+
+    QSimpleCrypto::QAEAD aead;
+    QByteArray encrypted = aead.encryptAesGcm("Hello World", key, iv, &tag, aad);
+    QByteArray decrypted = aead.decryptAesGcm(bytes, key, iv, &tag, aad);
+}
+```
+
+More info about functions on wiki.
