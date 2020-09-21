@@ -17,7 +17,7 @@ QSimpleCrypto::QAEAD::QAEAD()
 /// \param cipher - can be used with openssl evp chipers (gcm) - 128, 192, 256. Example: EVP_aes_256_gcm()
 /// \param data - bytes that will be encrypted
 /// \param key
-/// \param iv - intilization vector
+/// \param iv - initialization vector
 /// \param aad - (optional) additional authenticated data. If not used, it must equal to nullptr
 /// \param tag - auth tag
 /// \return
@@ -100,7 +100,7 @@ QByteArray QSimpleCrypto::QAEAD::encryptAesGcm(QByteArray data, QByteArray key,
 /// \param cipher - can be used with openssl evp chipers (gcm) - 128, 192, 256. Example: EVP_aes_256_gcm()
 /// \param data - bytes that will be decrypted
 /// \param key
-/// \param iv - intilization vector
+/// \param iv - initialization vector
 /// \param aad - (optional) additional authenticated data. If not used, it must equal to nullptr
 /// \param tag - auth tag
 /// \return
@@ -183,7 +183,7 @@ QByteArray QSimpleCrypto::QAEAD::decryptAesGcm(QByteArray data, QByteArray key,
 /// \param cipher - can be used with openssl evp chipers (ccm) - 128, 192, 256. Example: EVP_aes_256_ccm()
 /// \param data - bytes that will be decrypted
 /// \param key
-/// \param iv - intilization vector
+/// \param iv - initialization vector
 /// \param aad - (optional) additional authenticated data. If not used, it must equal to nullptr
 /// \param tag - auth tag
 /// \return
@@ -278,7 +278,7 @@ QByteArray QSimpleCrypto::QAEAD::encryptAesCcm(QByteArray data, QByteArray key,
 /// \param cipher - can be used with openssl evp chipers (ccm) - 128, 192, 256. Example: EVP_aes_256_ccm()
 /// \param data - bytes that will be decrypted
 /// \param key
-/// \param iv - intilization vector
+/// \param iv - initialization vector
 /// \param aad - (optional) additional authenticated data. If not used, it must equal to nullptr
 /// \param tag - auth tag
 /// \return

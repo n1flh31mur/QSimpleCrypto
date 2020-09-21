@@ -30,7 +30,7 @@ QByteArray QSimpleCrypto::QBlockCipher::generateRandomBytes(const int& size)
 /// \brief QSimpleCrypto::QBlockCipher::encryptAesBlockCipher
 /// \param data - bytes (data) that will be encrypted
 /// \param key - AES key
-/// \param iv - intilization vector
+/// \param iv - initialization vector
 /// \param password - encryption password
 /// \param salt - random delta
 /// \param rounds - count of bytes shaking
@@ -100,7 +100,7 @@ QByteArray QSimpleCrypto::QBlockCipher::encryptAesBlockCipher(QByteArray data, Q
 /// \brief QSimpleCrypto::QBlockCipher::decryptAesBlockCipher
 /// \param data - bytes (data) that will be encrypted
 /// \param key - AES key
-/// \param iv - intilization vector
+/// \param iv - initialization vector
 /// \param password - encryption password
 /// \param salt - random delta
 /// \param rounds - count of bytes shaking
