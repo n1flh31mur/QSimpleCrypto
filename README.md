@@ -68,4 +68,4 @@ int main() {
 }
 ```
 
-More information you can find on [wiki](https://github.com/bru74lw1z4rd/QSimpleCrypto/wiki/Where-to-start).
+More information you can find on [wiki](https://github.com/bru74lw1z4rd/QSimpleCrypto/wiki).
