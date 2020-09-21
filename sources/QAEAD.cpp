@@ -14,13 +14,13 @@ QSimpleCrypto::QAEAD::QAEAD()
 
 ///
 /// \brief QSimpleCrypto::QAEAD::encryptAesGcm
-/// \param cipher - can be used with openssl evp chipers (gcm) - 128, 192, 256. Example: EVP_aes_256_gcm()
-/// \param data - bytes that will be encrypted
-/// \param key
-/// \param iv - initialization vector
-/// \param aad - (optional) additional authenticated data. If not used, it must equal to nullptr
-/// \param tag - auth tag
-/// \return
+/// \param data - Data that will be encrypted
+/// \param key - AES key
+/// \param iv - Initialization vector
+/// \param tag - Authorization tag
+/// \param aad - Additional authenticated data. Must be nullptr, if not used
+/// \param cipher - Can be used with OpenSSL EVP_CIPHER (gcm) - 128, 192, 256. Example: EVP_aes_256_gcm()
+/// \return - Returns encrypted data
 ///
 QByteArray QSimpleCrypto::QAEAD::encryptAesGcm(QByteArray data, QByteArray key,
     QByteArray iv, QByteArray* tag,
@@ -29,7 +29,7 @@ QByteArray QSimpleCrypto::QAEAD::encryptAesGcm(QByteArray data, QByteArray key,
     /* Initialize EVP_CIPHER_CTX */
     std::unique_ptr<EVP_CIPHER_CTX, void (*)(EVP_CIPHER_CTX*)> en { EVP_CIPHER_CTX_new(), EVP_CIPHER_CTX_free };
     if (en == nullptr) {
-        qCritical() << "Couldn't intilize evp cipher. EVP_CIPHER_CTX_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't initialize evp cipher. EVP_CIPHER_CTX_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
     }
 
@@ -97,13 +97,13 @@ QByteArray QSimpleCrypto::QAEAD::encryptAesGcm(QByteArray data, QByteArray key,
 
 ///
 /// \brief QSimpleCrypto::QAEAD::decryptAesGcm
-/// \param cipher - can be used with openssl evp chipers (gcm) - 128, 192, 256. Example: EVP_aes_256_gcm()
-/// \param data - bytes that will be decrypted
-/// \param key
-/// \param iv - initialization vector
-/// \param aad - (optional) additional authenticated data. If not used, it must equal to nullptr
-/// \param tag - auth tag
-/// \return
+/// \param data - Data that will be decrypted
+/// \param key - AES key
+/// \param iv - Initialization vector
+/// \param tag - Authorization tag
+/// \param aad - Additional authenticated data. Must be nullptr, if not used
+/// \param cipher - Can be used with OpenSSL EVP_CIPHER (gcm) - 128, 192, 256. Example: EVP_aes_256_gcm()
+/// \return - Returns decrypted data
 ///
 QByteArray QSimpleCrypto::QAEAD::decryptAesGcm(QByteArray data, QByteArray key,
     QByteArray iv, QByteArray* tag,
@@ -112,7 +112,7 @@ QByteArray QSimpleCrypto::QAEAD::decryptAesGcm(QByteArray data, QByteArray key,
     /* Initialize EVP_CIPHER_CTX */
     std::unique_ptr<EVP_CIPHER_CTX, void (*)(EVP_CIPHER_CTX*)> de { EVP_CIPHER_CTX_new(), EVP_CIPHER_CTX_free };
     if (de.get() == nullptr) {
-        qCritical() << "Couldn't intilize evp cipher. EVP_CIPHER_CTX_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't initialize evp cipher. EVP_CIPHER_CTX_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
     }
 
@@ -180,13 +180,13 @@ QByteArray QSimpleCrypto::QAEAD::decryptAesGcm(QByteArray data, QByteArray key,
 
 ///
 /// \brief QSimpleCrypto::QAEAD::encryptAesCcm
-/// \param cipher - can be used with openssl evp chipers (ccm) - 128, 192, 256. Example: EVP_aes_256_ccm()
-/// \param data - bytes that will be decrypted
-/// \param key
-/// \param iv - initialization vector
-/// \param aad - (optional) additional authenticated data. If not used, it must equal to nullptr
-/// \param tag - auth tag
-/// \return
+/// \param data - Data that will be encrypted
+/// \param key - AES key
+/// \param iv - Initialization vector
+/// \param tag - Authorization tag
+/// \param aad - Additional authenticated data. Must be nullptr, if not used
+/// \param cipher - Can be used with OpenSSL EVP_CIPHER (ccm) - 128, 192, 256. Example: EVP_aes_256_ccm()
+/// \return - Returns encrypted data
 ///
 QByteArray QSimpleCrypto::QAEAD::encryptAesCcm(QByteArray data, QByteArray key,
     QByteArray iv, QByteArray* tag,
@@ -195,7 +195,7 @@ QByteArray QSimpleCrypto::QAEAD::encryptAesCcm(QByteArray data, QByteArray key,
     /* Initialize EVP_CIPHER_CTX */
     std::unique_ptr<EVP_CIPHER_CTX, void (*)(EVP_CIPHER_CTX*)> en { EVP_CIPHER_CTX_new(), EVP_CIPHER_CTX_free };
     if (en == nullptr) {
-        qCritical() << "Couldn't intilize evp cipher. EVP_CIPHER_CTX_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't initialize evp cipher. EVP_CIPHER_CTX_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
     }
 
@@ -275,13 +275,13 @@ QByteArray QSimpleCrypto::QAEAD::encryptAesCcm(QByteArray data, QByteArray key,
 
 ///
 /// \brief QSimpleCrypto::QAEAD::decryptAesCcm
-/// \param cipher - can be used with openssl evp chipers (ccm) - 128, 192, 256. Example: EVP_aes_256_ccm()
-/// \param data - bytes that will be decrypted
-/// \param key
-/// \param iv - initialization vector
-/// \param aad - (optional) additional authenticated data. If not used, it must equal to nullptr
-/// \param tag - auth tag
-/// \return
+/// \param data - Data that will be decrypted
+/// \param key - AES key
+/// \param iv - Initialization vector
+/// \param tag - Authorization tag
+/// \param aad - Additional authenticated data. Must be nullptr, if not used
+/// \param cipher - Can be used with OpenSSL EVP_CIPHER (ccm) - 128, 192, 256. Example: EVP_aes_256_ccm()
+/// \return - Returns decrypted data
 ///
 QByteArray QSimpleCrypto::QAEAD::decryptAesCcm(QByteArray data, QByteArray key,
     QByteArray iv, QByteArray* tag,
@@ -290,7 +290,7 @@ QByteArray QSimpleCrypto::QAEAD::decryptAesCcm(QByteArray data, QByteArray key,
     /* Initialize EVP_CIPHER_CTX */
     std::unique_ptr<EVP_CIPHER_CTX, void (*)(EVP_CIPHER_CTX*)> de { EVP_CIPHER_CTX_new(), EVP_CIPHER_CTX_free };
     if (de.get() == nullptr) {
-        qCritical() << "Couldn't intilize evp cipher. EVP_CIPHER_CTX_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't initialize evp cipher. EVP_CIPHER_CTX_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
     }
 
