@@ -27,7 +27,7 @@ namespace QSimpleCrypto
 
         QByteArray encryptAesGcm(QByteArray data, QByteArray key,
             QByteArray iv, QByteArray* tag,
-            QByteArray aad, const EVP_CIPHER* cipher = EVP_aes_256_gcm());
+            QByteArray aad = "", const EVP_CIPHER* cipher = EVP_aes_256_gcm());
         QByteArray decryptAesGcm(QByteArray data, QByteArray key,
             QByteArray iv, QByteArray* tag,
             QByteArray aad = "", const EVP_CIPHER* cipher = EVP_aes_256_gcm());
