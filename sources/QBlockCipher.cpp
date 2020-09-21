@@ -28,15 +28,15 @@ QByteArray QSimpleCrypto::QBlockCipher::generateRandomBytes(const int& size)
 
 ///
 /// \brief QSimpleCrypto::QBlockCipher::encryptAesBlockCipher
-/// \param data - bytes (data) that will be encrypted
+/// \param data - Data that will be encrypted
 /// \param key - AES key
-/// \param iv - initialization vector
-/// \param password - encryption password
-/// \param salt - random delta
-/// \param rounds - count of bytes shaking
-/// \param chiper - can be used with openssl evp chipers (ecb, cbc, cfb, ofb, ctr) - 128, 192, 256. Example: EVP_aes_256_ecb()
-/// \param md - hash algroitm (sha, md and etc). Example: EVP_sha512()
-/// \return
+/// \param iv - Initialization vector
+/// \param password - Encryption password
+/// \param salt - Random delta
+/// \param rounds - Transformation rounds
+/// \param chiper - Can be used with OpenSSL EVP_CIPHER (ecb, cbc, cfb, ofb, ctr) - 128, 192, 256. Example: EVP_aes_256_cbc()
+/// \param md - Hash algroitm (OpenSSL EVP_MD). Example: EVP_sha512()
+/// \return Returns encrypted data
 ///
 QByteArray QSimpleCrypto::QBlockCipher::encryptAesBlockCipher(QByteArray data, QByteArray key,
     QByteArray iv, QByteArray password, QByteArray salt,
@@ -45,7 +45,7 @@ QByteArray QSimpleCrypto::QBlockCipher::encryptAesBlockCipher(QByteArray data, Q
     /* Initialize EVP_CIPHER_CTX */
     std::unique_ptr<EVP_CIPHER_CTX, void (*)(EVP_CIPHER_CTX*)> en { EVP_CIPHER_CTX_new(), EVP_CIPHER_CTX_free };
     if (en == nullptr) {
-        qCritical() << "Couldn't intilize evp cipher. EVP_CIPHER_CTX_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't initialize evp cipher. EVP_CIPHER_CTX_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
     }
 
@@ -97,16 +97,16 @@ QByteArray QSimpleCrypto::QBlockCipher::encryptAesBlockCipher(QByteArray data, Q
 }
 
 ///
-/// \brief QSimpleCrypto::QBlockCipher::decryptAesBlockCipher
-/// \param data - bytes (data) that will be encrypted
+/// \brief QSimpleCrypto::QBlockCipher::encryptAesBlockCipher
+/// \param data - Data that will be decrypted
 /// \param key - AES key
-/// \param iv - initialization vector
-/// \param password - encryption password
-/// \param salt - random delta
-/// \param rounds - count of bytes shaking
-/// \param chiper - can be used with openssl evp chipers (ecb, cbc, cfb, ofb, ctr) - 128, 192, 256. Example: EVP_aes_256_ecb()
-/// \param md - hash algroitm (sha, md and etc). Example: EVP_sha512_256
-/// \return
+/// \param iv - Initialization vector
+/// \param password - Decryption password
+/// \param salt - Random delta
+/// \param rounds - Transformation rounds
+/// \param chiper - Can be used with OpenSSL EVP_CIPHER (ecb, cbc, cfb, ofb, ctr) - 128, 192, 256. Example: EVP_aes_256_cbc()
+/// \param md - Hash algroitm (OpenSSL EVP_MD). Example: EVP_sha512()
+/// \return Returns decrypted data
 ///
 QByteArray QSimpleCrypto::QBlockCipher::decryptAesBlockCipher(QByteArray data, QByteArray key,
     QByteArray iv, QByteArray password, QByteArray salt,
@@ -115,7 +115,7 @@ QByteArray QSimpleCrypto::QBlockCipher::decryptAesBlockCipher(QByteArray data, Q
     /* Initialize EVP_CIPHER_CTX */
     std::unique_ptr<EVP_CIPHER_CTX, void (*)(EVP_CIPHER_CTX*)> de { EVP_CIPHER_CTX_new(), EVP_CIPHER_CTX_free };
     if (de == nullptr) {
-        qCritical() << "Couldn't intilize evp cipher. EVP_CIPHER_CTX_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't initialize evp cipher. EVP_CIPHER_CTX_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
     }
 
