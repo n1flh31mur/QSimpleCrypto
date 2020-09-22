@@ -45,6 +45,9 @@ make
 #
 
 ### How to use
+To get started, you need to add [**OpenSSL**](https://www.openssl.org/source/) library to your project.
+
+After building library and linking **OpenSSL**, you need to link **QSimpleCrypto** to your project.
 
 **Example:**
 ```cpp
