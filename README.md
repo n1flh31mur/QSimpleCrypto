@@ -53,7 +53,9 @@ You can download [**OpenSSL**](https://www.openssl.org/source/) on:
 
 After building library and linking **OpenSSL**, you need to link **QSimpleCrypto** to your project.
 
-**Use Example:**
+#
+
+**Example:**
 ```cpp
 #include <QDebug>
 #include <QByteArray>
