@@ -14,8 +14,8 @@ QSimpleCrypto::QX509::QX509()
 
 /////
 ///// \brief QSimpleCrypto::QX509::loadCertificateFromFile
-///// \param fileName
-///// \return
+///// \param fileName - File path to certificate
+///// \return - Returns OpenSSL X509 structure. Returned value must be cleaned up with 'X509_free' to avoid memory leak.
 /////
 X509* QSimpleCrypto::QX509::loadCertificateFromFile(const QByteArray& fileName)
 {
@@ -39,10 +39,11 @@ X509* QSimpleCrypto::QX509::loadCertificateFromFile(const QByteArray& fileName)
 
 ///
 /// \brief QSimpleCrypto::QX509::signCertificate
-/// \param endCertificate - certificate that will be signed
-/// \param caCertificate - certificate that will sign
-/// \param fileName - name of end certificate file that will be saved. Leave "", if don't need to save it
-/// \return
+/// \param endCertificate - Certificate that will be signed
+/// \param caCertificate - CA certificate that will sign end certificate
+/// \param caPrivateKey - CA certificate private key
+/// \param fileName - With that name certificate will be saved. Leave "", if don't need to save it
+/// \return - Returns OpenSSL X509 structure.
 ///
 X509* QSimpleCrypto::QX509::signCertificate(X509* endCertificate, X509* caCertificate, EVP_PKEY* caPrivateKey, const QByteArray& fileName)
 {
@@ -74,11 +75,11 @@ X509* QSimpleCrypto::QX509::signCertificate(X509* endCertificate, X509* caCertif
 
 ///
 /// \brief QSimpleCrypto::QX509::validateCertificate
-/// \param x509 - OpenSSL X509
-/// \param store - trusted certificate must be added to X509_Store with 'addCertificateToStore(X509_STORE* ctx, X509* x509)'
-/// \return
+/// \param x509 - OpenSSL X509. That certificate will be verified.
+/// \param store - Trusted certificate must be added to X509_Store with 'addCertificateToStore(X509_STORE* ctx, X509* x509)'.
+/// \return - Returns OpenSSL X509 structure.
 ///
-X509* QSimpleCrypto::QX509::validateCertificate(X509* x509, X509_STORE* store)
+X509* QSimpleCrypto::QX509::verifyCertificate(X509* x509, X509_STORE* store)
 {
     /* Initialize X509_STORE_CTX */
     std::unique_ptr<X509_STORE_CTX, void (*)(X509_STORE_CTX*)> ctx { X509_STORE_CTX_new(), X509_STORE_CTX_free };
@@ -105,14 +106,14 @@ X509* QSimpleCrypto::QX509::validateCertificate(X509* x509, X509_STORE* store)
 ///
 /// \brief QSimpleCrypto::QX509::generateSelfSignedCertificate
 /// \param rsa - OpenSSL RSA
-/// \param additionalData - additional data of X509 certificate. (ST, OU and another data)
-/// \param certificateFileName - name of certificate file. Leave "", if don't need to save it
-/// \param md - Certificate Signature Algorith. Example: EVP_sha512()
-/// \param serialNumber - X509 Certificate serial number.
-/// \param version - X509 Certificate version
+/// \param additionalData - Certificate information
+/// \param certificateFileName - With that name certificate will be saved. Leave "", if don't need to save it
+/// \param md - OpenSSL EVP_MD structure. Example: EVP_sha512()
+/// \param serialNumber - X509 certificate serial number.
+/// \param version - X509 certificate version
 /// \param notBefore - X509 start date
 /// \param notAfter - X509 end date
-/// \return - returned value must be cleaned with X509_free()
+/// \return - Returns OpenSSL X509 structure. Returned value must be cleaned up with 'X509_free' to avoid memory leak.
 ///
 X509* QSimpleCrypto::QX509::generateSelfSignedCertificate(const RSA* rsa, const QMap<QByteArray, QByteArray>& additionalData,
     const QByteArray& certificateFileName, const EVP_MD* md,
