@@ -24,6 +24,7 @@ namespace QSimpleCrypto
     class QSIMPLECRYPTO_EXPORT QBlockCipher {
     public:
         QBlockCipher();
+
         QByteArray generateRandomBytes(const int& size);
 
         QByteArray encryptAesBlockCipher(QByteArray data, QByteArray key,
