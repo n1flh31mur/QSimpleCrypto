@@ -20,7 +20,7 @@ QSimpleCrypto::QAEAD::QAEAD()
 /// \param tag - Authorization tag
 /// \param aad - Additional authenticated data. Must be nullptr, if not used
 /// \param cipher - Can be used with OpenSSL EVP_CIPHER (gcm) - 128, 192, 256. Example: EVP_aes_256_gcm()
-/// \return - Returns encrypted data
+/// \return - Returns encrypted data or "", if error happened.
 ///
 QByteArray QSimpleCrypto::QAEAD::encryptAesGcm(QByteArray data, QByteArray key,
     QByteArray iv, QByteArray* tag,
@@ -103,7 +103,7 @@ QByteArray QSimpleCrypto::QAEAD::encryptAesGcm(QByteArray data, QByteArray key,
 /// \param tag - Authorization tag
 /// \param aad - Additional authenticated data. Must be nullptr, if not used
 /// \param cipher - Can be used with OpenSSL EVP_CIPHER (gcm) - 128, 192, 256. Example: EVP_aes_256_gcm()
-/// \return - Returns decrypted data
+/// \return - Returns decrypted data or "", if error happened.
 ///
 QByteArray QSimpleCrypto::QAEAD::decryptAesGcm(QByteArray data, QByteArray key,
     QByteArray iv, QByteArray* tag,
@@ -186,7 +186,7 @@ QByteArray QSimpleCrypto::QAEAD::decryptAesGcm(QByteArray data, QByteArray key,
 /// \param tag - Authorization tag
 /// \param aad - Additional authenticated data. Must be nullptr, if not used
 /// \param cipher - Can be used with OpenSSL EVP_CIPHER (ccm) - 128, 192, 256. Example: EVP_aes_256_ccm()
-/// \return - Returns encrypted data
+/// \return - Returns encrypted data or "", if error happened.
 ///
 QByteArray QSimpleCrypto::QAEAD::encryptAesCcm(QByteArray data, QByteArray key,
     QByteArray iv, QByteArray* tag,
@@ -281,7 +281,7 @@ QByteArray QSimpleCrypto::QAEAD::encryptAesCcm(QByteArray data, QByteArray key,
 /// \param tag - Authorization tag
 /// \param aad - Additional authenticated data. Must be nullptr, if not used
 /// \param cipher - Can be used with OpenSSL EVP_CIPHER (ccm) - 128, 192, 256. Example: EVP_aes_256_ccm()
-/// \return - Returns decrypted data
+/// \return - Returns decrypted data or "", if error happened.
 ///
 QByteArray QSimpleCrypto::QAEAD::decryptAesCcm(QByteArray data, QByteArray key,
     QByteArray iv, QByteArray* tag,
