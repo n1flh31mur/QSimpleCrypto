@@ -46,9 +46,6 @@ make
 
 ### How to use
 
-* To use this library, you need to add **OpenSSL** to your project.
- 
-
 **Example:**
 ```cpp
 #include <QDebug>
