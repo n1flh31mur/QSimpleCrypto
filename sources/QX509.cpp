@@ -15,7 +15,7 @@ QSimpleCrypto::QX509::QX509()
 /////
 ///// \brief QSimpleCrypto::QX509::loadCertificateFromFile
 ///// \param fileName - File path to certificate
-///// \return - Returns OpenSSL X509 structure. Returned value must be cleaned up with 'X509_free' to avoid memory leak.
+///// \return - Returns OpenSSL X509 structure or nullptr, if error happened. Returned value must be cleaned up with 'X509_free' to avoid memory leak.
 /////
 X509* QSimpleCrypto::QX509::loadCertificateFromFile(const QByteArray& fileName)
 {
@@ -28,6 +28,9 @@ X509* QSimpleCrypto::QX509::loadCertificateFromFile(const QByteArray& fileName)
 
     /* Initialize BIO */
     std::unique_ptr<BIO, void (*)(BIO*)> certFile { BIO_new_file(fileName.data(), "r+"), BIO_free_all };
+    if (certFile == nullptr) {
+        qCritical() << "Couldn't initialize certFile. BIO_new_file() error: " << ERR_error_string(ERR_get_error(), nullptr);
+    }
 
     /* Read file */
     if (!PEM_read_bio_X509(certFile.get(), &x509, nullptr, nullptr)) {
@@ -43,7 +46,7 @@ X509* QSimpleCrypto::QX509::loadCertificateFromFile(const QByteArray& fileName)
 /// \param caCertificate - CA certificate that will sign end certificate
 /// \param caPrivateKey - CA certificate private key
 /// \param fileName - With that name certificate will be saved. Leave "", if don't need to save it
-/// \return - Returns OpenSSL X509 structure.
+/// \return - Returns OpenSSL X509 structure or nullptr, if error happened.
 ///
 X509* QSimpleCrypto::QX509::signCertificate(X509* endCertificate, X509* caCertificate, EVP_PKEY* caPrivateKey, const QByteArray& fileName)
 {
@@ -63,6 +66,9 @@ X509* QSimpleCrypto::QX509::signCertificate(X509* endCertificate, X509* caCertif
     if (!fileName.isEmpty()) {
         /* Initialize BIO */
         std::unique_ptr<BIO, void (*)(BIO*)> certFile { BIO_new_file(fileName.data(), "w+"), BIO_free_all };
+        if (certFile == nullptr) {
+            qCritical() << "Couldn't initialize certFile. BIO_new_file() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        }
 
         /* Write file on disk */
         if (!PEM_write_bio_X509(certFile.get(), endCertificate)) {
@@ -74,10 +80,10 @@ X509* QSimpleCrypto::QX509::signCertificate(X509* endCertificate, X509* caCertif
 }
 
 ///
-/// \brief QSimpleCrypto::QX509::validateCertificate
+/// \brief QSimpleCrypto::QX509::verifyCertificate
 /// \param x509 - OpenSSL X509. That certificate will be verified.
 /// \param store - Trusted certificate must be added to X509_Store with 'addCertificateToStore(X509_STORE* ctx, X509* x509)'.
-/// \return - Returns OpenSSL X509 structure.
+/// \return - Returns OpenSSL X509 structure or nullptr, if error happened
 ///
 X509* QSimpleCrypto::QX509::verifyCertificate(X509* x509, X509_STORE* store)
 {
@@ -113,7 +119,7 @@ X509* QSimpleCrypto::QX509::verifyCertificate(X509* x509, X509_STORE* store)
 /// \param version - X509 certificate version
 /// \param notBefore - X509 start date
 /// \param notAfter - X509 end date
-/// \return - Returns OpenSSL X509 structure. Returned value must be cleaned up with 'X509_free' to avoid memory leak.
+/// \return - Returns OpenSSL X509 structure or nullptr, if error happened. Returned value must be cleaned up with 'X509_free' to avoid memory leak.
 ///
 X509* QSimpleCrypto::QX509::generateSelfSignedCertificate(const RSA* rsa, const QMap<QByteArray, QByteArray>& additionalData,
     const QByteArray& certificateFileName, const EVP_MD* md,
@@ -197,6 +203,9 @@ X509* QSimpleCrypto::QX509::generateSelfSignedCertificate(const RSA* rsa, const 
     if (!certificateFileName.isEmpty()) {
         /* Initialize BIO */
         std::unique_ptr<BIO, void (*)(BIO*)> certFile { BIO_new_file(certificateFileName.data(), "w+"), BIO_free_all };
+        if (certFile == nullptr) {
+            qCritical() << "Couldn't initialize certFile. BIO_new_file() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        }
 
         /* Write file on disk */
         if (!PEM_write_bio_X509(certFile.get(), x509)) {
