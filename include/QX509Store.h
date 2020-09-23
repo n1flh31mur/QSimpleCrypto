@@ -26,18 +26,18 @@ namespace QSimpleCrypto
     public:
         QX509Store();
 
-        bool addCertificateToStore(X509_STORE* ctx, X509* x509);
-        bool addLookup(X509_STORE* ctx, X509_LOOKUP_METHOD* meth);
+        bool addCertificateToStore(X509_STORE* store, X509* x509);
+        bool addLookup(X509_STORE* store, X509_LOOKUP_METHOD* meth);
 
-        bool setDepth(X509_STORE* ctx, const int& depth);
-        bool setFlag(X509_STORE* ctx, const unsigned long& flag);
-        bool setPurpose(X509_STORE* ctx, const int& purpose);
-        bool setTrust(X509_STORE* ctx, const int& trust);
-        bool setDefaultPaths(X509_STORE* ctx);
+        bool setDepth(X509_STORE* store, const int& depth);
+        bool setFlag(X509_STORE* store, const unsigned long& flag);
+        bool setPurpose(X509_STORE* store, const int& purpose);
+        bool setTrust(X509_STORE* store, const int& trust);
+        bool setDefaultPaths(X509_STORE* store);
 
-        bool loadLocations(X509_STORE* ctx, const QByteArray& filePath, const QByteArray& dirPath);
-        bool loadLocations(X509_STORE* ctx, const QFile& file);
-        bool loadLocations(X509_STORE* ctx, const QFileInfo& fileInfo);
+        bool loadLocations(X509_STORE* store, const QByteArray& fileName, const QByteArray& dirPath);
+        bool loadLocations(X509_STORE* store, const QFile& file);
+        bool loadLocations(X509_STORE* store, const QFileInfo& fileInfo);
     };
 }
 

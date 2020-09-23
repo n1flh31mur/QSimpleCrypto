@@ -14,13 +14,13 @@ QSimpleCrypto::QX509Store::QX509Store()
 
 ///
 /// \brief QSimpleCrypto::QX509::addCertificateToStore
-/// \param ctx - OpenSSL X509_STORE
+/// \param store - OpenSSL X509_STORE
 /// \param x509 - OpenSSL X509
 /// \return
 ///
-bool QSimpleCrypto::QX509Store::addCertificateToStore(X509_STORE* ctx, X509* x509)
+bool QSimpleCrypto::QX509Store::addCertificateToStore(X509_STORE* store, X509* x509)
 {
-    if (!X509_STORE_add_cert(ctx, x509)) {
+    if (!X509_STORE_add_cert(store, x509)) {
         qCritical() << "Couldn't add certificate to X509_STORE. X509_STORE_add_cert() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return false;
     }
@@ -30,13 +30,13 @@ bool QSimpleCrypto::QX509Store::addCertificateToStore(X509_STORE* ctx, X509* x50
 
 ///
 /// \brief QSimpleCrypto::QX509Store::addLookup
-/// \param ctx - OpenSSL X509_STORE
+/// \param store - OpenSSL X509_STORE
 /// \param meth - OpenSSL X509_LOOKUP_METHOD. Example: X509_LOOKUP_file
 /// \return
 ///
-bool QSimpleCrypto::QX509Store::addLookup(X509_STORE* ctx, X509_LOOKUP_METHOD* meth)
+bool QSimpleCrypto::QX509Store::addLookup(X509_STORE* store, X509_LOOKUP_METHOD* meth)
 {
-    if (!X509_STORE_add_lookup(ctx, meth)) {
+    if (!X509_STORE_add_lookup(store, meth)) {
         qCritical() << "Couldn't add lookup to X509_STORE. X509_STORE_add_lookup() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return false;
     }
@@ -46,13 +46,13 @@ bool QSimpleCrypto::QX509Store::addLookup(X509_STORE* ctx, X509_LOOKUP_METHOD* m
 
 ///
 /// \brief QSimpleCrypto::QX509Store::setCertificateDepth
-/// \param ctx - OpenSSL X509_STORE
-/// \param depth - Sets the maximum verification depth to depth. That is the maximum number of untrusted CA certificates that can appear in a chain. Example: 0
+/// \param store - OpenSSL X509_STORE
+/// \param depth - That is the maximum number of untrusted CA certificates that can appear in a chain. Example: 0
 /// \return
 ///
-bool QSimpleCrypto::QX509Store::setDepth(X509_STORE* ctx, const int& depth)
+bool QSimpleCrypto::QX509Store::setDepth(X509_STORE* store, const int& depth)
 {
-    if (!X509_STORE_set_depth(ctx, depth)) {
+    if (!X509_STORE_set_depth(store, depth)) {
         qCritical() << "Couldn't set depth for X509_STORE. X509_STORE_set_depth() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return false;
     }
@@ -62,13 +62,13 @@ bool QSimpleCrypto::QX509Store::setDepth(X509_STORE* ctx, const int& depth)
 
 ///
 /// \brief QSimpleCrypto::QX509Store::setFlag
-/// \param ctx - OpenSSL X509_STORE
+/// \param store - OpenSSL X509_STORE
 /// \param flag - The verification flags consists of zero or more of the following flags ored together. Example: X509_V_FLAG_CRL_CHECK
 /// \return
 ///
-bool QSimpleCrypto::QX509Store::setFlag(X509_STORE* ctx, const unsigned long& flag)
+bool QSimpleCrypto::QX509Store::setFlag(X509_STORE* store, const unsigned long& flag)
 {
-    if (!X509_STORE_set_flags(ctx, flag)) {
+    if (!X509_STORE_set_flags(store, flag)) {
         qCritical() << "Couldn't set flag for X509_STORE. X509_STORE_set_flags() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return false;
     }
@@ -78,13 +78,13 @@ bool QSimpleCrypto::QX509Store::setFlag(X509_STORE* ctx, const unsigned long& fl
 
 ///
 /// \brief QSimpleCrypto::QX509Store::setFlag
-/// \param ctx - OpenSSL X509_STORE
+/// \param store - OpenSSL X509_STORE
 /// \param purpose - Verification purpose in param to purpose. Example: X509_PURPOSE_ANY
 /// \return
 ///
-bool QSimpleCrypto::QX509Store::setPurpose(X509_STORE* ctx, const int& purpose)
+bool QSimpleCrypto::QX509Store::setPurpose(X509_STORE* store, const int& purpose)
 {
-    if (!X509_STORE_set_purpose(ctx, purpose)) {
+    if (!X509_STORE_set_purpose(store, purpose)) {
         qCritical() << "Couldn't set purpose for X509_STORE. X509_STORE_set_purpose() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return false;
     }
@@ -94,13 +94,13 @@ bool QSimpleCrypto::QX509Store::setPurpose(X509_STORE* ctx, const int& purpose)
 
 ///
 /// \brief QSimpleCrypto::QX509Store::setTrust
-/// \param ctx - OpenSSL X509_STORE
+/// \param store - OpenSSL X509_STORE
 /// \param trust - Trust Level. Example: X509_TRUST_SSL_SERVER
 /// \return
 ///
-bool QSimpleCrypto::QX509Store::setTrust(X509_STORE* ctx, const int& trust)
+bool QSimpleCrypto::QX509Store::setTrust(X509_STORE* store, const int& trust)
 {
-    if (!X509_STORE_set_trust(ctx, trust)) {
+    if (!X509_STORE_set_trust(store, trust)) {
         qCritical() << "Couldn't set trust for X509_STORE. X509_STORE_set_trust() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return false;
     }
@@ -110,12 +110,12 @@ bool QSimpleCrypto::QX509Store::setTrust(X509_STORE* ctx, const int& trust)
 
 ///
 /// \brief QSimpleCrypto::QX509Store::setDefaultPaths
-/// \param ctx - OpenSSL X509_STORE
+/// \param store - OpenSSL X509_STORE
 /// \return
 ///
-bool QSimpleCrypto::QX509Store::setDefaultPaths(X509_STORE* ctx)
+bool QSimpleCrypto::QX509Store::setDefaultPaths(X509_STORE* store)
 {
-    if (!X509_STORE_set_default_paths(ctx)) {
+    if (!X509_STORE_set_default_paths(store)) {
         qCritical() << "Couldn't set default paths for X509_STORE. X509_STORE_set_default_paths() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return false;
     }
@@ -125,14 +125,14 @@ bool QSimpleCrypto::QX509Store::setDefaultPaths(X509_STORE* ctx)
 
 ///
 /// \brief QSimpleCrypto::QX509Store::loadLocations
-/// \param ctx - OpenSSL X509_STORE
-/// \param filePath
-/// \param dirPath
+/// \param store - OpenSSL X509_STORE
+/// \param fileName - File name. Example: "caCertificate.pem"
+/// \param dirPath - Path to file. Example: "path/To/File"
 /// \return
 ///
-bool QSimpleCrypto::QX509Store::loadLocations(X509_STORE* ctx, const QByteArray& filePath, const QByteArray& dirPath)
+bool QSimpleCrypto::QX509Store::loadLocations(X509_STORE* store, const QByteArray& fileName, const QByteArray& dirPath)
 {
-    if (!X509_STORE_load_locations(ctx, filePath, dirPath)) {
+    if (!X509_STORE_load_locations(store, fileName, dirPath)) {
         qCritical() << "Couldn't load locations for X509_STORE. X509_STORE_load_locations() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return false;
     }
@@ -142,16 +142,16 @@ bool QSimpleCrypto::QX509Store::loadLocations(X509_STORE* ctx, const QByteArray&
 
 ///
 /// \brief QSimpleCrypto::QX509Store::loadLocations
-/// \param ctx - OpenSSL X509_STORE
-/// \param file
+/// \param store - OpenSSL X509_STORE
+/// \param file - Qt QFile
 /// \return
 ///
-bool QSimpleCrypto::QX509Store::loadLocations(X509_STORE* ctx, const QFile& file)
+bool QSimpleCrypto::QX509Store::loadLocations(X509_STORE* store, const QFile& file)
 {
     /* Initialize QFileInfo to read information about file */
     QFileInfo info(file);
 
-    if (!X509_STORE_load_locations(ctx, info.fileName().toLocal8Bit(), info.absoluteDir().path().toLocal8Bit())) {
+    if (!X509_STORE_load_locations(store, info.fileName().toLocal8Bit(), info.absoluteDir().path().toLocal8Bit())) {
         qCritical() << "Couldn't load locations for X509_STORE. X509_STORE_load_locations() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return false;
     }
@@ -161,13 +161,13 @@ bool QSimpleCrypto::QX509Store::loadLocations(X509_STORE* ctx, const QFile& file
 
 ///
 /// \brief QSimpleCrypto::QX509Store::loadLocations
-/// \param ctx - OpenSSL X509_STORE
-/// \param fileInfo
+/// \param store - OpenSSL X509_STORE
+/// \param fileInfo - Qt QFileInfo
 /// \return
 ///
-bool QSimpleCrypto::QX509Store::loadLocations(X509_STORE* ctx, const QFileInfo& fileInfo)
+bool QSimpleCrypto::QX509Store::loadLocations(X509_STORE* store, const QFileInfo& fileInfo)
 {
-    if (!X509_STORE_load_locations(ctx, fileInfo.fileName().toLocal8Bit(), fileInfo.absoluteDir().path().toLocal8Bit())) {
+    if (!X509_STORE_load_locations(store, fileInfo.fileName().toLocal8Bit(), fileInfo.absoluteDir().path().toLocal8Bit())) {
         qCritical() << "Couldn't load locations for X509_STORE. X509_STORE_load_locations() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return false;
     }
