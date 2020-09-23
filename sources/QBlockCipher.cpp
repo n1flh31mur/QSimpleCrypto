@@ -45,10 +45,11 @@ QByteArray QSimpleCrypto::QBlockCipher::encryptAesBlockCipher(QByteArray data, Q
     /* Initialize EVP_CIPHER_CTX */
     std::unique_ptr<EVP_CIPHER_CTX, void (*)(EVP_CIPHER_CTX*)> en { EVP_CIPHER_CTX_new(), EVP_CIPHER_CTX_free };
     if (en == nullptr) {
-        qCritical() << "Couldn't initialize evp cipher. EVP_CIPHER_CTX_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't initialize en. EVP_CIPHER_CTX_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
     }
 
+    /* Reinterpret values for multi use */
     unsigned char* m_key = reinterpret_cast<unsigned char*>(key.data());
     unsigned char* m_iv = reinterpret_cast<unsigned char*>(iv.data());
 
@@ -115,10 +116,11 @@ QByteArray QSimpleCrypto::QBlockCipher::decryptAesBlockCipher(QByteArray data, Q
     /* Initialize EVP_CIPHER_CTX */
     std::unique_ptr<EVP_CIPHER_CTX, void (*)(EVP_CIPHER_CTX*)> de { EVP_CIPHER_CTX_new(), EVP_CIPHER_CTX_free };
     if (de == nullptr) {
-        qCritical() << "Couldn't initialize evp cipher. EVP_CIPHER_CTX_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't initialize de. EVP_CIPHER_CTX_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return QByteArray();
     }
 
+    /* Reinterpret values for multi use */
     unsigned char* m_key = reinterpret_cast<unsigned char*>(key.data());
     unsigned char* m_iv = reinterpret_cast<unsigned char*>(iv.data());
 
