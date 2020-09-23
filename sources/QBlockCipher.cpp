@@ -40,7 +40,7 @@ QByteArray QSimpleCrypto::QBlockCipher::generateRandomBytes(const int& size)
 ///
 QByteArray QSimpleCrypto::QBlockCipher::encryptAesBlockCipher(QByteArray data, QByteArray key,
     QByteArray iv, QByteArray password, QByteArray salt,
-    const int& rounds, const EVP_CIPHER* cipher, const EVP_MD* md)
+    const int rounds, const EVP_CIPHER* cipher, const EVP_MD* md)
 {
     /* Initialize EVP_CIPHER_CTX */
     std::unique_ptr<EVP_CIPHER_CTX, void (*)(EVP_CIPHER_CTX*)> en { EVP_CIPHER_CTX_new(), EVP_CIPHER_CTX_free };
@@ -111,7 +111,7 @@ QByteArray QSimpleCrypto::QBlockCipher::encryptAesBlockCipher(QByteArray data, Q
 ///
 QByteArray QSimpleCrypto::QBlockCipher::decryptAesBlockCipher(QByteArray data, QByteArray key,
     QByteArray iv, QByteArray password, QByteArray salt,
-    const int& rounds, const EVP_CIPHER* cipher, const EVP_MD* md)
+    const int rounds, const EVP_CIPHER* cipher, const EVP_MD* md)
 {
     /* Initialize EVP_CIPHER_CTX */
     std::unique_ptr<EVP_CIPHER_CTX, void (*)(EVP_CIPHER_CTX*)> de { EVP_CIPHER_CTX_new(), EVP_CIPHER_CTX_free };
