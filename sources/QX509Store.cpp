@@ -31,12 +31,12 @@ bool QSimpleCrypto::QX509Store::addCertificateToStore(X509_STORE* store, X509* x
 ///
 /// \brief QSimpleCrypto::QX509Store::addLookup
 /// \param store - OpenSSL X509_STORE
-/// \param meth - OpenSSL X509_LOOKUP_METHOD. Example: X509_LOOKUP_file
+/// \param method - OpenSSL X509_LOOKUP_METHOD. Example: X509_LOOKUP_file
 /// \return
 ///
-bool QSimpleCrypto::QX509Store::addLookup(X509_STORE* store, X509_LOOKUP_METHOD* meth)
+bool QSimpleCrypto::QX509Store::addLookup(X509_STORE* store, X509_LOOKUP_METHOD* method)
 {
-    if (!X509_STORE_add_lookup(store, meth)) {
+    if (!X509_STORE_add_lookup(store, method)) {
         qCritical() << "Couldn't add lookup to X509_STORE. X509_STORE_add_lookup() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return false;
     }
