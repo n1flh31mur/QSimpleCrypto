@@ -23,10 +23,10 @@ namespace QSimpleCrypto
 {
     class QSIMPLECRYPTO_EXPORT QRSA {
 
-    #define PUBLIC_ENCRYPT 0
-    #define PRIVATE_ENCRYPT 1
-    #define PUBLIC_DECRYPT 2
-    #define PRIVATE_DECRYPT 3
+    #define PublicEncrypt 0
+    #define PrivateEncrypt 1
+    #define PublicDecrypt 2
+    #define PrivateDecrypt 3
 
     public:
         QRSA();
@@ -39,8 +39,8 @@ namespace QSimpleCrypto
         EVP_PKEY* getPublicKeyFromFile(const QByteArray& filePath);
         EVP_PKEY* getPrivateKeyFromFile(const QByteArray& filePath, const QByteArray& password = "");
 
-        QByteArray encrypt(QByteArray plainText, RSA* rsa, const int& encryptType = PUBLIC_ENCRYPT, const int& padding = RSA_PKCS1_PADDING);
-        QByteArray decrypt(QByteArray cipherText, RSA* rsa, const int& decryptType = PRIVATE_DECRYPT, const int& padding = RSA_PKCS1_PADDING);
+        QByteArray encrypt(QByteArray plainText, RSA* rsa, const int& encryptType = PublicEncrypt, const int& padding = RSA_PKCS1_PADDING);
+        QByteArray decrypt(QByteArray cipherText, RSA* rsa, const int& decryptType = PrivateDecrypt, const int& padding = RSA_PKCS1_PADDING);
     };
 } // namespace QSimpleCrypto
 
