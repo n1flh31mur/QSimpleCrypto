@@ -174,9 +174,9 @@ QByteArray QSimpleCrypto::QRSA::encrypt(QByteArray plainText, RSA* rsa, const in
     short int result = 0;
 
     /* Execute encryption operation */
-    if (encryptType == PUBLIC_ENCRYPT) {
+    if (encryptType == PublicDecrypt) {
         result = RSA_public_encrypt(plainText.size(), reinterpret_cast<unsigned char*>(plainText.data()), cipherText.get(), rsa, padding);
-    } else if (encryptType == PRIVATE_ENCRYPT) {
+    } else if (encryptType == PrivateDecrypt) {
         result = RSA_private_encrypt(plainText.size(), reinterpret_cast<unsigned char*>(plainText.data()), cipherText.get(), rsa, padding);
     }
 
@@ -212,9 +212,9 @@ QByteArray QSimpleCrypto::QRSA::decrypt(QByteArray cipherText, RSA* rsa, const i
     short int result = 0;
 
     /* Execute decryption operation */
-    if (decryptType == PUBLIC_DECRYPT) {
+    if (decryptType == PublicDecrypt) {
         result = RSA_public_decrypt(RSA_size(rsa), reinterpret_cast<unsigned char*>(cipherText.data()), plainText.get(), rsa, padding);
-    } else if (decryptType == PRIVATE_DECRYPT) {
+    } else if (decryptType == PrivateDecrypt) {
         result = RSA_private_decrypt(RSA_size(rsa), reinterpret_cast<unsigned char*>(cipherText.data()), plainText.get(), rsa, padding);
     }
 
