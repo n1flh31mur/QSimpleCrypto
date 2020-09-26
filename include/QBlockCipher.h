@@ -19,7 +19,6 @@
 #include <openssl/evp.h>
 #include <openssl/rand.h>
 
-// clang-format off
 namespace QSimpleCrypto
 {
     class QSIMPLECRYPTO_EXPORT QBlockCipher {
@@ -35,12 +34,12 @@ namespace QSimpleCrypto
 
         QByteArray encryptAesBlockCipher(QByteArray data, QByteArray key,
             QByteArray iv = "", QByteArray password = "",
-            QByteArray salt = "", const int rounds = Aes256Rounds,
+            QByteArray salt = "", const int& rounds = Aes256Rounds,
             const EVP_CIPHER* cipher = EVP_aes_256_cbc(), const EVP_MD* md = EVP_sha512());
 
         QByteArray decryptAesBlockCipher(QByteArray data, QByteArray key,
             QByteArray iv = "", QByteArray password = "",
-            QByteArray salt = "", const int rounds = Aes256Rounds,
+            QByteArray salt = "", const int& rounds = Aes256Rounds,
             const EVP_CIPHER* cipher = EVP_aes_256_cbc(), const EVP_MD* md = EVP_sha512());
     };
 } // namespace QSimpleCrypto
