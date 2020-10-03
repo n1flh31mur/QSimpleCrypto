@@ -1,5 +1,5 @@
 ### QSimpleCrypto
-Small cryptographic C++ library based on Qt and OpenSSL
+Small C++ cryptographic library based on Qt and OpenSSL
 
 #
 
