@@ -1,6 +1,8 @@
 ### QSimpleCrypto
 Small C++ cryptographic library based on Qt and OpenSSL
 
+Also working with Android.
+
 #
 
 ### Dependencies
