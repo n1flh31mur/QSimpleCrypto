@@ -1,5 +1,7 @@
 ### QSimpleCrypto
-Small C++ cryptographic library based on Qt and OpenSSL
+Small C++ cryptographic library based on **Qt** and **OpenSSL**.
+
+This library also working with **Android**.
 
 #
 
@@ -8,12 +10,12 @@ This library requires no special dependencies except of [**Qt**](https://www.qt.
 
 #
 
-#### Cipher
+#### AES Block Sizes
   [AES-128, AES-192, AES-256](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)
 
 #
 
-#### Cipher mode of operation
+#### AES Ciphers
 - Electronic codebook ([ECB](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Electronic_codebook_(ECB)))
 - Cipher block chaining ([CBC](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Cipher_block_chaining_(CBC)))
 - Cipher feedback ([CFB](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Cipher_feedback_(CFB)))
@@ -70,8 +72,11 @@ int main() {
 
     QSimpleCrypto::QAEAD aead;
     QByteArray encrypted = aead.encryptAesGcm("Hello World", key, iv, &tag, aad);
-    QByteArray decrypted = aead.decryptAesGcm(bytes, key, iv, &tag, aad);
+    QByteArray decrypted = aead.decryptAesGcm(bytes, key, iv, &tag, aad);    
 }
 ```
+
+
+*Note: encryption and decryption functions returns value in hex dimension. So, if you want to display encrypted or decrypted value you should [convert](https://doc.qt.io/qt-5/qbytearray.html#toBase64) or [deconvert](https://doc.qt.io/qt-5/qbytearray.html#fromBase64) received value.*
 
 More information you can find on [wiki](https://github.com/bru74lw1z4rd/QSimpleCrypto/wiki).
