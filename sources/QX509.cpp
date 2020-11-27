@@ -1,5 +1,5 @@
 /**
- * Copyright Copyright 2020 BrutalWizard (https://github.com/bru74lw1z4rd). All Rights Reserved.
+ * Copyright 2020 BrutalWizard (https://github.com/bru74lw1z4rd). All Rights Reserved.
  *
  * Licensed under the Apache License 2.0 (the "License"). You may not use
  * this file except in compliance with the License. You can obtain a copy
@@ -96,7 +96,7 @@ X509* QSimpleCrypto::QX509::verifyCertificate(X509* x509, X509_STORE* store)
 
     /* Set up CTX for a subsequent verification operation */
     if (!X509_STORE_CTX_init(ctx.get(), store, x509, nullptr)) {
-        qCritical() << "Couldn't init X509_STORE_CTX. X509_STORE_CTX_init() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't initialize X509_STORE_CTX. X509_STORE_CTX_init() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return nullptr;
     }
 

@@ -1,5 +1,5 @@
 ﻿/**
- * Copyright Copyright 2020 BrutalWizard (https://github.com/bru74lw1z4rd). All Rights Reserved.
+ * Copyright 2020 BrutalWizard (https://github.com/bru74lw1z4rd). All Rights Reserved.
  *
  * Licensed under the Apache License 2.0 (the "License"). You may not use
  * this file except in compliance with the License. You can obtain a copy
@@ -23,7 +23,7 @@ RSA* QSimpleCrypto::QRSA::generateRsaKeys(const int& bits, const int& rsaBigNumb
     /* Initialize big number */
     std::unique_ptr<BIGNUM, void (*)(BIGNUM*)> bigNumber { BN_new(), BN_free };
     if (bigNumber == nullptr) {
-        qCritical() << "Couldn't initialize bigNumber. BN_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't initialize \'bigNumber\'. BN_new() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return nullptr;
     }
 
@@ -59,7 +59,7 @@ void QSimpleCrypto::QRSA::savePublicKey(RSA* rsa, const QByteArray& publicKeyFil
     /* Initialize BIO */
     std::unique_ptr<BIO, void (*)(BIO*)> bioPublicKey { BIO_new_file(publicKeyFileName.data(), "w+"), BIO_free_all };
     if (bioPublicKey == nullptr) {
-        qCritical() << "Couldn't initialize bioPublicKey. BIO_new_file() error: " << ERR_error_string(ERR_get_error(), nullptr);
+        qCritical() << "Couldn't initialize \'bioPublicKey\'. BIO_new_file() error: " << ERR_error_string(ERR_get_error(), nullptr);
         return;
     }
 
@@ -166,7 +166,7 @@ QByteArray QSimpleCrypto::QRSA::encrypt(QByteArray plainText, RSA* rsa, const in
     /* Initialize array. Here encrypted data will be saved */
     std::unique_ptr<unsigned char[]> cipherText { new unsigned char[RSA_size(rsa)]() };
     if (cipherText == nullptr) {
-        qCritical() << "Couldn't allocate memory for \'ciphertext\'.";
+        qCritical() << "Couldn't allocate memory for \'cipherText\'.";
         return "";
     }
 
@@ -204,7 +204,7 @@ QByteArray QSimpleCrypto::QRSA::decrypt(QByteArray cipherText, RSA* rsa, const i
     /* Initialize array. Here decrypted data will be saved */
     std::unique_ptr<unsigned char[]> plainText { new unsigned char[cipherText.size()]() };
     if (plainText == nullptr) {
-        qCritical() << "Couldn't allocate memory for \'plaintext\'.";
+        qCritical() << "Couldn't allocate memory for \'plainText\'.";
         return "";
     }
 
