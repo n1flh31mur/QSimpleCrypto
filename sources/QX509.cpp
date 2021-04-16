@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 BrutalWizard (https://github.com/bru74lw1z4rd). All Rights Reserved.
+ * Copyright 2021 BrutalWizard (https://github.com/bru74lw1z4rd). All Rights Reserved.
  *
  * Licensed under the Apache License 2.0 (the "License"). You may not use
  * this file except in compliance with the License. You can obtain a copy
@@ -12,11 +12,11 @@ QSimpleCrypto::QX509::QX509()
 {
 }
 
-/////
-///// \brief QSimpleCrypto::QX509::loadCertificateFromFile
-///// \param fileName - File path to certificate
-///// \return - Returns OpenSSL X509 structure or nullptr, if error happened. Returned value must be cleaned up with 'X509_free' to avoid memory leak.
-/////
+///
+/// \brief QSimpleCrypto::QX509::loadCertificateFromFile - Function load X509 from file and returns OpenSSL structure.
+/// \param fileName - File path to certificate.
+/// \return Returns OpenSSL X509 structure or nullptr, if error happened. Returned value must be cleaned up with 'X509_free' to avoid memory leak.
+///
 X509* QSimpleCrypto::QX509::loadCertificateFromFile(const QByteArray& fileName)
 {
     /* Initialize X509 */
@@ -41,12 +41,12 @@ X509* QSimpleCrypto::QX509::loadCertificateFromFile(const QByteArray& fileName)
 }
 
 ///
-/// \brief QSimpleCrypto::QX509::signCertificate
+/// \brief QSimpleCrypto::QX509::signCertificate - Function signs X509 certificate and returns signed X509 OpenSSL structure.
 /// \param endCertificate - Certificate that will be signed
 /// \param caCertificate - CA certificate that will sign end certificate
 /// \param caPrivateKey - CA certificate private key
 /// \param fileName - With that name certificate will be saved. Leave "", if don't need to save it
-/// \return - Returns OpenSSL X509 structure or nullptr, if error happened.
+/// \return Returns OpenSSL X509 structure or nullptr, if error happened.
 ///
 X509* QSimpleCrypto::QX509::signCertificate(X509* endCertificate, X509* caCertificate, EVP_PKEY* caPrivateKey, const QByteArray& fileName)
 {
@@ -80,10 +80,10 @@ X509* QSimpleCrypto::QX509::signCertificate(X509* endCertificate, X509* caCertif
 }
 
 ///
-/// \brief QSimpleCrypto::QX509::verifyCertificate
+/// \brief QSimpleCrypto::QX509::verifyCertificate - Function verifies X509 certificate and returns verified X509 OpenSSL structure.
 /// \param x509 - OpenSSL X509. That certificate will be verified.
 /// \param store - Trusted certificate must be added to X509_Store with 'addCertificateToStore(X509_STORE* ctx, X509* x509)'.
-/// \return - Returns OpenSSL X509 structure or nullptr, if error happened
+/// \return Returns OpenSSL X509 structure or nullptr, if error happened
 ///
 X509* QSimpleCrypto::QX509::verifyCertificate(X509* x509, X509_STORE* store)
 {
@@ -110,16 +110,16 @@ X509* QSimpleCrypto::QX509::verifyCertificate(X509* x509, X509_STORE* store)
 }
 
 ///
-/// \brief QSimpleCrypto::QX509::generateSelfSignedCertificate
-/// \param rsa - OpenSSL RSA
-/// \param additionalData - Certificate information
-/// \param certificateFileName - With that name certificate will be saved. Leave "", if don't need to save it
-/// \param md - OpenSSL EVP_MD structure. Example: EVP_sha512()
+/// \brief QSimpleCrypto::QX509::generateSelfSignedCertificate - Function generatesand returns  self signed X509.
+/// \param rsa - OpenSSL RSA.
+/// \param additionalData - Certificate information.
+/// \param certificateFileName - With that name certificate will be saved. Leave "", if don't need to save it.
+/// \param md - OpenSSL EVP_MD structure. Example: EVP_sha512().
 /// \param serialNumber - X509 certificate serial number.
-/// \param version - X509 certificate version
-/// \param notBefore - X509 start date
-/// \param notAfter - X509 end date
-/// \return - Returns OpenSSL X509 structure or nullptr, if error happened. Returned value must be cleaned up with 'X509_free' to avoid memory leak.
+/// \param version - X509 certificate version.
+/// \param notBefore - X509 start date.
+/// \param notAfter - X509 end date.
+/// \return Returns OpenSSL X509 structure or nullptr, if error happened. Returned value must be cleaned up with 'X509_free' to avoid memory leak.
 ///
 X509* QSimpleCrypto::QX509::generateSelfSignedCertificate(const RSA* rsa, const QMap<QByteArray, QByteArray>& additionalData,
     const QByteArray& certificateFileName, const EVP_MD* md,

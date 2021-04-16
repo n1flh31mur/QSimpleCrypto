@@ -9,20 +9,20 @@ CONFIG += staticlib
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-SOURCES += \
-    sources/QAEAD.cpp \
-    sources/QBlockCipher.cpp \
-    sources/QRSA.cpp \
-    sources/QX509.cpp \
-    sources/QX509Store.cpp
-
 HEADERS += \
-    include/QAEAD.h \
+    include/QAead.h \
     include/QBlockCipher.h \
-    include/QRSA.h \
+    include/QRsa.h \
     include/QSimpleCrypto_global.h \
     include/QX509.h \
     include/QX509Store.h
+
+SOURCES += \
+    sources/QAead.cpp \
+    sources/QBlockCipher.cpp \
+    sources/QRsa.cpp \
+    sources/QX509.cpp \
+    sources/QX509Store.cpp
 
 # Default rules for deployment.
 unix {

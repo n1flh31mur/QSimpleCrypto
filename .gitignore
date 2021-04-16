@@ -30,3 +30,6 @@
 *.exe
 *.out
 *.app
+
+# Qt Creator User Files
+*.pro.user

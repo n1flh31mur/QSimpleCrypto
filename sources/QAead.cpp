@@ -1,30 +1,28 @@
 /**
- * Copyright 2020 BrutalWizard (https://github.com/bru74lw1z4rd). All Rights Reserved.
+ * Copyright 2021 BrutalWizard (https://github.com/bru74lw1z4rd). All Rights Reserved.
  *
  * Licensed under the Apache License 2.0 (the "License"). You may not use
  * this file except in compliance with the License. You can obtain a copy
  * in the file LICENSE in the source distribution
 **/
 
-#include "include/QAEAD.h"
+#include "include/QAead.h"
 
-QSimpleCrypto::QAEAD::QAEAD()
+QSimpleCrypto::QAead::QAead()
 {
 }
 
 ///
-/// \brief QSimpleCrypto::QAEAD::encryptAesGcm
-/// \param data - Data that will be encrypted
-/// \param key - AES key
-/// \param iv - Initialization vector
-/// \param tag - Authorization tag
-/// \param aad - Additional authenticated data. Must be nullptr, if not used
-/// \param cipher - Can be used with OpenSSL EVP_CIPHER (gcm) - 128, 192, 256. Example: EVP_aes_256_gcm()
-/// \return - Returns encrypted data or "", if error happened.
+/// \brief QSimpleCrypto::QAEAD::encryptAesGcm - Function encrypts data with Gcm algorithm.
+/// \param data - Data that will be encrypted.
+/// \param key - AES key.
+/// \param iv - Initialization vector.
+/// \param tag - Authorization tag.
+/// \param aad - Additional authenticated data. Must be nullptr, if not used.
+/// \param cipher - Can be used with OpenSSL EVP_CIPHER (gcm) - 128, 192, 256. Example: EVP_aes_256_gcm().
+/// \return Returns encrypted data or "", if error happened.
 ///
-QByteArray QSimpleCrypto::QAEAD::encryptAesGcm(QByteArray data, QByteArray key,
-    QByteArray iv, QByteArray* tag,
-    QByteArray aad, const EVP_CIPHER* cipher)
+QByteArray QSimpleCrypto::QAead::encryptAesGcm(QByteArray data, QByteArray key, QByteArray iv, QByteArray* tag, QByteArray aad, const EVP_CIPHER* cipher)
 {
     try {
         /* Initialize EVP_CIPHER_CTX */
@@ -107,18 +105,16 @@ QByteArray QSimpleCrypto::QAEAD::encryptAesGcm(QByteArray data, QByteArray key,
 }
 
 ///
-/// \brief QSimpleCrypto::QAEAD::decryptAesGcm
+/// \brief QSimpleCrypto::QAEAD::decryptAesGcm - Function decrypts data with Gcm algorithm.
 /// \param data - Data that will be decrypted
 /// \param key - AES key
 /// \param iv - Initialization vector
 /// \param tag - Authorization tag
 /// \param aad - Additional authenticated data. Must be nullptr, if not used
 /// \param cipher - Can be used with OpenSSL EVP_CIPHER (gcm) - 128, 192, 256. Example: EVP_aes_256_gcm()
-/// \return - Returns decrypted data or "", if error happened.
+/// \return Returns decrypted data or "", if error happened.
 ///
-QByteArray QSimpleCrypto::QAEAD::decryptAesGcm(QByteArray data, QByteArray key,
-    QByteArray iv, QByteArray* tag,
-    QByteArray aad, const EVP_CIPHER* cipher)
+QByteArray QSimpleCrypto::QAead::decryptAesGcm(QByteArray data, QByteArray key, QByteArray iv, QByteArray* tag, QByteArray aad, const EVP_CIPHER* cipher)
 {
     try {
         /* Initialize EVP_CIPHER_CTX */
@@ -201,18 +197,16 @@ QByteArray QSimpleCrypto::QAEAD::decryptAesGcm(QByteArray data, QByteArray key,
 }
 
 ///
-/// \brief QSimpleCrypto::QAEAD::encryptAesCcm
-/// \param data - Data that will be encrypted
-/// \param key - AES key
-/// \param iv - Initialization vector
-/// \param tag - Authorization tag
-/// \param aad - Additional authenticated data. Must be nullptr, if not used
-/// \param cipher - Can be used with OpenSSL EVP_CIPHER (ccm) - 128, 192, 256. Example: EVP_aes_256_ccm()
-/// \return - Returns encrypted data or "", if error happened.
+/// \brief QSimpleCrypto::QAEAD::encryptAesCcm - Function encrypts data with Ccm algorithm.
+/// \param data - Data that will be encrypted.
+/// \param key - AES key.
+/// \param iv - Initialization vector.
+/// \param tag - Authorization tag.
+/// \param aad - Additional authenticated data. Must be nullptr, if not used.
+/// \param cipher - Can be used with OpenSSL EVP_CIPHER (ccm) - 128, 192, 256. Example: EVP_aes_256_ccm().
+/// \return Returns encrypted data or "", if error happened.
 ///
-QByteArray QSimpleCrypto::QAEAD::encryptAesCcm(QByteArray data, QByteArray key,
-    QByteArray iv, QByteArray* tag,
-    QByteArray aad, const EVP_CIPHER* cipher)
+QByteArray QSimpleCrypto::QAead::encryptAesCcm(QByteArray data, QByteArray key, QByteArray iv, QByteArray* tag, QByteArray aad, const EVP_CIPHER* cipher)
 {
     try {
         /* Initialize EVP_CIPHER_CTX */
@@ -307,18 +301,16 @@ QByteArray QSimpleCrypto::QAEAD::encryptAesCcm(QByteArray data, QByteArray key,
 }
 
 ///
-/// \brief QSimpleCrypto::QAEAD::decryptAesCcm
-/// \param data - Data that will be decrypted
-/// \param key - AES key
-/// \param iv - Initialization vector
-/// \param tag - Authorization tag
-/// \param aad - Additional authenticated data. Must be nullptr, if not used
-/// \param cipher - Can be used with OpenSSL EVP_CIPHER (ccm) - 128, 192, 256. Example: EVP_aes_256_ccm()
-/// \return - Returns decrypted data or "", if error happened.
+/// \brief QSimpleCrypto::QAEAD::decryptAesCcm - Function decrypts data with Ccm algorithm.
+/// \param data - Data that will be decrypted.
+/// \param key - AES key.
+/// \param iv - Initialization vector.
+/// \param tag - Authorization tag.
+/// \param aad - Additional authenticated data. Must be nullptr, if not used.
+/// \param cipher - Can be used with OpenSSL EVP_CIPHER (ccm) - 128, 192, 256. Example: EVP_aes_256_ccm().
+/// \return Returns decrypted data or "", if error happened.
 ///
-QByteArray QSimpleCrypto::QAEAD::decryptAesCcm(QByteArray data, QByteArray key,
-    QByteArray iv, QByteArray* tag,
-    QByteArray aad, const EVP_CIPHER* cipher)
+QByteArray QSimpleCrypto::QAead::decryptAesCcm(QByteArray data, QByteArray key, QByteArray iv, QByteArray* tag, QByteArray aad, const EVP_CIPHER* cipher)
 {
     try {
         /* Initialize EVP_CIPHER_CTX */

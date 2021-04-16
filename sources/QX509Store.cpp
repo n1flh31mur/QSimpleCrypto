@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 BrutalWizard (https://github.com/bru74lw1z4rd). All Rights Reserved.
+ * Copyright 2021 BrutalWizard (https://github.com/bru74lw1z4rd). All Rights Reserved.
  *
  * Licensed under the Apache License 2.0 (the "License"). You may not use
  * this file except in compliance with the License. You can obtain a copy
@@ -14,9 +14,9 @@ QSimpleCrypto::QX509Store::QX509Store()
 
 ///
 /// \brief QSimpleCrypto::QX509::addCertificateToStore
-/// \param store - OpenSSL X509_STORE
-/// \param x509 - OpenSSL X509
-/// \return
+/// \param store - OpenSSL X509_STORE.
+/// \param x509 - OpenSSL X509.
+/// \return Returns 'true' on success and 'false', if error happened.
 ///
 bool QSimpleCrypto::QX509Store::addCertificateToStore(X509_STORE* store, X509* x509)
 {
@@ -30,9 +30,9 @@ bool QSimpleCrypto::QX509Store::addCertificateToStore(X509_STORE* store, X509* x
 
 ///
 /// \brief QSimpleCrypto::QX509Store::addLookup
-/// \param store - OpenSSL X509_STORE
-/// \param method - OpenSSL X509_LOOKUP_METHOD. Example: X509_LOOKUP_file
-/// \return
+/// \param store - OpenSSL X509_STORE.
+/// \param method - OpenSSL X509_LOOKUP_METHOD. Example: X509_LOOKUP_file.
+/// \return Returns 'true' on success and 'false', if error happened.
 ///
 bool QSimpleCrypto::QX509Store::addLookup(X509_STORE* store, X509_LOOKUP_METHOD* method)
 {
@@ -46,9 +46,9 @@ bool QSimpleCrypto::QX509Store::addLookup(X509_STORE* store, X509_LOOKUP_METHOD*
 
 ///
 /// \brief QSimpleCrypto::QX509Store::setCertificateDepth
-/// \param store - OpenSSL X509_STORE
-/// \param depth - That is the maximum number of untrusted CA certificates that can appear in a chain. Example: 0
-/// \return
+/// \param store - OpenSSL X509_STORE.
+/// \param depth - That is the maximum number of untrusted CA certificates that can appear in a chain. Example: 0.
+/// \return Returns 'true' on success and 'false', if error happened.
 ///
 bool QSimpleCrypto::QX509Store::setDepth(X509_STORE* store, const int& depth)
 {
@@ -62,9 +62,9 @@ bool QSimpleCrypto::QX509Store::setDepth(X509_STORE* store, const int& depth)
 
 ///
 /// \brief QSimpleCrypto::QX509Store::setFlag
-/// \param store - OpenSSL X509_STORE
-/// \param flag - The verification flags consists of zero or more of the following flags ored together. Example: X509_V_FLAG_CRL_CHECK
-/// \return
+/// \param store - OpenSSL X509_STORE.
+/// \param flag - The verification flags consists of zero or more of the following flags ored together. Example: X509_V_FLAG_CRL_CHECK.
+/// \return Returns 'true' on success and 'false', if error happened.
 ///
 bool QSimpleCrypto::QX509Store::setFlag(X509_STORE* store, const unsigned long& flag)
 {
@@ -78,9 +78,9 @@ bool QSimpleCrypto::QX509Store::setFlag(X509_STORE* store, const unsigned long& 
 
 ///
 /// \brief QSimpleCrypto::QX509Store::setFlag
-/// \param store - OpenSSL X509_STORE
-/// \param purpose - Verification purpose in param to purpose. Example: X509_PURPOSE_ANY
-/// \return
+/// \param store - OpenSSL X509_STORE.
+/// \param purpose - Verification purpose in param to purpose. Example: X509_PURPOSE_ANY.
+/// \return Returns 'true' on success and 'false', if error happened.
 ///
 bool QSimpleCrypto::QX509Store::setPurpose(X509_STORE* store, const int& purpose)
 {
@@ -94,9 +94,9 @@ bool QSimpleCrypto::QX509Store::setPurpose(X509_STORE* store, const int& purpose
 
 ///
 /// \brief QSimpleCrypto::QX509Store::setTrust
-/// \param store - OpenSSL X509_STORE
-/// \param trust - Trust Level. Example: X509_TRUST_SSL_SERVER
-/// \return
+/// \param store - OpenSSL X509_STORE.
+/// \param trust - Trust Level. Example: X509_TRUST_SSL_SERVER.
+/// \return Returns 'true' on success and 'false', if error happened.
 ///
 bool QSimpleCrypto::QX509Store::setTrust(X509_STORE* store, const int& trust)
 {
@@ -110,8 +110,8 @@ bool QSimpleCrypto::QX509Store::setTrust(X509_STORE* store, const int& trust)
 
 ///
 /// \brief QSimpleCrypto::QX509Store::setDefaultPaths
-/// \param store - OpenSSL X509_STORE
-/// \return
+/// \param store - OpenSSL X509_STORE.
+/// \return Returns 'true' on success and 'false', if error happened.
 ///
 bool QSimpleCrypto::QX509Store::setDefaultPaths(X509_STORE* store)
 {
@@ -125,10 +125,10 @@ bool QSimpleCrypto::QX509Store::setDefaultPaths(X509_STORE* store)
 
 ///
 /// \brief QSimpleCrypto::QX509Store::loadLocations
-/// \param store - OpenSSL X509_STORE
-/// \param fileName - File name. Example: "caCertificate.pem"
-/// \param dirPath - Path to file. Example: "path/To/File"
-/// \return
+/// \param store - OpenSSL X509_STORE.
+/// \param fileName - File name. Example: "caCertificate.pem".
+/// \param dirPath - Path to file. Example: "path/To/File".
+/// \return Returns 'true' on success and 'false', if error happened.
 ///
 bool QSimpleCrypto::QX509Store::loadLocations(X509_STORE* store, const QByteArray& fileName, const QByteArray& dirPath)
 {
@@ -142,9 +142,9 @@ bool QSimpleCrypto::QX509Store::loadLocations(X509_STORE* store, const QByteArra
 
 ///
 /// \brief QSimpleCrypto::QX509Store::loadLocations
-/// \param store - OpenSSL X509_STORE
-/// \param file - Qt QFile
-/// \return
+/// \param store - OpenSSL X509_STORE.
+/// \param file - Qt QFile that will be loaded.
+/// \return Returns 'true' on success and 'false', if error happened.
 ///
 bool QSimpleCrypto::QX509Store::loadLocations(X509_STORE* store, const QFile& file)
 {
@@ -161,9 +161,9 @@ bool QSimpleCrypto::QX509Store::loadLocations(X509_STORE* store, const QFile& fi
 
 ///
 /// \brief QSimpleCrypto::QX509Store::loadLocations
-/// \param store - OpenSSL X509_STORE
-/// \param fileInfo - Qt QFileInfo
-/// \return
+/// \param store - OpenSSL X509_STORE.
+/// \param fileInfo - Qt QFileInfo.
+/// \return Returns 'true' on success and 'false', if error happened.
 ///
 bool QSimpleCrypto::QX509Store::loadLocations(X509_STORE* store, const QFileInfo& fileInfo)
 {
