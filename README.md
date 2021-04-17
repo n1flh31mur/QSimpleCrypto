@@ -37,6 +37,7 @@ This library requires no special dependencies except of [**Qt**](https://www.qt.
 #
 
 ### Build
+Before building lib, you have to add **OpenSSL** lib to root folder or change path in `.pro` file.
 
 ```
 cd <projectDirecoty>
