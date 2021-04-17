@@ -11,13 +11,16 @@
 
 #include "QSimpleCrypto_global.h"
 
-#include <QDebug>
 #include <QFile>
 #include <QObject>
+
+#include <memory>
 
 #include <openssl/err.h>
 #include <openssl/pem.h>
 #include <openssl/rsa.h>
+
+#include "QCryptoError.h"
 
 // clang-format off
 namespace QSimpleCrypto
@@ -90,6 +93,11 @@ namespace QSimpleCrypto
         /// \return - Returns decrypted data or "", if error happened.
         ///
         QByteArray decrypt(QByteArray cipherText, RSA* rsa, const int& decryptType = PrivateDecrypt, const int& padding = RSA_PKCS1_PADDING);
+
+        ///
+        /// \brief error - Error handler class.
+        ///
+        QCryptoError error;
     };
 } // namespace QSimpleCrypto
 

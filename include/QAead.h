@@ -11,13 +11,16 @@
 
 #include "QSimpleCrypto_global.h"
 
-#include <QDebug>
 #include <QObject>
+
+#include <memory>
 
 #include <openssl/aes.h>
 #include <openssl/err.h>
 #include <openssl/evp.h>
 #include <openssl/rand.h>
+
+#include "QCryptoError.h"
 
 // clang-format off
 namespace QSimpleCrypto
@@ -73,6 +76,11 @@ namespace QSimpleCrypto
         /// \return Returns decrypted data or "", if error happened.
         ///
         QByteArray decryptAesCcm(QByteArray data, QByteArray key, QByteArray iv, QByteArray* tag, QByteArray aad = "", const EVP_CIPHER* cipher = EVP_aes_256_ccm());
+
+        ///
+        /// \brief error - Error handler class.
+        ///
+        QCryptoError error;
     };
 } // namespace QSimpleCrypto
 

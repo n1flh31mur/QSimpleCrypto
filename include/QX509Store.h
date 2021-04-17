@@ -11,14 +11,17 @@
 
 #include "QSimpleCrypto_global.h"
 
-#include <QDebug>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
 
+#include <memory>
+
 #include <openssl/err.h>
 #include <openssl/x509_vfy.h>
 #include <openssl/x509v3.h>
+
+#include "QCryptoError.h"
 
 // clang-format off
 namespace QSimpleCrypto
@@ -106,6 +109,11 @@ namespace QSimpleCrypto
         /// \return Returns 'true' on success and 'false', if error happened.
         ///
         bool loadLocations(X509_STORE* store, const QFileInfo& fileInfo);
+
+        ///
+        /// \brief error - Error handler class.
+        ///
+        QCryptoError error;
     };
 }
 

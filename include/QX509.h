@@ -11,15 +11,18 @@
 
 #include "QSimpleCrypto_global.h"
 
-#include <QDebug>
 #include <QMap>
 #include <QObject>
+
+#include <memory>
 
 #include <openssl/bio.h>
 #include <openssl/err.h>
 #include <openssl/pem.h>
 #include <openssl/x509.h>
 #include <openssl/x509_vfy.h>
+
+#include "QCryptoError.h"
 
 // clang-format off
 namespace QSimpleCrypto
@@ -73,6 +76,11 @@ namespace QSimpleCrypto
             const QByteArray& certificateFileName = "", const EVP_MD* md = EVP_sha512(),
             const long& serialNumber = 1, const long& version = x509LastVersion,
             const long& notBefore = 0, const long& notAfter = oneYear);
+
+        ///
+        /// \brief error - Error handler class.
+        ///
+        QCryptoError error;
     };
 } // namespace QSimpleCrypto
 

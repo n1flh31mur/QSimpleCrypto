@@ -11,13 +11,16 @@
 
 #include "QSimpleCrypto_global.h"
 
-#include <QDebug>
 #include <QObject>
+
+#include <memory>
 
 #include <openssl/aes.h>
 #include <openssl/err.h>
 #include <openssl/evp.h>
 #include <openssl/rand.h>
+
+#include "QCryptoError.h"
 
 // clang-format off
 namespace QSimpleCrypto
@@ -71,6 +74,11 @@ namespace QSimpleCrypto
             QByteArray iv = "", QByteArray password = "",
             QByteArray salt = "", const int& rounds = Aes256Rounds,
             const EVP_CIPHER* cipher = EVP_aes_256_cbc(), const EVP_MD* md = EVP_sha512());
+
+        ///
+        /// \brief error - Error handler class.
+        ///
+        QCryptoError error;
     };
 } // namespace QSimpleCrypto
 

@@ -27,7 +27,7 @@ QByteArray QSimpleCrypto::QBlockCipher::generateRandomBytes(const int& size)
 }
 
 ///
-/// \brief QSimpleCrypto::QBlockCipher::encryptAesBlockCipher
+/// \brief QSimpleCrypto::QBlockCipher::encryptAesBlockCipher - Function encrypts data with Aes Block Cipher algorithm.
 /// \param data - Data that will be encrypted.
 /// \param key - AES key.
 /// \param iv - Initialization vector.
@@ -46,8 +46,7 @@ QByteArray QSimpleCrypto::QBlockCipher::encryptAesBlockCipher(QByteArray data, Q
         /* Initialize EVP_CIPHER_CTX */
         std::unique_ptr<EVP_CIPHER_CTX, void (*)(EVP_CIPHER_CTX*)> encryptionCipher { EVP_CIPHER_CTX_new(), EVP_CIPHER_CTX_free };
         if (encryptionCipher == nullptr) {
-            throw std::runtime_error("Couldn't initialize \'encryptionCipher\'. EVP_CIPHER_CTX_new() error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
-            return QByteArray();
+            throw std::runtime_error("Couldn't initialize \'encryptionCipher\'. EVP_CIPHER_CTX_new(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
 
         /* Reinterpret values for multi use */
@@ -61,20 +60,17 @@ QByteArray QSimpleCrypto::QBlockCipher::encryptAesBlockCipher(QByteArray data, Q
         /* Initialize cipcherText. Here encrypted data will be stored */
         std::unique_ptr<unsigned char[]> cipherText { new unsigned char[cipherTextLength]() };
         if (cipherText == nullptr) {
-            throw std::runtime_error("Couldn't allocate memory for \'cipherText\'.");
-            return QByteArray();
+            throw std::runtime_error("Couldn't allocate memory for 'cipherText'.");
         }
 
         /* Start encryption with password based encryption routine */
         if (!EVP_BytesToKey(cipher, md, reinterpret_cast<unsigned char*>(salt.data()), reinterpret_cast<unsigned char*>(password.data()), password.length(), rounds, m_key, m_iv)) {
-            throw std::runtime_error("Couldn't start encryption routine. EVP_BytesToKey() error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
-            return QByteArray();
+            throw std::runtime_error("Couldn't start encryption routine. EVP_BytesToKey(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
 
         /* Initialize encryption operation. */
         if (!EVP_EncryptInit_ex(encryptionCipher.get(), cipher, nullptr, m_key, m_iv)) {
-            throw std::runtime_error("Couldn't initialize encryption operation. EVP_EncryptInit_ex() error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
-            return QByteArray();
+            throw std::runtime_error("Couldn't initialize encryption operation. EVP_EncryptInit_ex(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
 
         /*
@@ -82,14 +78,12 @@ QByteArray QSimpleCrypto::QBlockCipher::encryptAesBlockCipher(QByteArray data, Q
          * EVP_EncryptUpdate can be called multiple times if necessary
         */
         if (!EVP_EncryptUpdate(encryptionCipher.get(), cipherText.get(), &cipherTextLength, reinterpret_cast<const unsigned char*>(data.data()), data.size())) {
-            throw std::runtime_error("Couldn't provide message to be encrypted. EVP_EncryptUpdate() error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
-            return QByteArray();
+            throw std::runtime_error("Couldn't provide message to be encrypted. EVP_EncryptUpdate(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
 
         /* Finalize the encryption. Normally ciphertext bytes may be written at this stage */
         if (!EVP_EncryptFinal(encryptionCipher.get(), cipherText.get() + cipherTextLength, &finalLength)) {
-            throw std::runtime_error("Couldn't finalize encryption. EVP_EncryptFinal() error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
-            return QByteArray();
+            throw std::runtime_error("Couldn't finalize encryption. EVP_EncryptFinal(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
 
         /* Finilize data to be readable with qt */
@@ -98,10 +92,10 @@ QByteArray QSimpleCrypto::QBlockCipher::encryptAesBlockCipher(QByteArray data, Q
         return encryptedData;
 
     } catch (std::exception& exception) {
-        qCritical() << "Error occured:" << exception.what();
+        QSimpleCrypto::QBlockCipher::error.setError(1, exception.what());
         return QByteArray();
     } catch (...) {
-        qCritical() << "An unknown error occured";
+        QSimpleCrypto::QBlockCipher::error.setError(2, "Unknown error!");
         return QByteArray();
     }
 
@@ -109,7 +103,7 @@ QByteArray QSimpleCrypto::QBlockCipher::encryptAesBlockCipher(QByteArray data, Q
 }
 
 ///
-/// \brief QSimpleCrypto::QBlockCipher::encryptAesBlockCipher
+/// \brief QSimpleCrypto::QBlockCipher::encryptAesBlockCipher - Function decrypts data with Aes Block Cipher algorithm.
 /// \param data - Data that will be decrypted.
 /// \param key - AES key.
 /// \param iv - Initialization vector.
@@ -128,8 +122,7 @@ QByteArray QSimpleCrypto::QBlockCipher::decryptAesBlockCipher(QByteArray data, Q
         /* Initialize EVP_CIPHER_CTX */
         std::unique_ptr<EVP_CIPHER_CTX, void (*)(EVP_CIPHER_CTX*)> decryptionCipher { EVP_CIPHER_CTX_new(), EVP_CIPHER_CTX_free };
         if (decryptionCipher == nullptr) {
-            throw std::runtime_error("Couldn't initialize \'decryptionCipher\'. EVP_CIPHER_CTX_new() error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
-            return QByteArray();
+            throw std::runtime_error("Couldn't initialize \'decryptionCipher\'. EVP_CIPHER_CTX_new(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
 
         /* Reinterpret values for multi use */
@@ -143,20 +136,17 @@ QByteArray QSimpleCrypto::QBlockCipher::decryptAesBlockCipher(QByteArray data, Q
         /* Initialize plainText. Here decrypted data will be stored */
         std::unique_ptr<unsigned char[]> plainText { new unsigned char[plainTextLength + AES_BLOCK_SIZE]() };
         if (plainText == nullptr) {
-            throw std::runtime_error("Couldn't allocate memory for \'plainText\'. EVP_CIPHER_CTX_new() error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
-            return QByteArray();
+            throw std::runtime_error("Couldn't allocate memory for \'plainText\'. EVP_CIPHER_CTX_new(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
 
         /* Start encryption with password based encryption routine */
         if (!EVP_BytesToKey(cipher, md, reinterpret_cast<const unsigned char*>(salt.data()), reinterpret_cast<const unsigned char*>(password.data()), password.length(), rounds, m_key, m_iv)) {
-            throw std::runtime_error("Couldn't start decryption routine. EVP_BytesToKey() error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
-            return QByteArray();
+            throw std::runtime_error("Couldn't start decryption routine. EVP_BytesToKey(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
 
         /* Initialize decryption operation. */
         if (!EVP_DecryptInit_ex(decryptionCipher.get(), cipher, nullptr, m_key, m_iv)) {
-            throw std::runtime_error("Couldn't initialize decryption operation. EVP_DecryptInit_ex() error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
-            return QByteArray();
+            throw std::runtime_error("Couldn't initialize decryption operation. EVP_DecryptInit_ex(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
 
         /*
@@ -164,8 +154,7 @@ QByteArray QSimpleCrypto::QBlockCipher::decryptAesBlockCipher(QByteArray data, Q
          * EVP_DecryptUpdate can be called multiple times if necessary
         */
         if (!EVP_DecryptUpdate(decryptionCipher.get(), plainText.get(), &plainTextLength, reinterpret_cast<const unsigned char*>(data.data()), data.size())) {
-            throw std::runtime_error("Couldn't provide message to be decrypted. EVP_DecryptUpdate() error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
-            return QByteArray();
+            throw std::runtime_error("Couldn't provide message to be decrypted. EVP_DecryptUpdate(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
 
         /*
@@ -173,8 +162,7 @@ QByteArray QSimpleCrypto::QBlockCipher::decryptAesBlockCipher(QByteArray data, Q
          * anything else is a failure - the plaintext is not trustworthy.
         */
         if (!EVP_DecryptFinal(decryptionCipher.get(), plainText.get() + plainTextLength, &finalLength)) {
-            throw std::runtime_error("Couldn't finalize decryption. EVP_DecryptFinal error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
-            return QByteArray();
+            throw std::runtime_error("Couldn't finalize decryption. EVP_DecryptFinal. Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
 
         /* Finilize data to be readable with qt */
@@ -183,10 +171,10 @@ QByteArray QSimpleCrypto::QBlockCipher::decryptAesBlockCipher(QByteArray data, Q
         return decryptedData;
 
     } catch (std::exception& exception) {
-        qCritical() << "Error occured:" << exception.what();
+        QSimpleCrypto::QBlockCipher::error.setError(1, exception.what());
         return QByteArray();
     } catch (...) {
-        qCritical() << "An unknown error occured";
+        QSimpleCrypto::QBlockCipher::error.setError(2, "Unknown error!");
         return QByteArray();
     }
 

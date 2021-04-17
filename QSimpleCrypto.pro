@@ -12,12 +12,14 @@ CONFIG += staticlib
 HEADERS += \
     include/QAead.h \
     include/QBlockCipher.h \
+    include/QCryptoError.h \
     include/QRsa.h \
     include/QSimpleCrypto_global.h \
     include/QX509.h \
     include/QX509Store.h
 
 SOURCES += \
+    sources/QCryptoError.cpp \
     sources/QAead.cpp \
     sources/QBlockCipher.cpp \
     sources/QRsa.cpp \
@@ -33,8 +35,8 @@ unix {
 # Add OpenSSL lib
 unix:!macx: LIBS += -L$$PWD/../../../Qt/Tools/OpenSSL/binary/lib/ -lcrypto
 
-INCLUDEPATH += $$PWD/../../../Qt/Tools/OpenSSL/binary/include/openssl
-DEPENDPATH += $$PWD/../../../Qt/Tools/OpenSSL/binary/include/openssl
+INCLUDEPATH += $$PWD/OpenSSL/binary/include/openssl
+DEPENDPATH += $$PWD/OpenSSL/binary/include/openssl
 
-unix:!macx: PRE_TARGETDEPS += $$PWD/../../../Qt/Tools/OpenSSL/binary/lib/libcrypto.a
-unix:!macx: PRE_TARGETDEPS += $$PWD/../../../Qt/Tools/OpenSSL/binary/lib/libssl.a
+unix:!macx: PRE_TARGETDEPS += $$PWD/OpenSSL/binary/lib/libcrypto.a
+unix:!macx: PRE_TARGETDEPS += $$PWD/OpenSSL/binary/lib/libssl.a

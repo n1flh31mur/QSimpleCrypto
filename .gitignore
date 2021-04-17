@@ -33,3 +33,6 @@
 
 # Qt Creator User Files
 *.pro.user
+
+# OpenSSL Lib Folder
+/OpenSSL/
