@@ -5,10 +5,6 @@ TEMPLATE = lib
 CONFIG += c++17
 CONFIG += staticlib
 
-# You can make your code fail to compile if it uses deprecated APIs.
-# In order to do so, uncomment the following line.
-#DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
-
 HEADERS += \
     include/QAead.h \
     include/QBlockCipher.h \
@@ -19,9 +15,9 @@ HEADERS += \
     include/QX509Store.h
 
 SOURCES += \
-    sources/QCryptoError.cpp \
     sources/QAead.cpp \
     sources/QBlockCipher.cpp \
+    sources/QCryptoError.cpp \
     sources/QRsa.cpp \
     sources/QX509.cpp \
     sources/QX509Store.cpp
@@ -32,11 +28,19 @@ unix {
 }
 !isEmpty(target.path): INSTALLS += target
 
-# Add OpenSSL lib
-unix:!macx: LIBS += -L$$PWD/../../../Qt/Tools/OpenSSL/binary/lib/ -lcrypto
+# Include OpenSSL for unix
+linux:!android {
+    unix: LIBS += -L$$PWD/libs/OpenSSL/unix/ -lcrypto
+    unix: LIBS += -L$$PWD/libs/OpenSSL/unix/ -lssl
 
-INCLUDEPATH += $$PWD/OpenSSL/binary/include/openssl
-DEPENDPATH += $$PWD/OpenSSL/binary/include/openssl
+    INCLUDEPATH += $$PWD/libs/OpenSSL/unix/include
+    DEPENDPATH += $$PWD/libs/OpenSSL/unix/include
+}
 
-unix:!macx: PRE_TARGETDEPS += $$PWD/OpenSSL/binary/lib/libcrypto.a
-unix:!macx: PRE_TARGETDEPS += $$PWD/OpenSSL/binary/lib/libssl.a
+# Include OpenSSL for android
+android {
+    INCLUDEPATH += $$PWD/libs/OpenSSL/android/no-asm/static/include/
+    DEPENDPATH += $$PWD/libs/OpenSSL/android/no-asm/static/include/
+
+    android: include($$PWD/libs/OpenSSL/android/openssl.pri)
+}
