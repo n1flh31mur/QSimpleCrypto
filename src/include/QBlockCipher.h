@@ -49,9 +49,8 @@ public:
     /// \param md - Hash algroitm (OpenSSL EVP_MD). Example: EVP_sha512().
     /// \return Returns decrypted data or "", if error happened.
     ///
-    [[nodiscard]] QByteArray encryptAesBlockCipher(QByteArray data, QByteArray key,
-        QByteArray iv = "", QByteArray password = "",
-        QByteArray salt = "", const int& rounds = aes256Rounds,
+    [[nodiscard]] QByteArray encryptAesBlockCipher(QByteArray data, QByteArray key, QByteArray iv = "",
+        QByteArray password = "", QByteArray salt = "", const int& rounds = aes256Rounds,
         const EVP_CIPHER* cipher = EVP_aes_256_cbc(), const EVP_MD* md = EVP_sha512());
 
     ///
