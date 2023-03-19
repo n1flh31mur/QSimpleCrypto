@@ -23,13 +23,24 @@
 namespace QSimpleCrypto {
 class QSIMPLECRYPTO_EXPORT QRsa {
 
-#define publicEncrypt 0
-#define privateEncrypt 1
-#define publicDecrypt 2
-#define privateDecrypt 3
-
 public:
     QRsa();
+
+    ///
+    /// \brief The EncryptTypes enum - RSA algorithm encrypt types.
+    ///
+    enum EncryptTypes {
+        PublicEncrypt,
+        PrivateEncrypt
+    };
+
+    ///
+    /// \brief The DecryptTypes enum - RSA algorithm decrypt types.
+    ///
+    enum DecryptTypes {
+        PublicDecrypt,
+        PrivateDecrypt
+    };
 
     ///
     /// \brief generateRsaKeys - Function generate Rsa Keys and returns them in OpenSSL structure.
@@ -37,7 +48,7 @@ public:
     /// \param rsaBigNumber - The exponent is an odd number, typically 3, 17 or 65537.
     /// \return Returns 'OpenSSL RSA structure' or 'nullptr', if error happened. Returned value must be cleaned up with 'RSA_free()' to avoid memory leak.
     ///
-    [[nodiscard]] RSA* generateRsaKeys(const int& bits, const int& rsaBigNumber);
+    [[nodiscard]] RSA* generateRsaKeys(const qint32& bits, const qint32& rsaBigNumber);
 
     ///
     /// \brief savePublicKey - Saves to file RSA public key.
@@ -78,7 +89,7 @@ public:
     /// \param padding - OpenSSL RSA padding can be used with: 'RSA_PKCS1_PADDING', 'RSA_NO_PADDING' and etc.
     /// \return Returns encrypted data or "", if error happened.
     ///
-    [[nodiscard]] QByteArray encrypt(QByteArray plainText, RSA* rsa, const int& encryptType = publicEncrypt, const int& padding = RSA_PKCS1_PADDING);
+    [[nodiscard]] QByteArray encrypt(QByteArray plainText, RSA* rsa, const EncryptTypes encryptType = EncryptTypes::PublicEncrypt, const int& padding = RSA_PKCS1_PADDING);
 
     ///
     /// \brief decrypt - Decrypt data with RSA algorithm.
@@ -88,7 +99,7 @@ public:
     /// \param padding  - RSA padding can be used with: 'RSA_PKCS1_PADDING', 'RSA_NO_PADDING' and etc.
     /// \return - Returns decrypted data or "", if error happened.
     ///
-    [[nodiscard]] QByteArray decrypt(QByteArray cipherText, RSA* rsa, const int& decryptType = privateDecrypt, const int& padding = RSA_PKCS1_PADDING);
+    [[nodiscard]] QByteArray decrypt(QByteArray cipherText, RSA* rsa, const DecryptTypes decryptType = DecryptTypes::PrivateDecrypt, const int& padding = RSA_PKCS1_PADDING);
 };
 } // namespace QSimpleCrypto
 

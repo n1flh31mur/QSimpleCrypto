@@ -18,7 +18,7 @@ QSimpleCrypto::QRsa::QRsa()
 /// \param rsaBigNumber - The exponent is an odd number, typically 3, 17 or 65537.
 /// \return Returns 'OpenSSL RSA structure' or 'nullptr', if error happened. Returned value must be cleaned up with 'RSA_free()' to avoid memory leak.
 ///
-RSA* QSimpleCrypto::QRsa::generateRsaKeys(const int& bits, const int& rsaBigNumber)
+RSA* QSimpleCrypto::QRsa::generateRsaKeys(const qint32& bits, const qint32& rsaBigNumber)
 {
     try {
         /* Initialize big number */
@@ -158,7 +158,7 @@ EVP_PKEY* QSimpleCrypto::QRsa::getPrivateKeyFromFile(const QByteArray& filePath,
         }
 
         /* Write private key to file */
-        if (!PEM_read_bio_PrivateKey(bioPrivateKey.get(), &keyStore, nullptr, (void*)password.data())) {
+        if (!PEM_read_bio_PrivateKey(bioPrivateKey.get(), &keyStore, nullptr, static_cast<void*>(const_cast<char*>(password.data())))) {
             throw std::runtime_error("Couldn't read private key. PEM_read_bio_PrivateKey(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
 
@@ -178,7 +178,7 @@ EVP_PKEY* QSimpleCrypto::QRsa::getPrivateKeyFromFile(const QByteArray& filePath,
 /// \param padding - OpenSSL RSA padding can be used with: 'RSA_PKCS1_PADDING', 'RSA_NO_PADDING' and etc.
 /// \return Returns encrypted data or "", if error happened.
 ///
-QByteArray QSimpleCrypto::QRsa::encrypt(QByteArray plainText, RSA* rsa, const int& encryptType, const int& padding)
+QByteArray QSimpleCrypto::QRsa::encrypt(QByteArray plainText, RSA* rsa, const EncryptTypes encryptType, const int& padding)
 {
     try {
         /* Initialize array. Here encrypted data will be saved */
@@ -191,9 +191,9 @@ QByteArray QSimpleCrypto::QRsa::encrypt(QByteArray plainText, RSA* rsa, const in
         short int result = 0;
 
         /* Execute encryption operation */
-        if (encryptType == publicDecrypt) {
+        if (encryptType == EncryptTypes::PublicEncrypt) {
             result = RSA_public_encrypt(plainText.size(), reinterpret_cast<unsigned char*>(plainText.data()), cipherText.get(), rsa, padding);
-        } else if (encryptType == privateDecrypt) {
+        } else if (encryptType == EncryptTypes::PrivateEncrypt) {
             result = RSA_private_encrypt(plainText.size(), reinterpret_cast<unsigned char*>(plainText.data()), cipherText.get(), rsa, padding);
         }
 
@@ -219,7 +219,7 @@ QByteArray QSimpleCrypto::QRsa::encrypt(QByteArray plainText, RSA* rsa, const in
 /// \param padding  - RSA padding can be used with: 'RSA_PKCS1_PADDING', 'RSA_NO_PADDING' and etc.
 /// \return - Returns decrypted data or "", if error happened.
 ///
-QByteArray QSimpleCrypto::QRsa::decrypt(QByteArray cipherText, RSA* rsa, const int& decryptType, const int& padding)
+QByteArray QSimpleCrypto::QRsa::decrypt(QByteArray cipherText, RSA* rsa, const DecryptTypes decryptType, const int& padding)
 {
     try {
         /* Initialize array. Here decrypted data will be saved */
@@ -232,9 +232,9 @@ QByteArray QSimpleCrypto::QRsa::decrypt(QByteArray cipherText, RSA* rsa, const i
         short int result = 0;
 
         /* Execute decryption operation */
-        if (decryptType == publicDecrypt) {
+        if (decryptType == DecryptTypes::PublicDecrypt) {
             result = RSA_public_decrypt(RSA_size(rsa), reinterpret_cast<unsigned char*>(cipherText.data()), plainText.get(), rsa, padding);
-        } else if (decryptType == privateDecrypt) {
+        } else if (decryptType == DecryptTypes::PrivateDecrypt) {
             result = RSA_private_decrypt(RSA_size(rsa), reinterpret_cast<unsigned char*>(cipherText.data()), plainText.get(), rsa, padding);
         }
 
