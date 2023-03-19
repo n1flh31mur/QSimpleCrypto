@@ -22,7 +22,7 @@ QSimpleCrypto::QAead::QAead()
 /// \param cipher - Can be used with OpenSSL EVP_CIPHER (gcm) - 128, 192, 256. Example: EVP_aes_256_gcm().
 /// \return Returns encrypted data or "", if error happened.
 ///
-QByteArray QSimpleCrypto::QAead::encryptAesGcm(QByteArray data, QByteArray key, QByteArray iv, QByteArray* tag, QByteArray aad, const EVP_CIPHER* cipher)
+QByteArray QSimpleCrypto::QAead::encryptAesGcm(const QByteArray& data, const QByteArray& key, const QByteArray& iv, const QByteArray& tag, const QByteArray& aad, const EVP_CIPHER* cipher)
 {
     try {
         /* Initialize EVP_CIPHER_CTX */
@@ -42,7 +42,7 @@ QByteArray QSimpleCrypto::QAead::encryptAesGcm(QByteArray data, QByteArray key, 
         }
 
         /* Initialize encryption operation. */
-        if (!EVP_EncryptInit_ex(encryptionCipher.get(), cipher, nullptr, reinterpret_cast<unsigned char*>(key.data()), reinterpret_cast<unsigned char*>(iv.data()))) {
+        if (!EVP_EncryptInit_ex(encryptionCipher.get(), cipher, nullptr, reinterpret_cast<const unsigned char*>(key.data()), reinterpret_cast<const unsigned char*>(iv.data()))) {
             throw std::runtime_error("Couldn't initialize encryption operation. EVP_EncryptInit_ex(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
 
@@ -54,7 +54,7 @@ QByteArray QSimpleCrypto::QAead::encryptAesGcm(QByteArray data, QByteArray key, 
         /* Check if aad need to be used */
         if (aad.length() > 0) {
             /* Provide any AAD data. This can be called zero or more times as required */
-            if (!EVP_EncryptUpdate(encryptionCipher.get(), nullptr, &cipherTextLength, reinterpret_cast<unsigned char*>(aad.data()), aad.length())) {
+            if (!EVP_EncryptUpdate(encryptionCipher.get(), nullptr, &cipherTextLength, reinterpret_cast<const unsigned char*>(aad.data()), aad.length())) {
                 throw std::runtime_error("Couldn't provide aad data. EVP_EncryptUpdate(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
             }
         }
@@ -76,14 +76,14 @@ QByteArray QSimpleCrypto::QAead::encryptAesGcm(QByteArray data, QByteArray key, 
         }
 
         /* Get tag */
-        if (!EVP_CIPHER_CTX_ctrl(encryptionCipher.get(), EVP_CTRL_GCM_GET_TAG, tag->length(), reinterpret_cast<unsigned char*>(tag->data()))) {
+        if (!EVP_CIPHER_CTX_ctrl(encryptionCipher.get(), EVP_CTRL_GCM_GET_TAG, tag.length(), static_cast<void*>(const_cast<char*>(tag.constData())))) {
             throw std::runtime_error("Couldn't get tag. EVP_CIPHER_CTX_ctrl(. Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
 
         /* Finilize data to be readable with qt */
         return QByteArray(reinterpret_cast<char*>(cipherText.get()), cipherTextLength);
     } catch (const std::exception& exception) {
-        std::throw_with_nested(exception);
+        std::throw_with_nested(exception.what());
     } catch (...) {
         throw;
     }
@@ -101,7 +101,7 @@ QByteArray QSimpleCrypto::QAead::encryptAesGcm(QByteArray data, QByteArray key, 
 /// \param cipher - Can be used with OpenSSL EVP_CIPHER (gcm) - 128, 192, 256. Example: EVP_aes_256_gcm()
 /// \return Returns decrypted data or "", if error happened.
 ///
-QByteArray QSimpleCrypto::QAead::decryptAesGcm(QByteArray data, QByteArray key, QByteArray iv, QByteArray* tag, QByteArray aad, const EVP_CIPHER* cipher)
+QByteArray QSimpleCrypto::QAead::decryptAesGcm(const QByteArray& data, const QByteArray& key, const QByteArray& iv, const QByteArray& tag, const QByteArray& aad, const EVP_CIPHER* cipher)
 {
     try {
         /* Initialize EVP_CIPHER_CTX */
@@ -121,7 +121,7 @@ QByteArray QSimpleCrypto::QAead::decryptAesGcm(QByteArray data, QByteArray key, 
         }
 
         /* Initialize decryption operation. */
-        if (!EVP_DecryptInit_ex(decryptionCipher.get(), cipher, nullptr, reinterpret_cast<unsigned char*>(key.data()), reinterpret_cast<unsigned char*>(iv.data()))) {
+        if (!EVP_DecryptInit_ex(decryptionCipher.get(), cipher, nullptr, reinterpret_cast<const unsigned char*>(key.data()), reinterpret_cast<const unsigned char*>(iv.data()))) {
             throw std::runtime_error("Couldn't initialize decryption operation. EVP_DecryptInit_ex(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
 
@@ -133,7 +133,7 @@ QByteArray QSimpleCrypto::QAead::decryptAesGcm(QByteArray data, QByteArray key, 
         /* Check if aad need to be used */
         if (aad.length() > 0) {
             /* Provide any AAD data. This can be called zero or more times as required */
-            if (!EVP_DecryptUpdate(decryptionCipher.get(), nullptr, &plainTextLength, reinterpret_cast<unsigned char*>(aad.data()), aad.length())) {
+            if (!EVP_DecryptUpdate(decryptionCipher.get(), nullptr, &plainTextLength, reinterpret_cast<const unsigned char*>(aad.data()), aad.length())) {
                 throw std::runtime_error("Couldn't provide aad data. EVP_DecryptUpdate(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
             }
         }
@@ -147,7 +147,7 @@ QByteArray QSimpleCrypto::QAead::decryptAesGcm(QByteArray data, QByteArray key, 
         }
 
         /* Set expected tag value. Works in OpenSSL 1.0.1d and later */
-        if (!EVP_CIPHER_CTX_ctrl(decryptionCipher.get(), EVP_CTRL_GCM_SET_TAG, tag->length(), reinterpret_cast<unsigned char*>(tag->data()))) {
+        if (!EVP_CIPHER_CTX_ctrl(decryptionCipher.get(), EVP_CTRL_GCM_SET_TAG, tag.length(), static_cast<void*>(const_cast<char*>(tag.constData())))) {
             throw std::runtime_error("Coldn't set tag. EVP_CIPHER_CTX_ctrl(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
 
@@ -162,7 +162,7 @@ QByteArray QSimpleCrypto::QAead::decryptAesGcm(QByteArray data, QByteArray key, 
         /* Finilize data to be readable with qt */
         return QByteArray(reinterpret_cast<char*>(plainText.get()), plainTextLength);
     } catch (const std::exception& exception) {
-        std::throw_with_nested(exception);
+        std::throw_with_nested(exception.what());
     } catch (...) {
         throw;
     }
@@ -180,7 +180,7 @@ QByteArray QSimpleCrypto::QAead::decryptAesGcm(QByteArray data, QByteArray key, 
 /// \param cipher - Can be used with OpenSSL EVP_CIPHER (ccm) - 128, 192, 256. Example: EVP_aes_256_ccm().
 /// \return Returns encrypted data or "", if error happened.
 ///
-QByteArray QSimpleCrypto::QAead::encryptAesCcm(QByteArray data, QByteArray key, QByteArray iv, QByteArray* tag, QByteArray aad, const EVP_CIPHER* cipher)
+QByteArray QSimpleCrypto::QAead::encryptAesCcm(const QByteArray& data, const QByteArray& key, const QByteArray& iv, const QByteArray& tag, const QByteArray& aad, const EVP_CIPHER* cipher)
 {
     try {
         /* Initialize EVP_CIPHER_CTX */
@@ -200,7 +200,7 @@ QByteArray QSimpleCrypto::QAead::encryptAesCcm(QByteArray data, QByteArray key, 
         }
 
         /* Initialize encryption operation. */
-        if (!EVP_EncryptInit_ex(encryptionCipher.get(), cipher, nullptr, reinterpret_cast<unsigned char*>(key.data()), reinterpret_cast<unsigned char*>(iv.data()))) {
+        if (!EVP_EncryptInit_ex(encryptionCipher.get(), cipher, nullptr, reinterpret_cast<const unsigned char*>(key.data()), reinterpret_cast<const unsigned char*>(iv.data()))) {
             throw std::runtime_error("Couldn't initialize encryption operation. EVP_EncryptInit_ex(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
 
@@ -210,7 +210,7 @@ QByteArray QSimpleCrypto::QAead::encryptAesCcm(QByteArray data, QByteArray key, 
         }
 
         /* Set tag length */
-        if (!EVP_CIPHER_CTX_ctrl(encryptionCipher.get(), EVP_CTRL_CCM_SET_TAG, tag->length(), nullptr)) {
+        if (!EVP_CIPHER_CTX_ctrl(encryptionCipher.get(), EVP_CTRL_CCM_SET_TAG, tag.length(), nullptr)) {
             throw std::runtime_error("Coldn't set tag. EVP_CIPHER_CTX_ctrl(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
 
@@ -222,7 +222,7 @@ QByteArray QSimpleCrypto::QAead::encryptAesCcm(QByteArray data, QByteArray key, 
             }
 
             /* Provide any AAD data. This can be called zero or more times as required */
-            if (!EVP_EncryptUpdate(encryptionCipher.get(), nullptr, &cipherTextLength, reinterpret_cast<unsigned char*>(aad.data()), aad.length())) {
+            if (!EVP_EncryptUpdate(encryptionCipher.get(), nullptr, &cipherTextLength, reinterpret_cast<const unsigned char*>(aad.data()), aad.length())) {
                 throw std::runtime_error("Couldn't provide aad data. EVP_EncryptUpdate(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
             }
         }
@@ -244,14 +244,14 @@ QByteArray QSimpleCrypto::QAead::encryptAesCcm(QByteArray data, QByteArray key, 
         }
 
         /* Get tag */
-        if (!EVP_CIPHER_CTX_ctrl(encryptionCipher.get(), EVP_CTRL_CCM_GET_TAG, tag->length(), reinterpret_cast<unsigned char*>(tag->data()))) {
+        if (!EVP_CIPHER_CTX_ctrl(encryptionCipher.get(), EVP_CTRL_CCM_GET_TAG, tag.length(), static_cast<void*>(const_cast<char*>(tag.constData())))) {
             throw std::runtime_error("Couldn't get tag. EVP_CIPHER_CTX_ctrl(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
 
         /* Finilize data to be readable with qt */
         return QByteArray(reinterpret_cast<char*>(cipherText.get()), cipherTextLength);
     } catch (const std::exception& exception) {
-        std::throw_with_nested(exception);
+        std::throw_with_nested(exception.what());
     } catch (...) {
         throw;
     }
@@ -269,7 +269,7 @@ QByteArray QSimpleCrypto::QAead::encryptAesCcm(QByteArray data, QByteArray key, 
 /// \param cipher - Can be used with OpenSSL EVP_CIPHER (ccm) - 128, 192, 256. Example: EVP_aes_256_ccm().
 /// \return Returns decrypted data or "", if error happened.
 ///
-QByteArray QSimpleCrypto::QAead::decryptAesCcm(QByteArray data, QByteArray key, QByteArray iv, QByteArray* tag, QByteArray aad, const EVP_CIPHER* cipher)
+QByteArray QSimpleCrypto::QAead::decryptAesCcm(const QByteArray& data, const QByteArray& key, const QByteArray& iv, const QByteArray& tag, const QByteArray& aad, const EVP_CIPHER* cipher)
 {
     try {
         /* Initialize EVP_CIPHER_CTX */
@@ -289,7 +289,7 @@ QByteArray QSimpleCrypto::QAead::decryptAesCcm(QByteArray data, QByteArray key, 
         }
 
         /* Initialize decryption operation. */
-        if (!EVP_DecryptInit_ex(decryptionCipher.get(), cipher, nullptr, reinterpret_cast<unsigned char*>(key.data()), reinterpret_cast<unsigned char*>(iv.data()))) {
+        if (!EVP_DecryptInit_ex(decryptionCipher.get(), cipher, nullptr, reinterpret_cast<const unsigned char*>(key.data()), reinterpret_cast<const unsigned char*>(iv.data()))) {
             throw std::runtime_error("Couldn't initialize decryption operation. EVP_DecryptInit_ex(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
 
@@ -299,7 +299,7 @@ QByteArray QSimpleCrypto::QAead::decryptAesCcm(QByteArray data, QByteArray key, 
         }
 
         /* Set expected tag value. Works in OpenSSL 1.0.1d and later */
-        if (!EVP_CIPHER_CTX_ctrl(decryptionCipher.get(), EVP_CTRL_CCM_SET_TAG, tag->length(), reinterpret_cast<unsigned char*>(tag->data()))) {
+        if (!EVP_CIPHER_CTX_ctrl(decryptionCipher.get(), EVP_CTRL_CCM_SET_TAG, tag.length(), static_cast<void*>(const_cast<char*>(tag.constData())))) {
             throw std::runtime_error("Coldn't set tag. EVP_CIPHER_CTX_ctrl(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
 
@@ -311,7 +311,7 @@ QByteArray QSimpleCrypto::QAead::decryptAesCcm(QByteArray data, QByteArray key, 
             }
 
             /* Provide any AAD data. This can be called zero or more times as required */
-            if (!EVP_DecryptUpdate(decryptionCipher.get(), nullptr, &plainTextLength, reinterpret_cast<unsigned char*>(aad.data()), aad.length())) {
+            if (!EVP_DecryptUpdate(decryptionCipher.get(), nullptr, &plainTextLength, reinterpret_cast<const unsigned char*>(aad.data()), aad.length())) {
                 throw std::runtime_error("Couldn't provide aad data. EVP_DecryptUpdate(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
             }
         }
@@ -335,7 +335,7 @@ QByteArray QSimpleCrypto::QAead::decryptAesCcm(QByteArray data, QByteArray key, 
         /* Finilize data to be readable with qt */
         return QByteArray(reinterpret_cast<char*>(plainText.get()), plainTextLength);
     } catch (const std::exception& exception) {
-        std::throw_with_nested(exception);
+        std::throw_with_nested(exception.what());
     } catch (...) {
         throw;
     }
