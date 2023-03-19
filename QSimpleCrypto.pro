@@ -29,7 +29,7 @@ unix {
 !isEmpty(target.path): INSTALLS += target
 
 # Include OpenSSL for unix
-linux:!android {
+unix {
     unix: LIBS += -L$$PWD/libs/OpenSSL/unix/ -lcrypto
     unix: LIBS += -L$$PWD/libs/OpenSSL/unix/ -lssl
 
