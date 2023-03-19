@@ -4,7 +4,7 @@
  * Licensed under the Apache License 2.0 (the "License"). You may not use
  * this file except in compliance with the License. You can obtain a copy
  * in the file LICENSE in the source distribution
-**/
+ **/
 
 #include "include/QX509.h"
 
@@ -38,12 +38,10 @@ X509* QSimpleCrypto::QX509::loadCertificateFromFile(const QByteArray& fileName)
         }
 
         return x509;
-    } catch (std::exception& exception) {
-        QSimpleCrypto::QX509::error.setError(1, exception.what());
-        return nullptr;
+    } catch (const std::exception& exception) {
+        std::throw_with_nested(exception);
     } catch (...) {
-        QSimpleCrypto::QX509::error.setError(2, "Unknown error!");
-        return nullptr;
+        throw;
     }
 }
 
@@ -83,12 +81,10 @@ X509* QSimpleCrypto::QX509::signCertificate(X509* endCertificate, X509* caCertif
         }
 
         return endCertificate;
-    } catch (std::exception& exception) {
-        QSimpleCrypto::QX509::error.setError(1, exception.what());
-        return nullptr;
+    } catch (const std::exception& exception) {
+        std::throw_with_nested(exception);
     } catch (...) {
-        QSimpleCrypto::QX509::error.setError(2, "Unknown error!");
-        return nullptr;
+        throw;
     }
 }
 
@@ -118,12 +114,10 @@ X509* QSimpleCrypto::QX509::verifyCertificate(X509* x509, X509_STORE* store)
         }
 
         return x509;
-    } catch (std::exception& exception) {
-        QSimpleCrypto::QX509::error.setError(1, exception.what());
-        return nullptr;
+    } catch (const std::exception& exception) {
+        std::throw_with_nested(exception);
     } catch (...) {
-        QSimpleCrypto::QX509::error.setError(2, "Unknown error!");
-        return nullptr;
+        throw;
     }
 }
 
@@ -224,11 +218,9 @@ X509* QSimpleCrypto::QX509::generateSelfSignedCertificate(const RSA* rsa, const 
         }
 
         return x509;
-    } catch (std::exception& exception) {
-        QSimpleCrypto::QX509::error.setError(1, exception.what());
-        return nullptr;
+    } catch (const std::exception& exception) {
+        std::throw_with_nested(exception);
     } catch (...) {
-        QSimpleCrypto::QX509::error.setError(2, "Unknown error!");
-        return nullptr;
+        throw;
     }
 }

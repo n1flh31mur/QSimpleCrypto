@@ -4,7 +4,7 @@
  * Licensed under the Apache License 2.0 (the "License"). You may not use
  * this file except in compliance with the License. You can obtain a copy
  * in the file LICENSE in the source distribution
-**/
+ **/
 
 #include "include/QRsa.h"
 
@@ -25,7 +25,6 @@ RSA* QSimpleCrypto::QRsa::generateRsaKeys(const int& bits, const int& rsaBigNumb
         std::unique_ptr<BIGNUM, void (*)(BIGNUM*)> bigNumber { BN_new(), BN_free };
         if (bigNumber == nullptr) {
             throw std::runtime_error("Couldn't initialize \'bigNumber\'. BN_new(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
-            return nullptr;
         }
 
         /* Set big number */
@@ -45,12 +44,10 @@ RSA* QSimpleCrypto::QRsa::generateRsaKeys(const int& bits, const int& rsaBigNumb
         }
 
         return rsa;
-    } catch (std::exception& exception) {
-        QSimpleCrypto::QRsa::error.setError(1, exception.what());
-        return nullptr;
+    } catch (const std::exception& exception) {
+        std::throw_with_nested(exception);
     } catch (...) {
-        QSimpleCrypto::QRsa::error.setError(2, "Unknown error!");
-        return nullptr;
+        throw;
     }
 }
 
@@ -72,12 +69,10 @@ void QSimpleCrypto::QRsa::savePublicKey(RSA* rsa, const QByteArray& publicKeyFil
         if (!PEM_write_bio_RSA_PUBKEY(bioPublicKey.get(), rsa)) {
             throw std::runtime_error("Couldn't save public key. PEM_write_bio_RSAPublicKey(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
-    } catch (std::exception& exception) {
-        QSimpleCrypto::QRsa::error.setError(1, exception.what());
-        return;
+    } catch (const std::exception& exception) {
+        std::throw_with_nested(exception);
     } catch (...) {
-        QSimpleCrypto::QRsa::error.setError(2, "Unknown error!");
-        return;
+        throw;
     }
 }
 
@@ -101,12 +96,10 @@ void QSimpleCrypto::QRsa::savePrivateKey(RSA* rsa, const QByteArray& privateKeyF
         if (!PEM_write_bio_RSAPrivateKey(bioPrivateKey.get(), rsa, cipher, reinterpret_cast<unsigned char*>(password.data()), password.size(), nullptr, nullptr)) {
             throw std::runtime_error("Couldn't save private key. PEM_write_bio_RSAPrivateKey(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
-    } catch (std::exception& exception) {
-        QSimpleCrypto::QRsa::error.setError(1, exception.what());
-        return;
+    } catch (const std::exception& exception) {
+        std::throw_with_nested(exception);
     } catch (...) {
-        QSimpleCrypto::QRsa::error.setError(2, "Unknown error!");
-        return;
+        throw;
     }
 }
 
@@ -136,13 +129,10 @@ EVP_PKEY* QSimpleCrypto::QRsa::getPublicKeyFromFile(const QByteArray& filePath)
         }
 
         return keyStore;
-
-    } catch (std::exception& exception) {
-        QSimpleCrypto::QRsa::error.setError(1, exception.what());
-        return nullptr;
+    } catch (const std::exception& exception) {
+        std::throw_with_nested(exception);
     } catch (...) {
-        QSimpleCrypto::QRsa::error.setError(2, "Unknown error!");
-        return nullptr;
+        throw;
     }
 }
 
@@ -173,13 +163,10 @@ EVP_PKEY* QSimpleCrypto::QRsa::getPrivateKeyFromFile(const QByteArray& filePath,
         }
 
         return keyStore;
-
-    } catch (std::exception& exception) {
-        QSimpleCrypto::QRsa::error.setError(1, exception.what());
-        return nullptr;
+    } catch (const std::exception& exception) {
+        std::throw_with_nested(exception);
     } catch (...) {
-        QSimpleCrypto::QRsa::error.setError(2, "Unknown error!");
-        return nullptr;
+        throw;
     }
 }
 
@@ -204,9 +191,9 @@ QByteArray QSimpleCrypto::QRsa::encrypt(QByteArray plainText, RSA* rsa, const in
         short int result = 0;
 
         /* Execute encryption operation */
-        if (encryptType == PublicDecrypt) {
+        if (encryptType == publicDecrypt) {
             result = RSA_public_encrypt(plainText.size(), reinterpret_cast<unsigned char*>(plainText.data()), cipherText.get(), rsa, padding);
-        } else if (encryptType == PrivateDecrypt) {
+        } else if (encryptType == privateDecrypt) {
             result = RSA_private_encrypt(plainText.size(), reinterpret_cast<unsigned char*>(plainText.data()), cipherText.get(), rsa, padding);
         }
 
@@ -216,15 +203,11 @@ QByteArray QSimpleCrypto::QRsa::encrypt(QByteArray plainText, RSA* rsa, const in
         }
 
         /* Get encrypted data */
-        const QByteArray& encryptedData = QByteArray(reinterpret_cast<char*>(cipherText.get()), RSA_size(rsa));
-
-        return encryptedData;
-    } catch (std::exception& exception) {
-        QSimpleCrypto::QRsa::error.setError(1, exception.what());
-        return "";
+        return QByteArray(reinterpret_cast<char*>(cipherText.get()), RSA_size(rsa));
+    } catch (const std::exception& exception) {
+        std::throw_with_nested(exception);
     } catch (...) {
-        QSimpleCrypto::QRsa::error.setError(2, "Unknown error!");
-        return "";
+        throw;
     }
 }
 
@@ -249,9 +232,9 @@ QByteArray QSimpleCrypto::QRsa::decrypt(QByteArray cipherText, RSA* rsa, const i
         short int result = 0;
 
         /* Execute decryption operation */
-        if (decryptType == PublicDecrypt) {
+        if (decryptType == publicDecrypt) {
             result = RSA_public_decrypt(RSA_size(rsa), reinterpret_cast<unsigned char*>(cipherText.data()), plainText.get(), rsa, padding);
-        } else if (decryptType == PrivateDecrypt) {
+        } else if (decryptType == privateDecrypt) {
             result = RSA_private_decrypt(RSA_size(rsa), reinterpret_cast<unsigned char*>(cipherText.data()), plainText.get(), rsa, padding);
         }
 
@@ -261,14 +244,10 @@ QByteArray QSimpleCrypto::QRsa::decrypt(QByteArray cipherText, RSA* rsa, const i
         }
 
         /* Get decrypted data */
-        const QByteArray& decryptedData = QByteArray(reinterpret_cast<char*>(plainText.get()));
-
-        return decryptedData;
-    } catch (std::exception& exception) {
-        QSimpleCrypto::QRsa::error.setError(1, exception.what());
-        return "";
+        return QByteArray(reinterpret_cast<char*>(plainText.get()));
+    } catch (const std::exception& exception) {
+        std::throw_with_nested(exception);
     } catch (...) {
-        QSimpleCrypto::QRsa::error.setError(2, "Unknown error!");
-        return "";
+        throw;
     }
 }

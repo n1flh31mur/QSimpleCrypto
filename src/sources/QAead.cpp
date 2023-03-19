@@ -4,7 +4,7 @@
  * Licensed under the Apache License 2.0 (the "License"). You may not use
  * this file except in compliance with the License. You can obtain a copy
  * in the file LICENSE in the source distribution
-**/
+ **/
 
 #include "include/QAead.h"
 
@@ -62,7 +62,7 @@ QByteArray QSimpleCrypto::QAead::encryptAesGcm(QByteArray data, QByteArray key, 
         /*
          * Provide the message to be encrypted, and obtain the encrypted output.
          * EVP_EncryptUpdate can be called multiple times if necessary
-        */
+         */
         if (!EVP_EncryptUpdate(encryptionCipher.get(), cipherText.get(), &cipherTextLength, reinterpret_cast<const unsigned char*>(data.data()), plainTextLength)) {
             throw std::runtime_error("Couldn't provide message to be encrypted. EVP_EncryptUpdate(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
@@ -70,7 +70,7 @@ QByteArray QSimpleCrypto::QAead::encryptAesGcm(QByteArray data, QByteArray key, 
         /*
          * Finalize the encryption. Normally cipher text bytes may be written at
          * this stage, but this does not occur in GCM mode
-        */
+         */
         if (!EVP_EncryptFinal_ex(encryptionCipher.get(), cipherText.get(), &plainTextLength)) {
             throw std::runtime_error("Couldn't finalize encryption. EVP_EncryptFinal_ex(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
@@ -81,16 +81,11 @@ QByteArray QSimpleCrypto::QAead::encryptAesGcm(QByteArray data, QByteArray key, 
         }
 
         /* Finilize data to be readable with qt */
-        QByteArray encryptedData = QByteArray(reinterpret_cast<char*>(cipherText.get()), cipherTextLength);
-
-        return encryptedData;
-
-    } catch (std::exception& exception) {
-        QSimpleCrypto::QAead::error.setError(1, exception.what());
-        return QByteArray();
+        return QByteArray(reinterpret_cast<char*>(cipherText.get()), cipherTextLength);
+    } catch (const std::exception& exception) {
+        std::throw_with_nested(exception);
     } catch (...) {
-        QSimpleCrypto::QAead::error.setError(2, "Unknown error!");
-        return QByteArray();
+        throw;
     }
 
     return QByteArray();
@@ -146,7 +141,7 @@ QByteArray QSimpleCrypto::QAead::decryptAesGcm(QByteArray data, QByteArray key, 
         /*
          * Provide the message to be decrypted, and obtain the plain text output.
          * EVP_DecryptUpdate can be called multiple times if necessary
-        */
+         */
         if (!EVP_DecryptUpdate(decryptionCipher.get(), plainText.get(), &plainTextLength, reinterpret_cast<const unsigned char*>(data.data()), cipherTextLength)) {
             throw std::runtime_error("Couldn't provide message to be decrypted. EVP_DecryptUpdate(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
@@ -159,22 +154,17 @@ QByteArray QSimpleCrypto::QAead::decryptAesGcm(QByteArray data, QByteArray key, 
         /*
          * Finalize the decryption. A positive return value indicates success,
          * anything else is a failure - the plain text is not trustworthy.
-        */
+         */
         if (!EVP_DecryptFinal_ex(decryptionCipher.get(), plainText.get(), &cipherTextLength)) {
             throw std::runtime_error("Couldn't finalize decryption. EVP_DecryptFinal_ex(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
 
         /* Finilize data to be readable with qt */
-        QByteArray decryptedData = QByteArray(reinterpret_cast<char*>(plainText.get()), plainTextLength);
-
-        return decryptedData;
-
-    } catch (std::exception& exception) {
-        QSimpleCrypto::QAead::error.setError(1, exception.what());
-        return QByteArray();
+        return QByteArray(reinterpret_cast<char*>(plainText.get()), plainTextLength);
+    } catch (const std::exception& exception) {
+        std::throw_with_nested(exception);
     } catch (...) {
-        QSimpleCrypto::QAead::error.setError(2, "Unknown error!");
-        return QByteArray();
+        throw;
     }
 
     return QByteArray();
@@ -240,7 +230,7 @@ QByteArray QSimpleCrypto::QAead::encryptAesCcm(QByteArray data, QByteArray key, 
         /*
          * Provide the message to be encrypted, and obtain the encrypted output.
          * EVP_EncryptUpdate can be called multiple times if necessary
-        */
+         */
         if (!EVP_EncryptUpdate(encryptionCipher.get(), cipherText.get(), &cipherTextLength, reinterpret_cast<const unsigned char*>(data.data()), plainTextLength)) {
             throw std::runtime_error("Couldn't provide message to be encrypted. EVP_EncryptUpdate(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
@@ -248,7 +238,7 @@ QByteArray QSimpleCrypto::QAead::encryptAesCcm(QByteArray data, QByteArray key, 
         /*
          * Finalize the encryption. Normally ciphertext bytes may be written at
          * this stage, but this does not occur in GCM mode
-        */
+         */
         if (!EVP_EncryptFinal_ex(encryptionCipher.get(), cipherText.get(), &plainTextLength)) {
             throw std::runtime_error("Couldn't finalize encryption. EVP_EncryptFinal_ex(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
@@ -259,16 +249,11 @@ QByteArray QSimpleCrypto::QAead::encryptAesCcm(QByteArray data, QByteArray key, 
         }
 
         /* Finilize data to be readable with qt */
-        QByteArray encryptedData = QByteArray(reinterpret_cast<char*>(cipherText.get()), cipherTextLength);
-
-        return encryptedData;
-
-    } catch (std::exception& exception) {
-        QSimpleCrypto::QAead::error.setError(1, exception.what());
-        return QByteArray();
+        return QByteArray(reinterpret_cast<char*>(cipherText.get()), cipherTextLength);
+    } catch (const std::exception& exception) {
+        std::throw_with_nested(exception);
     } catch (...) {
-        QSimpleCrypto::QAead::error.setError(2, "Unknown error!");
-        return QByteArray();
+        throw;
     }
 
     return QByteArray();
@@ -334,7 +319,7 @@ QByteArray QSimpleCrypto::QAead::decryptAesCcm(QByteArray data, QByteArray key, 
         /*
          * Provide the message to be decrypted, and obtain the plaintext output.
          * EVP_DecryptUpdate can be called multiple times if necessary
-        */
+         */
         if (!EVP_DecryptUpdate(decryptionCipher.get(), plainText.get(), &plainTextLength, reinterpret_cast<const unsigned char*>(data.data()), cipherTextLength)) {
             throw std::runtime_error("Couldn't provide message to be decrypted. EVP_DecryptUpdate(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
@@ -342,22 +327,17 @@ QByteArray QSimpleCrypto::QAead::decryptAesCcm(QByteArray data, QByteArray key, 
         /*
          * Finalize the decryption. A positive return value indicates success,
          * anything else is a failure - the plaintext is not trustworthy.
-        */
+         */
         if (!EVP_DecryptFinal_ex(decryptionCipher.get(), plainText.get(), &cipherTextLength)) {
             throw std::runtime_error("Couldn't finalize decryption. EVP_DecryptFinal_ex(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
 
         /* Finilize data to be readable with qt */
-        QByteArray decryptedData = QByteArray(reinterpret_cast<char*>(plainText.get()), plainTextLength);
-
-        return decryptedData;
-
-    } catch (std::exception& exception) {
-        QSimpleCrypto::QAead::error.setError(1, exception.what());
-        return QByteArray();
+        return QByteArray(reinterpret_cast<char*>(plainText.get()), plainTextLength);
+    } catch (const std::exception& exception) {
+        std::throw_with_nested(exception);
     } catch (...) {
-        QSimpleCrypto::QAead::error.setError(2, "Unknown error!");
-        return QByteArray();
+        throw;
     }
 
     return QByteArray();

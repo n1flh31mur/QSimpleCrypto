@@ -22,8 +22,6 @@
 #include <openssl/x509.h>
 #include <openssl/x509_vfy.h>
 
-#include "QCryptoError.h"
-
 namespace QSimpleCrypto {
 class QSIMPLECRYPTO_EXPORT QX509 {
 
@@ -74,11 +72,6 @@ public:
         const QByteArray& certificateFileName = "", const EVP_MD* md = EVP_sha512(),
         const long& serialNumber = 1, const long& version = x509LastVersion,
         const long& notBefore = 0, const long& notAfter = oneYear);
-
-    ///
-    /// \brief error - Error handler class.
-    ///
-    QCryptoError error;
 };
 } // namespace QSimpleCrypto
 
