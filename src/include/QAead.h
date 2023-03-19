@@ -35,7 +35,7 @@ public:
     /// \param cipher - Can be used with OpenSSL EVP_CIPHER (gcm) - 128, 192, 256. Example: EVP_aes_256_gcm().
     /// \return Returns encrypted data or "", if error happened.
     ///
-    QByteArray encryptAesGcm(QByteArray data, QByteArray key, QByteArray iv, QByteArray* tag, QByteArray aad = "", const EVP_CIPHER* cipher = EVP_aes_256_gcm());
+    [[nodiscard]] QByteArray encryptAesGcm(QByteArray data, QByteArray key, QByteArray iv, QByteArray* tag, QByteArray aad = "", const EVP_CIPHER* cipher = EVP_aes_256_gcm());
 
     ///
     /// \brief decryptAesGcm - Function decrypts data with Gcm algorithm.
@@ -47,7 +47,7 @@ public:
     /// \param cipher - Can be used with OpenSSL EVP_CIPHER (gcm) - 128, 192, 256. Example: EVP_aes_256_gcm()
     /// \return Returns decrypted data or "", if error happened.
     ///
-    QByteArray decryptAesGcm(QByteArray data, QByteArray key, QByteArray iv, QByteArray* tag, QByteArray aad = "", const EVP_CIPHER* cipher = EVP_aes_256_gcm());
+    [[nodiscard]] QByteArray decryptAesGcm(QByteArray data, QByteArray key, QByteArray iv, QByteArray* tag, QByteArray aad = "", const EVP_CIPHER* cipher = EVP_aes_256_gcm());
 
     ///
     /// \brief encryptAesCcm - Function encrypts data with Ccm algorithm.
@@ -59,7 +59,7 @@ public:
     /// \param cipher - Can be used with OpenSSL EVP_CIPHER (ccm) - 128, 192, 256. Example: EVP_aes_256_ccm().
     /// \return Returns encrypted data or "", if error happened.
     ///
-    QByteArray encryptAesCcm(QByteArray data, QByteArray key, QByteArray iv, QByteArray* tag, QByteArray aad = "", const EVP_CIPHER* cipher = EVP_aes_256_ccm());
+    [[nodiscard]] QByteArray encryptAesCcm(QByteArray data, QByteArray key, QByteArray iv, QByteArray* tag, QByteArray aad = "", const EVP_CIPHER* cipher = EVP_aes_256_ccm());
 
     ///
     /// \brief decryptAesCcm - Function decrypts data with Ccm algorithm.
@@ -71,7 +71,7 @@ public:
     /// \param cipher - Can be used with OpenSSL EVP_CIPHER (ccm) - 128, 192, 256. Example: EVP_aes_256_ccm().
     /// \return Returns decrypted data or "", if error happened.
     ///
-    QByteArray decryptAesCcm(QByteArray data, QByteArray key, QByteArray iv, QByteArray* tag, QByteArray aad = "", const EVP_CIPHER* cipher = EVP_aes_256_ccm());
+    [[nodiscard]] QByteArray decryptAesCcm(QByteArray data, QByteArray key, QByteArray iv, QByteArray* tag, QByteArray aad = "", const EVP_CIPHER* cipher = EVP_aes_256_ccm());
 };
 } // namespace QSimpleCrypto
 

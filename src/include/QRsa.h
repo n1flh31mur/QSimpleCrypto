@@ -37,7 +37,7 @@ public:
     /// \param rsaBigNumber - The exponent is an odd number, typically 3, 17 or 65537.
     /// \return Returns 'OpenSSL RSA structure' or 'nullptr', if error happened. Returned value must be cleaned up with 'RSA_free()' to avoid memory leak.
     ///
-    RSA* generateRsaKeys(const int& bits, const int& rsaBigNumber);
+    [[nodiscard]] RSA* generateRsaKeys(const int& bits, const int& rsaBigNumber);
 
     ///
     /// \brief savePublicKey - Saves to file RSA public key.
@@ -60,7 +60,7 @@ public:
     /// \param filePath - File path to public key file.
     /// \return Returns 'OpenSSL EVP_PKEY structure' or 'nullptr', if error happened. Returned value must be cleaned up with 'EVP_PKEY_free()' to avoid memory leak.
     ///
-    EVP_PKEY* getPublicKeyFromFile(const QByteArray& filePath);
+    [[nodiscard]] EVP_PKEY* getPublicKeyFromFile(const QByteArray& filePath);
 
     ///
     /// \brief getPrivateKeyFromFile - Gets RSA private key from a file.
@@ -68,7 +68,7 @@ public:
     /// \param password - Private key password.
     /// \return - Returns 'OpenSSL EVP_PKEY structure' or 'nullptr', if error happened. Returned value must be cleaned up with 'EVP_PKEY_free()' to avoid memory leak.
     ///
-    EVP_PKEY* getPrivateKeyFromFile(const QByteArray& filePath, const QByteArray& password = "");
+    [[nodiscard]] EVP_PKEY* getPrivateKeyFromFile(const QByteArray& filePath, const QByteArray& password = "");
 
     ///
     /// \brief encrypt - Encrypt data with RSA algorithm.
@@ -78,7 +78,7 @@ public:
     /// \param padding - OpenSSL RSA padding can be used with: 'RSA_PKCS1_PADDING', 'RSA_NO_PADDING' and etc.
     /// \return Returns encrypted data or "", if error happened.
     ///
-    QByteArray encrypt(QByteArray plainText, RSA* rsa, const int& encryptType = publicEncrypt, const int& padding = RSA_PKCS1_PADDING);
+    [[nodiscard]] QByteArray encrypt(QByteArray plainText, RSA* rsa, const int& encryptType = publicEncrypt, const int& padding = RSA_PKCS1_PADDING);
 
     ///
     /// \brief decrypt - Decrypt data with RSA algorithm.
@@ -88,7 +88,7 @@ public:
     /// \param padding  - RSA padding can be used with: 'RSA_PKCS1_PADDING', 'RSA_NO_PADDING' and etc.
     /// \return - Returns decrypted data or "", if error happened.
     ///
-    QByteArray decrypt(QByteArray cipherText, RSA* rsa, const int& decryptType = privateDecrypt, const int& padding = RSA_PKCS1_PADDING);
+    [[nodiscard]] QByteArray decrypt(QByteArray cipherText, RSA* rsa, const int& decryptType = privateDecrypt, const int& padding = RSA_PKCS1_PADDING);
 };
 } // namespace QSimpleCrypto
 

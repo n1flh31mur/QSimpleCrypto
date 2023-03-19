@@ -25,7 +25,7 @@
 namespace QSimpleCrypto {
 class QSIMPLECRYPTO_EXPORT QX509 {
 
-#define oneYear 31536000L
+#define oneYearMSecs 31536000L
 #define x509LastVersion 2
 
 public:
@@ -36,7 +36,7 @@ public:
     /// \param fileName - File path to certificate.
     /// \return Returns OpenSSL X509 structure or nullptr, if error happened. Returned value must be cleaned up with 'X509_free' to avoid memory leak.
     ///
-    X509* loadCertificateFromFile(const QByteArray& fileName);
+    [[nodiscard]] X509* loadCertificateFromFile(const QByteArray& fileName);
 
     ///
     /// \brief signCertificate - Function signs X509 certificate and returns signed X509 OpenSSL structure.
@@ -46,7 +46,7 @@ public:
     /// \param fileName - With that name certificate will be saved. Leave "", if don't need to save it
     /// \return Returns OpenSSL X509 structure or nullptr, if error happened.
     ///
-    X509* signCertificate(X509* endCertificate, X509* caCertificate, EVP_PKEY* caPrivateKey, const QByteArray& fileName = "");
+    [[nodiscard]] X509* signCertificate(X509* endCertificate, X509* caCertificate, EVP_PKEY* caPrivateKey, const QByteArray& fileName = "");
 
     ///
     /// \brief verifyCertificate - Function verifies X509 certificate and returns verified X509 OpenSSL structure.
@@ -54,7 +54,7 @@ public:
     /// \param store - Trusted certificate must be added to X509_Store with 'addCertificateToStore(X509_STORE* ctx, X509* x509)'.
     /// \return Returns OpenSSL X509 structure or nullptr, if error happened
     ///
-    X509* verifyCertificate(X509* x509, X509_STORE* store);
+    [[nodiscard]] X509* verifyCertificate(X509* x509, X509_STORE* store);
 
     ///
     /// \brief generateSelfSignedCertificate - Function generatesand returns  self signed X509.
@@ -68,10 +68,10 @@ public:
     /// \param notAfter - X509 end date.
     /// \return Returns OpenSSL X509 structure or nullptr, if error happened. Returned value must be cleaned up with 'X509_free' to avoid memory leak.
     ///
-    X509* generateSelfSignedCertificate(const RSA* rsa, const QMap<QByteArray, QByteArray>& additionalData,
+    [[nodiscard]] X509* generateSelfSignedCertificate(const RSA* rsa, const QMap<QByteArray, QByteArray>& additionalData,
         const QByteArray& certificateFileName = "", const EVP_MD* md = EVP_sha512(),
         const long& serialNumber = 1, const long& version = x509LastVersion,
-        const long& notBefore = 0, const long& notAfter = oneYear);
+        const long& notBefore = 0, const long& notAfter = oneYearMSecs);
 };
 } // namespace QSimpleCrypto
 
