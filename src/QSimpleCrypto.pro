@@ -8,7 +8,6 @@ CONFIG += staticlib
 HEADERS += \
     include/QAead.h \
     include/QBlockCipher.h \
-    include/QCryptoError.h \
     include/QRsa.h \
     include/QSimpleCrypto_global.h \
     include/QX509.h \
@@ -17,7 +16,6 @@ HEADERS += \
 SOURCES += \
     sources/QAead.cpp \
     sources/QBlockCipher.cpp \
-    sources/QCryptoError.cpp \
     sources/QRsa.cpp \
     sources/QX509.cpp \
     sources/QX509Store.cpp
