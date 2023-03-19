@@ -87,8 +87,6 @@ QByteArray QSimpleCrypto::QAead::encryptAesGcm(const QByteArray& data, const QBy
     } catch (...) {
         throw;
     }
-
-    return QByteArray();
 }
 
 ///
@@ -166,8 +164,6 @@ QByteArray QSimpleCrypto::QAead::decryptAesGcm(const QByteArray& data, const QBy
     } catch (...) {
         throw;
     }
-
-    return QByteArray();
 }
 
 ///
@@ -255,8 +251,6 @@ QByteArray QSimpleCrypto::QAead::encryptAesCcm(const QByteArray& data, const QBy
     } catch (...) {
         throw;
     }
-
-    return QByteArray();
 }
 
 ///
@@ -339,6 +333,4 @@ QByteArray QSimpleCrypto::QAead::decryptAesCcm(const QByteArray& data, const QBy
     } catch (...) {
         throw;
     }
-
-    return QByteArray();
 }
