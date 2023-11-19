@@ -26,6 +26,11 @@ namespace QSimpleCrypto {
 class QSIMPLECRYPTO_EXPORT QX509 {
 
 #define oneYearMSecs 31536000L
+
+///
+/// \brief x509LastVersion - Last version of X509 certificate.
+/// \details Version number starts from zero, so "2" is "3" version of X509 certificate.
+///
 #define x509LastVersion 2
 
 public:
@@ -68,10 +73,10 @@ public:
     /// \param notAfter - X509 end date.
     /// \return Returns OpenSSL X509 structure or nullptr, if error happened. Returned value must be cleaned up with 'X509_free' to avoid memory leak.
     ///
-    [[nodiscard]] X509* generateSelfSignedCertificate(const RSA* rsa, const QMap<QByteArray, QByteArray>& additionalData,
+    [[nodiscard]] X509* generateSelfSignedCertificate(EVP_PKEY* key, const QMap<QByteArray, QByteArray>& additionalData,
         const QByteArray& certificateFileName = "", const EVP_MD* md = EVP_sha512(),
-        const long& serialNumber = 1, const long& version = x509LastVersion,
-        const long& notBefore = 0, const long& notAfter = oneYearMSecs);
+        const quint32 serialNumber = 1, const quint8 version = x509LastVersion,
+        const quint64& notBefore = 0, const quint64& notAfter = oneYearMSecs);
 };
 } // namespace QSimpleCrypto
 

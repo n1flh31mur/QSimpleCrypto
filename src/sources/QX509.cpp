@@ -133,27 +133,16 @@ X509* QSimpleCrypto::QX509::verifyCertificate(X509* x509, X509_STORE* store)
 /// \param notAfter - X509 end date.
 /// \return Returns OpenSSL X509 structure or nullptr, if error happened. Returned value must be cleaned up with 'X509_free' to avoid memory leak.
 ///
-X509* QSimpleCrypto::QX509::generateSelfSignedCertificate(const RSA* rsa, const QMap<QByteArray, QByteArray>& additionalData,
+X509* QSimpleCrypto::QX509::generateSelfSignedCertificate(EVP_PKEY* key, const QMap<QByteArray, QByteArray>& additionalData,
     const QByteArray& certificateFileName, const EVP_MD* md,
-    const long& serialNumber, const long& version,
-    const long& notBefore, const long& notAfter)
+    const quint32 serialNumber, const quint8 version,
+    const quint64& notBefore, const quint64& notAfter)
 {
     try {
         /* Initialize X509 */
         X509* x509 = nullptr;
         if (!(x509 = X509_new())) {
             throw std::runtime_error("Couldn't initialize X509. X509_new(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
-        }
-
-        /* Initialize EVP_PKEY */
-        std::unique_ptr<EVP_PKEY, void (*)(EVP_PKEY*)> keyStore { EVP_PKEY_new(), EVP_PKEY_free };
-        if (keyStore == nullptr) {
-            throw std::runtime_error("Couldn't initialize keyStore. EVP_PKEY_new(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
-        }
-
-        /* Sign rsa key */
-        if (!EVP_PKEY_assign_RSA(keyStore.get(), rsa)) {
-            throw std::runtime_error("Couldn't assign rsa. EVP_PKEY_assign_RSA(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
 
         /* Set certificate serial number. */
@@ -171,7 +160,7 @@ X509* QSimpleCrypto::QX509::generateSelfSignedCertificate(const RSA* rsa, const 
         X509_gmtime_adj(X509_get_notAfter(x509), notAfter);
 
         /* Set certificate public key */
-        if (!X509_set_pubkey(x509, keyStore.get())) {
+        if (!X509_set_pubkey(x509, key)) {
             throw std::runtime_error("Couldn't set public key. X509_set_pubkey(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
 
@@ -199,7 +188,7 @@ X509* QSimpleCrypto::QX509::generateSelfSignedCertificate(const RSA* rsa, const 
         }
 
         /* Sign certificate */
-        if (!X509_sign(x509, keyStore.get(), md)) {
+        if (!X509_sign(x509, key, md)) {
             throw std::runtime_error("Couldn't sign X509. X509_sign(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
 
