@@ -32,8 +32,8 @@ QByteArray QSimpleCrypto::QAead::encryptAesGcm(const QByteArray& data, const QBy
         }
 
         /* Set data length */
-        int plainTextLength = data.size();
-        int cipherTextLength = 0;
+        qint32 plainTextLength = data.size();
+        qint32 cipherTextLength = 0;
 
         /* Initialize cipherText. Here encrypted data will be stored */
         std::unique_ptr<unsigned char[]> cipherText { new unsigned char[plainTextLength]() };
@@ -109,8 +109,8 @@ QByteArray QSimpleCrypto::QAead::decryptAesGcm(const QByteArray& data, const QBy
         }
 
         /* Set data length */
-        int cipherTextLength = data.size();
-        int plainTextLength = 0;
+        qint32 cipherTextLength = data.size();
+        qint32 plainTextLength = 0;
 
         /* Initialize plainText. Here decrypted data will be stored */
         std::unique_ptr<unsigned char[]> plainText { new unsigned char[cipherTextLength]() };
@@ -170,7 +170,7 @@ QByteArray QSimpleCrypto::QAead::decryptAesGcm(const QByteArray& data, const QBy
 /// \brief QSimpleCrypto::QAead::encryptAesCcm - Function encrypts data with AES CCM algorithm.
 /// \param data - Data that will be encrypted.
 /// \param key - AES key. Example: "AABBCCEEFFGGHHKKLLMMNNOOPPRRSSTT"
-/// \param iv - Initialization vector. Example: "AABBCCEEFFGGHHKKLLMMNNOOPPRRSSTT"
+/// \param iv - Initialization vector. Example: "AABBCCDDEEFF"
 /// \param tag - Authorization tag. Example: "AABBCCDDEEFF"
 /// \param aad - Additional authenticated data.
 /// \param cipher - Can be used with OpenSSL EVP_CIPHER (ccm) - 128, 192, 256. Example: EVP_aes_256_ccm().
@@ -186,8 +186,8 @@ QByteArray QSimpleCrypto::QAead::encryptAesCcm(const QByteArray& data, const QBy
         }
 
         /* Set data length */
-        int plainTextLength = data.size();
-        int cipherTextLength = 0;
+        qint32 plainTextLength = data.size();
+        qint32 cipherTextLength = 0;
 
         /* Initialize cipherText. Here encrypted data will be stored */
         std::unique_ptr<unsigned char[]> cipherText { new unsigned char[plainTextLength]() };
@@ -257,7 +257,7 @@ QByteArray QSimpleCrypto::QAead::encryptAesCcm(const QByteArray& data, const QBy
 /// \brief QSimpleCrypto::QAead::decryptAesCcm - Function decrypts data with AES CCM algorithm.
 /// \param data - Data that will be decrypted.
 /// \param key - AES key. Example: "AABBCCEEFFGGHHKKLLMMNNOOPPRRSSTT"
-/// \param iv - Initialization vector. Example: "AABBCCEEFFGGHHKKLLMMNNOOPPRRSSTT"
+/// \param iv - Initialization vector. Example: "AABBCCDDEEFF"
 /// \param tag - Authorization tag. Example: "AABBCCDDEEFF"
 /// \param aad - Additional authenticated data.
 /// \param cipher - Can be used with OpenSSL EVP_CIPHER (ccm) - 128, 192, 256. Example: EVP_aes_256_ccm().
@@ -273,8 +273,8 @@ QByteArray QSimpleCrypto::QAead::decryptAesCcm(const QByteArray& data, const QBy
         }
 
         /* Set data length */
-        int cipherTextLength = data.size();
-        int plainTextLength = 0;
+        qint32 cipherTextLength = data.size();
+        qint32 plainTextLength = 0;
 
         /* Initialize plainText. Here decrypted data will be stored */
         std::unique_ptr<unsigned char[]> plainText { new unsigned char[cipherTextLength]() };

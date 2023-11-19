@@ -53,7 +53,7 @@ public:
     /// \brief encryptAesCcm - Function encrypts data with AES CCM algorithm.
     /// \param data - Data that will be encrypted.
     /// \param key - AES key. Example: "AABBCCEEFFGGHHKKLLMMNNOOPPRRSSTT"
-    /// \param iv - Initialization vector. Example: "AABBCCEEFFGGHHKKLLMMNNOOPPRRSSTT"
+    /// \param iv - Initialization vector. Example: "AABBCCDDEEFF"
     /// \param tag - Authorization tag. Example: "AABBCCDDEEFF"
     /// \param aad - Additional authenticated data.
     /// \param cipher - Can be used with OpenSSL EVP_CIPHER (ccm) - 128, 192, 256. Example: EVP_aes_256_ccm().
@@ -65,7 +65,7 @@ public:
     /// \brief decryptAesCcm - Function decrypts data with AES CCM algorithm.
     /// \param data - Data that will be decrypted.
     /// \param key - AES key. Example: "AABBCCEEFFGGHHKKLLMMNNOOPPRRSSTT"
-    /// \param iv - Initialization vector. Example: "AABBCCEEFFGGHHKKLLMMNNOOPPRRSSTT"
+    /// \param iv - Initialization vector. Example: "AABBCCDDEEFF"
     /// \param tag - Authorization tag. Example: "AABBCCDDEEFF"
     /// \param aad - Additional authenticated data.
     /// \param cipher - Can be used with OpenSSL EVP_CIPHER (ccm) - 128, 192, 256. Example: EVP_aes_256_ccm().

@@ -53,8 +53,8 @@ QByteArray QSimpleCrypto::QBlockCipher::encryptAesBlockCipher(const QByteArray& 
         unsigned char* m_iv = const_cast<unsigned char*>(reinterpret_cast<const unsigned char*>(iv.data()));
 
         /* Set data length */
-        int cipherTextLength(data.size() + AES_BLOCK_SIZE);
-        int finalLength = 0;
+        qint32 cipherTextLength(data.size() + AES_BLOCK_SIZE);
+        qint32 finalLength = 0;
 
         /* Initialize cipcherText. Here encrypted data will be stored */
         std::unique_ptr<unsigned char[]> cipherText { new unsigned char[cipherTextLength]() };
@@ -122,8 +122,8 @@ QByteArray QSimpleCrypto::QBlockCipher::decryptAesBlockCipher(const QByteArray& 
         unsigned char* m_iv = const_cast<unsigned char*>(reinterpret_cast<const unsigned char*>(iv.data()));
 
         /* Set data length */
-        int plainTextLength(data.size());
-        int finalLength = 0;
+        qint32 plainTextLength(data.size());
+        qint32 finalLength = 0;
 
         /* Initialize plainText. Here decrypted data will be stored */
         std::unique_ptr<unsigned char[]> plainText { new unsigned char[plainTextLength + AES_BLOCK_SIZE]() };
