@@ -26,50 +26,50 @@ public:
     QAead();
 
     ///
-    /// \brief encryptAesGcm - Function encrypts data with Gcm algorithm.
+    /// \brief encryptAesGcm - Function encrypts data with AES GCM algorithm.
     /// \param data - Data that will be encrypted.
-    /// \param key - AES key.
-    /// \param iv - Initialization vector.
-    /// \param tag - Authorization tag.
-    /// \param aad - Additional authenticated data. Must be nullptr, if not used.
+    /// \param key - AES key. Example: "AABBCCEEFFGGHHKKLLMMNNOOPPRRSSTT"
+    /// \param iv - Initialization vector. Example: "AABBCCEEFFGGHHKKLLMMNNOOPPRRSSTT"
+    /// \param tag - Authorization tag. Example: "AABBCCDDEEFF"
+    /// \param aad - Additional authenticated data.
     /// \param cipher - Can be used with OpenSSL EVP_CIPHER (gcm) - 128, 192, 256. Example: EVP_aes_256_gcm().
-    /// \return Returns encrypted data or "", if error happened.
+    /// \return Returns encrypted data on success or "" on failure.
     ///
     [[nodiscard]] QByteArray encryptAesGcm(const QByteArray& data, const QByteArray& key, const QByteArray& iv, const QByteArray& tag, const QByteArray& aad = "", const EVP_CIPHER* cipher = EVP_aes_256_gcm());
 
     ///
-    /// \brief decryptAesGcm - Function decrypts data with Gcm algorithm.
+    /// \brief decryptAesGcm - Function decrypts data with AES GCM algorithm.
     /// \param data - Data that will be decrypted
-    /// \param key - AES key
-    /// \param iv - Initialization vector
-    /// \param tag - Authorization tag
-    /// \param aad - Additional authenticated data. Must be nullptr, if not used
+    /// \param key - AES key. Example: "AABBCCEEFFGGHHKKLLMMNNOOPPRRSSTT"
+    /// \param iv - Initialization vector. Example: "AABBCCEEFFGGHHKKLLMMNNOOPPRRSSTT"
+    /// \param tag - Authorization tag. Example: "AABBCCDDEEFF"
+    /// \param aad - Additional authenticated data.
     /// \param cipher - Can be used with OpenSSL EVP_CIPHER (gcm) - 128, 192, 256. Example: EVP_aes_256_gcm()
-    /// \return Returns decrypted data or "", if error happened.
+    /// \return Returns decrypted data on success or "" on failure.
     ///
     [[nodiscard]] QByteArray decryptAesGcm(const QByteArray& data, const QByteArray& key, const QByteArray& iv, const QByteArray& tag, const QByteArray& aad = "", const EVP_CIPHER* cipher = EVP_aes_256_gcm());
 
     ///
-    /// \brief encryptAesCcm - Function encrypts data with Ccm algorithm.
+    /// \brief encryptAesCcm - Function encrypts data with AES CCM algorithm.
     /// \param data - Data that will be encrypted.
-    /// \param key - AES key.
-    /// \param iv - Initialization vector.
-    /// \param tag - Authorization tag.
-    /// \param aad - Additional authenticated data. Must be nullptr, if not used.
+    /// \param key - AES key. Example: "AABBCCEEFFGGHHKKLLMMNNOOPPRRSSTT"
+    /// \param iv - Initialization vector. Example: "AABBCCEEFFGGHHKKLLMMNNOOPPRRSSTT"
+    /// \param tag - Authorization tag. Example: "AABBCCDDEEFF"
+    /// \param aad - Additional authenticated data.
     /// \param cipher - Can be used with OpenSSL EVP_CIPHER (ccm) - 128, 192, 256. Example: EVP_aes_256_ccm().
-    /// \return Returns encrypted data or "", if error happened.
+    /// \return Returns encrypted data on success or "" on failure.
     ///
     [[nodiscard]] QByteArray encryptAesCcm(const QByteArray& data, const QByteArray& key, const QByteArray& iv, const QByteArray& tag, const QByteArray& aad = "", const EVP_CIPHER* cipher = EVP_aes_256_ccm());
 
     ///
-    /// \brief decryptAesCcm - Function decrypts data with Ccm algorithm.
+    /// \brief decryptAesCcm - Function decrypts data with AES CCM algorithm.
     /// \param data - Data that will be decrypted.
-    /// \param key - AES key.
-    /// \param iv - Initialization vector.
-    /// \param tag - Authorization tag.
-    /// \param aad - Additional authenticated data. Must be nullptr, if not used.
+    /// \param key - AES key. Example: "AABBCCEEFFGGHHKKLLMMNNOOPPRRSSTT"
+    /// \param iv - Initialization vector. Example: "AABBCCEEFFGGHHKKLLMMNNOOPPRRSSTT"
+    /// \param tag - Authorization tag. Example: "AABBCCDDEEFF"
+    /// \param aad - Additional authenticated data.
     /// \param cipher - Can be used with OpenSSL EVP_CIPHER (ccm) - 128, 192, 256. Example: EVP_aes_256_ccm().
-    /// \return Returns decrypted data or "", if error happened.
+    /// \return Returns decrypted data on success or "" on failure.
     ///
     [[nodiscard]] QByteArray decryptAesCcm(const QByteArray& data, const QByteArray& key, const QByteArray& iv, const QByteArray& tag, const QByteArray& aad = "", const EVP_CIPHER* cipher = EVP_aes_256_ccm());
 };

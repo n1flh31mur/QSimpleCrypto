@@ -13,14 +13,14 @@ QSimpleCrypto::QAead::QAead()
 }
 
 ///
-/// \brief QSimpleCrypto::QAEAD::encryptAesGcm - Function encrypts data with Gcm algorithm.
+/// \brief QSimpleCrypto::QAead::encryptAesGcm - Function encrypts data with AES GCM algorithm.
 /// \param data - Data that will be encrypted.
-/// \param key - AES key.
-/// \param iv - Initialization vector.
-/// \param tag - Authorization tag.
-/// \param aad - Additional authenticated data. Must be nullptr, if not used.
+/// \param key - AES key. Example: "AABBCCEEFFGGHHKKLLMMNNOOPPRRSSTT"
+/// \param iv - Initialization vector. Example: "AABBCCEEFFGGHHKKLLMMNNOOPPRRSSTT"
+/// \param tag - Authorization tag. Example: "AABBCCDDEEFF"
+/// \param aad - Additional authenticated data.
 /// \param cipher - Can be used with OpenSSL EVP_CIPHER (gcm) - 128, 192, 256. Example: EVP_aes_256_gcm().
-/// \return Returns encrypted data or "", if error happened.
+/// \return Returns encrypted data on success or "" on failure.
 ///
 QByteArray QSimpleCrypto::QAead::encryptAesGcm(const QByteArray& data, const QByteArray& key, const QByteArray& iv, const QByteArray& tag, const QByteArray& aad, const EVP_CIPHER* cipher)
 {
@@ -52,7 +52,7 @@ QByteArray QSimpleCrypto::QAead::encryptAesGcm(const QByteArray& data, const QBy
         }
 
         /* Check if aad need to be used */
-        if (aad.length() > 0) {
+        if (!aad.isEmpty()) {
             /* Provide any AAD data. This can be called zero or more times as required */
             if (!EVP_EncryptUpdate(encryptionCipher.get(), nullptr, &cipherTextLength, reinterpret_cast<const unsigned char*>(aad.data()), aad.length())) {
                 throw std::runtime_error("Couldn't provide aad data. EVP_EncryptUpdate(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
@@ -90,14 +90,14 @@ QByteArray QSimpleCrypto::QAead::encryptAesGcm(const QByteArray& data, const QBy
 }
 
 ///
-/// \brief QSimpleCrypto::QAEAD::decryptAesGcm - Function decrypts data with Gcm algorithm.
+/// \brief QSimpleCrypto::QAead::decryptAesGcm - Function decrypts data with AES GCM algorithm.
 /// \param data - Data that will be decrypted
-/// \param key - AES key
-/// \param iv - Initialization vector
-/// \param tag - Authorization tag
-/// \param aad - Additional authenticated data. Must be nullptr, if not used
+/// \param key - AES key. Example: "AABBCCEEFFGGHHKKLLMMNNOOPPRRSSTT"
+/// \param iv - Initialization vector. Example: "AABBCCEEFFGGHHKKLLMMNNOOPPRRSSTT"
+/// \param tag - Authorization tag. Example: "AABBCCDDEEFF"
+/// \param aad - Additional authenticated data.
 /// \param cipher - Can be used with OpenSSL EVP_CIPHER (gcm) - 128, 192, 256. Example: EVP_aes_256_gcm()
-/// \return Returns decrypted data or "", if error happened.
+/// \return Returns decrypted data on success or "" on failure.
 ///
 QByteArray QSimpleCrypto::QAead::decryptAesGcm(const QByteArray& data, const QByteArray& key, const QByteArray& iv, const QByteArray& tag, const QByteArray& aad, const EVP_CIPHER* cipher)
 {
@@ -129,7 +129,7 @@ QByteArray QSimpleCrypto::QAead::decryptAesGcm(const QByteArray& data, const QBy
         }
 
         /* Check if aad need to be used */
-        if (aad.length() > 0) {
+        if (!aad.isEmpty()) {
             /* Provide any AAD data. This can be called zero or more times as required */
             if (!EVP_DecryptUpdate(decryptionCipher.get(), nullptr, &plainTextLength, reinterpret_cast<const unsigned char*>(aad.data()), aad.length())) {
                 throw std::runtime_error("Couldn't provide aad data. EVP_DecryptUpdate(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
@@ -167,14 +167,14 @@ QByteArray QSimpleCrypto::QAead::decryptAesGcm(const QByteArray& data, const QBy
 }
 
 ///
-/// \brief QSimpleCrypto::QAEAD::encryptAesCcm - Function encrypts data with Ccm algorithm.
+/// \brief QSimpleCrypto::QAead::encryptAesCcm - Function encrypts data with AES CCM algorithm.
 /// \param data - Data that will be encrypted.
-/// \param key - AES key.
-/// \param iv - Initialization vector.
-/// \param tag - Authorization tag.
-/// \param aad - Additional authenticated data. Must be nullptr, if not used.
+/// \param key - AES key. Example: "AABBCCEEFFGGHHKKLLMMNNOOPPRRSSTT"
+/// \param iv - Initialization vector. Example: "AABBCCEEFFGGHHKKLLMMNNOOPPRRSSTT"
+/// \param tag - Authorization tag. Example: "AABBCCDDEEFF"
+/// \param aad - Additional authenticated data.
 /// \param cipher - Can be used with OpenSSL EVP_CIPHER (ccm) - 128, 192, 256. Example: EVP_aes_256_ccm().
-/// \return Returns encrypted data or "", if error happened.
+/// \return Returns encrypted data on success or "" on failure.
 ///
 QByteArray QSimpleCrypto::QAead::encryptAesCcm(const QByteArray& data, const QByteArray& key, const QByteArray& iv, const QByteArray& tag, const QByteArray& aad, const EVP_CIPHER* cipher)
 {
@@ -211,7 +211,7 @@ QByteArray QSimpleCrypto::QAead::encryptAesCcm(const QByteArray& data, const QBy
         }
 
         /* Check if aad need to be used */
-        if (aad.length() > 0) {
+        if (!aad.isEmpty()) {
             /* Provide the total plain text length */
             if (!EVP_EncryptUpdate(encryptionCipher.get(), nullptr, &cipherTextLength, nullptr, plainTextLength)) {
                 throw std::runtime_error("Couldn't provide total plaintext length. EVP_EncryptUpdate(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
@@ -254,14 +254,14 @@ QByteArray QSimpleCrypto::QAead::encryptAesCcm(const QByteArray& data, const QBy
 }
 
 ///
-/// \brief QSimpleCrypto::QAEAD::decryptAesCcm - Function decrypts data with Ccm algorithm.
+/// \brief QSimpleCrypto::QAead::decryptAesCcm - Function decrypts data with AES CCM algorithm.
 /// \param data - Data that will be decrypted.
-/// \param key - AES key.
-/// \param iv - Initialization vector.
-/// \param tag - Authorization tag.
-/// \param aad - Additional authenticated data. Must be nullptr, if not used.
+/// \param key - AES key. Example: "AABBCCEEFFGGHHKKLLMMNNOOPPRRSSTT"
+/// \param iv - Initialization vector. Example: "AABBCCEEFFGGHHKKLLMMNNOOPPRRSSTT"
+/// \param tag - Authorization tag. Example: "AABBCCDDEEFF"
+/// \param aad - Additional authenticated data.
 /// \param cipher - Can be used with OpenSSL EVP_CIPHER (ccm) - 128, 192, 256. Example: EVP_aes_256_ccm().
-/// \return Returns decrypted data or "", if error happened.
+/// \return Returns decrypted data on success or "" on failure.
 ///
 QByteArray QSimpleCrypto::QAead::decryptAesCcm(const QByteArray& data, const QByteArray& key, const QByteArray& iv, const QByteArray& tag, const QByteArray& aad, const EVP_CIPHER* cipher)
 {
@@ -298,7 +298,7 @@ QByteArray QSimpleCrypto::QAead::decryptAesCcm(const QByteArray& data, const QBy
         }
 
         /* Check if aad need to be used */
-        if (aad.length() > 0) {
+        if (!aad.isEmpty()) {
             /* Provide the total ciphertext length */
             if (!EVP_DecryptUpdate(decryptionCipher.get(), nullptr, &plainTextLength, nullptr, cipherTextLength)) {
                 throw std::runtime_error("Couldn't provide total plaintext length. EVP_DecryptUpdate(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
