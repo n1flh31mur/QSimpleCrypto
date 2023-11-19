@@ -13,8 +13,8 @@ QSimpleCrypto::QRsa::QRsa()
 }
 
 ///
-/// \brief QSimpleCrypto::QRSA::generateRsaKeys - Function generate Rsa Keys and returns them in OpenSSL structure.
-/// \param bits - RSA key size.
+/// \brief QSimpleCrypto::QRsa::generateRsaKeys - Function generate Rsa Keys and returns them in OpenSSL structure.
+/// \param bits - RSA key size. For example: 2048, 4096.
 /// \param rsaBigNumber - The exponent is an odd number, typically 3, 17 or 65537.
 /// \return Returns 'OpenSSL RSA structure' or 'nullptr', if error happened. Returned value must be cleaned up with 'RSA_free()' to avoid memory leak.
 ///
@@ -68,15 +68,15 @@ EVP_PKEY* QSimpleCrypto::QRsa::generateRsaKeys(quint32 bits, quint32 rsaPrimeNum
 }
 
 ///
-/// \brief QSimpleCrypto::QRSA::savePublicKey - Saves to file RSA public key.
-/// \param rsa - OpenSSL RSA structure.
-/// \param publicKeyFileName - Public key file name.
+/// \brief QSimpleCrypto::QRsa::savePublicKey - Saves to file RSA public key.
+/// \param key - RSA key. Must be provided with not null EVP_PKEY OpenSSL struct.
+/// \param filePath - Public key file name.
 ///
-void QSimpleCrypto::QRsa::savePublicKey(EVP_PKEY* key, const QByteArray& fileName)
+void QSimpleCrypto::QRsa::savePublicKey(EVP_PKEY* key, const QByteArray& filePath)
 {
     try {
         /* Initialize FILE */
-        FILE* publicKeyFile = fopen(fileName, "w+");
+        FILE* publicKeyFile = fopen(filePath, "w+");
         if (!publicKeyFile) {
             throw std::runtime_error("Couldn't initialize FILE.");
         }
@@ -97,9 +97,9 @@ void QSimpleCrypto::QRsa::savePublicKey(EVP_PKEY* key, const QByteArray& fileNam
 }
 
 ///
-/// \brief QSimpleCrypto::QRSA::savePrivateKey - Saves to file RSA private key.
-/// \param rsa - OpenSSL RSA structure.
-/// \param fileName - Private key file path.
+/// \brief QSimpleCrypto::QRsa::savePrivateKey - Saves to file RSA private key.
+/// \param key - RSA key. Must be provided with not null EVP_PKEY OpenSSL struct.
+/// \param filePath - Private key file path.
 /// \param password - Private key password.
 /// \param cipher - Can be used with 'OpenSSL EVP_CIPHER' (ecb, cbc, cfb, ofb, ctr) - 128, 192, 256. Example: EVP_aes_256_cbc().
 ///
@@ -128,7 +128,7 @@ void QSimpleCrypto::QRsa::savePrivateKey(EVP_PKEY* key, const QByteArray& fileNa
 }
 
 ///
-/// \brief QSimpleCrypto::QRSA::getPublicKeyFromFile - Gets RSA public key from a file.
+/// \brief QSimpleCrypto::QRsa::getPublicKeyFromFile - Gets RSA public key from a file.
 /// \param filePath - File path to public key file.
 /// \return Returns 'OpenSSL EVP_PKEY structure' or 'nullptr', if error happened. Returned value must be cleaned up with 'EVP_PKEY_free()' to avoid memory leak.
 ///
@@ -164,7 +164,7 @@ EVP_PKEY* QSimpleCrypto::QRsa::getPublicKeyFromFile(const QByteArray& filePath)
 }
 
 ///
-/// \brief QSimpleCrypto::QRSA::getPrivateKeyFromFile - Gets RSA private key from a file.
+/// \brief QSimpleCrypto::QRsa::getPrivateKeyFromFile - Gets RSA private key from a file.
 /// \param filePath - File path to private key file.
 /// \param password - Private key password.
 /// \return Returns 'OpenSSL EVP_PKEY structure' or 'nullptr', if error happened. Returned value must be cleaned up with 'EVP_PKEY_free()' to avoid memory leak.
@@ -201,11 +201,11 @@ EVP_PKEY* QSimpleCrypto::QRsa::getPrivateKeyFromFile(const QByteArray& filePath,
 }
 
 ///
-/// \brief QSimpleCrypto::QRSA::encrypt - Encrypt data with RSA algorithm.
+/// \brief QSimpleCrypto::QRsa::encrypt - Encrypt data with RSA algorithm.
 /// \param plaintext - Text that must be encrypted.
-/// \param rsa - OpenSSL RSA structure.
+/// \param key - RSA key. Must be provided with not null EVP_PKEY OpenSSL struct.
 /// \param padding - OpenSSL RSA padding can be used with: 'RSA_PKCS1_PADDING', 'RSA_NO_PADDING' and etc.
-/// \return Returns encrypted data or "", if error happened.
+/// \return Returns encrypted data on success or "" on failure.
 ///
 QByteArray QSimpleCrypto::QRsa::encrypt(QByteArray plainText, EVP_PKEY* key, const quint16 padding)
 {
@@ -256,11 +256,11 @@ QByteArray QSimpleCrypto::QRsa::encrypt(QByteArray plainText, EVP_PKEY* key, con
 }
 
 ///
-/// \brief QSimpleCrypto::QRSA::decrypt - Decrypt data with RSA algorithm.
+/// \brief QSimpleCrypto::QRsa::decrypt - Decrypt data with RSA algorithm.
 /// \param cipherText - Text that must be decrypted.
-/// \param rsa - OpenSSL RSA structure.
+/// \param key - RSA key. Must be provided with not null EVP_PKEY OpenSSL struct.
 /// \param padding  - RSA padding can be used with: 'RSA_PKCS1_PADDING', 'RSA_NO_PADDING' and etc.
-/// \return - Returns decrypted data or "", if error happened.
+/// \return Returns encrypted data on success or "" on failure.
 ///
 QByteArray QSimpleCrypto::QRsa::decrypt(QByteArray cipherText, EVP_PKEY* key, const quint16 padding)
 {
