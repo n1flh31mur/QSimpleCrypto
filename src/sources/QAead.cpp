@@ -27,7 +27,7 @@ QByteArray QSimpleCrypto::QAead::encryptAesGcm(const QByteArray& data, const QBy
     try {
         /* Initialize EVP_CIPHER_CTX */
         std::unique_ptr<EVP_CIPHER_CTX, void (*)(EVP_CIPHER_CTX*)> encryptionCipher { EVP_CIPHER_CTX_new(), EVP_CIPHER_CTX_free };
-        if (encryptionCipher == nullptr) {
+        if (!encryptionCipher) {
             throw std::runtime_error("Couldn't initialize \'encryptionCipher\'. EVP_CIPHER_CTX_new(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
 
@@ -37,7 +37,7 @@ QByteArray QSimpleCrypto::QAead::encryptAesGcm(const QByteArray& data, const QBy
 
         /* Initialize cipherText. Here encrypted data will be stored */
         std::unique_ptr<unsigned char[]> cipherText { new unsigned char[plainTextLength]() };
-        if (cipherText == nullptr) {
+        if (!cipherText) {
             throw std::runtime_error("Couldn't allocate memory for 'ciphertext'.");
         }
 
@@ -104,7 +104,7 @@ QByteArray QSimpleCrypto::QAead::decryptAesGcm(const QByteArray& data, const QBy
     try {
         /* Initialize EVP_CIPHER_CTX */
         std::unique_ptr<EVP_CIPHER_CTX, void (*)(EVP_CIPHER_CTX*)> decryptionCipher { EVP_CIPHER_CTX_new(), EVP_CIPHER_CTX_free };
-        if (decryptionCipher.get() == nullptr) {
+        if (!decryptionCipher.get()) {
             throw std::runtime_error("Couldn't initialize \'decryptionCipher\'. EVP_CIPHER_CTX_new(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
 
@@ -114,7 +114,7 @@ QByteArray QSimpleCrypto::QAead::decryptAesGcm(const QByteArray& data, const QBy
 
         /* Initialize plainText. Here decrypted data will be stored */
         std::unique_ptr<unsigned char[]> plainText { new unsigned char[cipherTextLength]() };
-        if (plainText == nullptr) {
+        if (!plainText) {
             throw std::runtime_error("Couldn't allocate memory for 'plaintext'.");
         }
 
@@ -181,7 +181,7 @@ QByteArray QSimpleCrypto::QAead::encryptAesCcm(const QByteArray& data, const QBy
     try {
         /* Initialize EVP_CIPHER_CTX */
         std::unique_ptr<EVP_CIPHER_CTX, void (*)(EVP_CIPHER_CTX*)> encryptionCipher { EVP_CIPHER_CTX_new(), EVP_CIPHER_CTX_free };
-        if (encryptionCipher == nullptr) {
+        if (!encryptionCipher) {
             throw std::runtime_error("Couldn't initialize \'encryptionCipher\'. EVP_CIPHER_CTX_new(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
 
@@ -191,7 +191,7 @@ QByteArray QSimpleCrypto::QAead::encryptAesCcm(const QByteArray& data, const QBy
 
         /* Initialize cipherText. Here encrypted data will be stored */
         std::unique_ptr<unsigned char[]> cipherText { new unsigned char[plainTextLength]() };
-        if (cipherText.get() == nullptr) {
+        if (!cipherText.get()) {
             throw std::runtime_error("Couldn't allocate memory for 'ciphertext'.");
         }
 
@@ -268,7 +268,7 @@ QByteArray QSimpleCrypto::QAead::decryptAesCcm(const QByteArray& data, const QBy
     try {
         /* Initialize EVP_CIPHER_CTX */
         std::unique_ptr<EVP_CIPHER_CTX, void (*)(EVP_CIPHER_CTX*)> decryptionCipher { EVP_CIPHER_CTX_new(), EVP_CIPHER_CTX_free };
-        if (decryptionCipher.get() == nullptr) {
+        if (!decryptionCipher.get()) {
             throw std::runtime_error("Couldn't initialize \'decryptionCipher\'. EVP_CIPHER_CTX_new(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
 
@@ -278,7 +278,7 @@ QByteArray QSimpleCrypto::QAead::decryptAesCcm(const QByteArray& data, const QBy
 
         /* Initialize plainText. Here decrypted data will be stored */
         std::unique_ptr<unsigned char[]> plainText { new unsigned char[cipherTextLength]() };
-        if (plainText == nullptr) {
+        if (!plainText) {
             throw std::runtime_error("Couldn't allocate memory for 'plaintext'.");
         }
 

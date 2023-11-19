@@ -28,8 +28,8 @@ unix {
 
 # Include OpenSSL for unix
 unix {
-    unix: LIBS += -L$$PWD/libs/OpenSSL/unix/ -lcrypto
-    unix: LIBS += -L$$PWD/libs/OpenSSL/unix/ -lssl
+    LIBS += -L$$PWD/libs/OpenSSL/unix/ -lcrypto
+    LIBS += -L$$PWD/libs/OpenSSL/unix/ -lssl
 
     INCLUDEPATH += $$PWD/libs/OpenSSL/unix/include
     DEPENDPATH += $$PWD/libs/OpenSSL/unix/include

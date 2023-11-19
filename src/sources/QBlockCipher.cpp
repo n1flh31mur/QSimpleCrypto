@@ -45,7 +45,7 @@ QByteArray QSimpleCrypto::QBlockCipher::encryptAesBlockCipher(const QByteArray& 
     try {
         /* Initialize EVP_CIPHER_CTX */
         std::unique_ptr<EVP_CIPHER_CTX, void (*)(EVP_CIPHER_CTX*)> encryptionCipher { EVP_CIPHER_CTX_new(), EVP_CIPHER_CTX_free };
-        if (encryptionCipher == nullptr) {
+        if (!encryptionCipher) {
             throw std::runtime_error("Couldn't initialize \'encryptionCipher\'. EVP_CIPHER_CTX_new(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
 
@@ -114,7 +114,7 @@ QByteArray QSimpleCrypto::QBlockCipher::decryptAesBlockCipher(const QByteArray& 
     try {
         /* Initialize EVP_CIPHER_CTX */
         std::unique_ptr<EVP_CIPHER_CTX, void (*)(EVP_CIPHER_CTX*)> decryptionCipher { EVP_CIPHER_CTX_new(), EVP_CIPHER_CTX_free };
-        if (decryptionCipher == nullptr) {
+        if (!decryptionCipher) {
             throw std::runtime_error("Couldn't initialize \'decryptionCipher\'. EVP_CIPHER_CTX_new(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
 
