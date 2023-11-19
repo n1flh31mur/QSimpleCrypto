@@ -27,82 +27,82 @@ public:
     QX509Store();
 
     ///
-    /// \brief addCertificateToStore
+    /// \brief addCertificateToStore - Function adds X509 certificate to X509 store.
     /// \param store - OpenSSL X509_STORE.
-    /// \param x509 - OpenSSL X509.
-    /// \return Returns 'true' on success and 'false', if error happened.
+    /// \param x509 - OpenSSL X509 certificate that will be added to store.
+    /// \return Returns 'true' on success or "false" on failure.
     ///
     bool addCertificateToStore(X509_STORE* store, X509* x509);
 
     ///
-    /// \brief addLookup
+    /// \brief addLookup - Function adds lookup method for X509 store.
     /// \param store - OpenSSL X509_STORE.
     /// \param method - OpenSSL X509_LOOKUP_METHOD. Example: X509_LOOKUP_file.
-    /// \return Returns 'true' on success and 'false', if error happened.
+    /// \return Returns 'true' on success or "false" on failure.
     ///
     bool addLookup(X509_STORE* store, X509_LOOKUP_METHOD* method);
 
     ///
-    /// \brief setCertificateDepth
+    /// \brief setDepth - Function sets store for X509 store.
     /// \param store - OpenSSL X509_STORE.
     /// \param depth - That is the maximum number of untrusted CA certificates that can appear in a chain. Example: 0.
-    /// \return Returns 'true' on success and 'false', if error happened.
+    /// \return Returns 'true' on success or "false" on failure.
     ///
     bool setDepth(X509_STORE* store, const quint32 depth);
 
     ///
-    /// \brief setFlag
+    /// \brief setFlag - Function sets flag for X509 store.
     /// \param store - OpenSSL X509_STORE.
     /// \param flag - The verification flags consists of zero or more of the following flags ored together. Example: X509_V_FLAG_CRL_CHECK.
-    /// \return Returns 'true' on success and 'false', if error happened.
+    /// \return Returns 'true' on success or "false" on failure.
     ///
     bool setFlag(X509_STORE* store, const quint32 flag);
 
     ///
-    /// \brief setFlag
+    /// \brief setPurpose - Function sets purpose for X509 store.
     /// \param store - OpenSSL X509_STORE.
     /// \param purpose - Verification purpose in param to purpose. Example: X509_PURPOSE_ANY.
-    /// \return Returns 'true' on success and 'false', if error happened.
+    /// \return Returns 'true' on success or "false" on failure.
     ///
     bool setPurpose(X509_STORE* store, const quint8 purpose);
 
     ///
-    /// \brief setTrust
+    /// \brief setTrust - Function sets trust level for X509 store.
     /// \param store - OpenSSL X509_STORE.
     /// \param trust - Trust Level. Example: X509_TRUST_SSL_SERVER.
-    /// \return Returns 'true' on success and 'false', if error happened.
+    /// \return Returns 'true' on success or "false" on failure.
     ///
     bool setTrust(X509_STORE* store, const quint8 trust);
 
     ///
-    /// \brief setDefaultPaths
+    /// \brief loadStoreDefaultCertificates - Function loads certificates into the X509_STORE from the hardcoded default paths.
     /// \param store - OpenSSL X509_STORE.
-    /// \return Returns 'true' on success and 'false', if error happened.
+    /// \return Returns 'true' on success or "false" on failure.
     ///
-    bool setDefaultPaths(X509_STORE* store);
+    bool loadStoreDefaultCertificates(X509_STORE* store);
 
     ///
-    /// \brief loadLocations
+    /// \brief loadLocations - Load locations for X509 store.
     /// \param store - OpenSSL X509_STORE.
     /// \param fileName - File name. Example: "caCertificate.pem".
-    /// \param dirPath - Path to file. Example: "path/To/File".
-    /// \return Returns 'true' on success and 'false', if error happened.
+    /// \param dirPath - Path to file. Example: "root/etc".
+    /// \return Returns 'true' on success or "false" on failure.
     ///
     bool loadLocations(X509_STORE* store, const QByteArray& fileName, const QByteArray& dirPath);
 
     ///
-    /// \brief loadLocations
+    /// \brief loadLocations - Load locations for X509 store.
     /// \param store - OpenSSL X509_STORE.
-    /// \param file - Qt QFile that will be loaded.
-    /// \return Returns 'true' on success and 'false', if error happened.
+    /// \param file - Qt QFile not null object.
+    /// \return Returns 'true' on success or "false" on failure.
     ///
     bool loadLocations(X509_STORE* store, const QFile& file);
 
     ///
-    /// \brief loadLocations
+    /// \brief loadLocations - Load locations for X509 store.
     /// \param store - OpenSSL X509_STORE.
-    /// \param fileInfo - Qt QFileInfo.
-    /// \return Returns 'true' on success and 'false', if error happened.
+    /// \param fileInfo - Qt QFileInfo not null object.
+    /// \return Returns 'true' on success or "false" on failure.
     ///
     bool loadLocations(X509_STORE* store, const QFileInfo& fileInfo);
 };

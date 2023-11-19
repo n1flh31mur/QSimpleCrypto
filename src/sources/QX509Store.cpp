@@ -13,10 +13,10 @@ QSimpleCrypto::QX509Store::QX509Store()
 }
 
 ///
-/// \brief QSimpleCrypto::QX509::addCertificateToStore
+/// \brief QSimpleCrypto::QX509::addCertificateToStore - Function adds X509 certificate to X509 store.
 /// \param store - OpenSSL X509_STORE.
-/// \param x509 - OpenSSL X509.
-/// \return Returns 'true' on success and 'false', if error happened.
+/// \param x509 - OpenSSL X509 certificate that will be added to store.
+/// \return Returns 'true' on success or "false" on failure.
 ///
 bool QSimpleCrypto::QX509Store::addCertificateToStore(X509_STORE* store, X509* x509)
 {
@@ -34,10 +34,10 @@ bool QSimpleCrypto::QX509Store::addCertificateToStore(X509_STORE* store, X509* x
 }
 
 ///
-/// \brief QSimpleCrypto::QX509Store::addLookup
+/// \brief QSimpleCrypto::QX509Store::addLookup - Function adds lookup method for X509 store.
 /// \param store - OpenSSL X509_STORE.
 /// \param method - OpenSSL X509_LOOKUP_METHOD. Example: X509_LOOKUP_file.
-/// \return Returns 'true' on success and 'false', if error happened.
+/// \return Returns 'true' on success or "false" on failure.
 ///
 bool QSimpleCrypto::QX509Store::addLookup(X509_STORE* store, X509_LOOKUP_METHOD* method)
 {
@@ -55,10 +55,10 @@ bool QSimpleCrypto::QX509Store::addLookup(X509_STORE* store, X509_LOOKUP_METHOD*
 }
 
 ///
-/// \brief QSimpleCrypto::QX509Store::setCertificateDepth
+/// \brief QSimpleCrypto::QX509Store::setDepth - Function sets store for X509 store.
 /// \param store - OpenSSL X509_STORE.
 /// \param depth - That is the maximum number of untrusted CA certificates that can appear in a chain. Example: 0.
-/// \return Returns 'true' on success and 'false', if error happened.
+/// \return Returns 'true' on success or "false" on failure.
 ///
 bool QSimpleCrypto::QX509Store::setDepth(X509_STORE* store, const quint32 depth)
 {
@@ -76,10 +76,10 @@ bool QSimpleCrypto::QX509Store::setDepth(X509_STORE* store, const quint32 depth)
 }
 
 ///
-/// \brief QSimpleCrypto::QX509Store::setFlag
+/// \brief QSimpleCrypto::QX509Store::setFlag - Function sets flag for X509 store.
 /// \param store - OpenSSL X509_STORE.
 /// \param flag - The verification flags consists of zero or more of the following flags ored together. Example: X509_V_FLAG_CRL_CHECK.
-/// \return Returns 'true' on success and 'false', if error happened.
+/// \return Returns 'true' on success or "false" on failure.
 ///
 bool QSimpleCrypto::QX509Store::setFlag(X509_STORE* store, const quint32 flag)
 {
@@ -97,10 +97,10 @@ bool QSimpleCrypto::QX509Store::setFlag(X509_STORE* store, const quint32 flag)
 }
 
 ///
-/// \brief QSimpleCrypto::QX509Store::setFlag
+/// \brief QSimpleCrypto::QX509Store::setPurpose - Function sets purpose for X509 store.
 /// \param store - OpenSSL X509_STORE.
 /// \param purpose - Verification purpose in param to purpose. Example: X509_PURPOSE_ANY.
-/// \return Returns 'true' on success and 'false', if error happened.
+/// \return Returns 'true' on success or "false" on failure.
 ///
 bool QSimpleCrypto::QX509Store::setPurpose(X509_STORE* store, const quint8 purpose)
 {
@@ -118,10 +118,10 @@ bool QSimpleCrypto::QX509Store::setPurpose(X509_STORE* store, const quint8 purpo
 }
 
 ///
-/// \brief QSimpleCrypto::QX509Store::setTrust
+/// \brief QSimpleCrypto::QX509Store::setTrust - Function sets trust level for X509 store.
 /// \param store - OpenSSL X509_STORE.
 /// \param trust - Trust Level. Example: X509_TRUST_SSL_SERVER.
-/// \return Returns 'true' on success and 'false', if error happened.
+/// \return Returns 'true' on success or "false" on failure.
 ///
 bool QSimpleCrypto::QX509Store::setTrust(X509_STORE* store, const quint8 trust)
 {
@@ -139,11 +139,11 @@ bool QSimpleCrypto::QX509Store::setTrust(X509_STORE* store, const quint8 trust)
 }
 
 ///
-/// \brief QSimpleCrypto::QX509Store::setDefaultPaths
+/// \brief QSimpleCrypto::QX509Store::loadStoreDefaultCertificates - Function loads certificates into the X509_STORE from the hardcoded default paths.
 /// \param store - OpenSSL X509_STORE.
-/// \return Returns 'true' on success and 'false', if error happened.
+/// \return Returns 'true' on success or "false" on failure.
 ///
-bool QSimpleCrypto::QX509Store::setDefaultPaths(X509_STORE* store)
+bool QSimpleCrypto::QX509Store::loadStoreDefaultCertificates(X509_STORE* store)
 {
     try {
         if (!X509_STORE_set_default_paths(store)) {
@@ -159,20 +159,27 @@ bool QSimpleCrypto::QX509Store::setDefaultPaths(X509_STORE* store)
 }
 
 ///
-/// \brief QSimpleCrypto::QX509Store::loadLocations
+/// \brief QSimpleCrypto::QX509Store::loadLocations - Load locations for X509 store.
 /// \param store - OpenSSL X509_STORE.
 /// \param fileName - File name. Example: "caCertificate.pem".
-/// \param dirPath - Path to file. Example: "path/To/File".
-/// \return Returns 'true' on success and 'false', if error happened.
+/// \param dirPath - Path to file. Example: "root/etc".
+/// \return Returns 'true' on success or "false" on failure.
 ///
 bool QSimpleCrypto::QX509Store::loadLocations(X509_STORE* store, const QByteArray& fileName, const QByteArray& dirPath)
 {
     try {
-        if (!X509_STORE_load_locations(store, fileName, dirPath)) {
-            throw std::runtime_error("Couldn't load locations for X509_STORE. X509_STORE_load_locations(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
+        /* Initialize QFileInfo to read information about file */
+        QFileInfo fileInfo(dirPath + "/" + fileName);
+
+        if (fileInfo.exists()) {
+            if (!X509_STORE_load_locations(store, fileName, dirPath)) {
+                throw std::runtime_error("Couldn't load locations for X509_STORE. X509_STORE_load_locations(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
+            }
+
+            return true;
         }
 
-        return true;
+        return false;
     } catch (const std::runtime_error& exception) {
         std::throw_with_nested(exception);
     } catch (...) {
@@ -181,22 +188,26 @@ bool QSimpleCrypto::QX509Store::loadLocations(X509_STORE* store, const QByteArra
 }
 
 ///
-/// \brief QSimpleCrypto::QX509Store::loadLocations
+/// \brief QSimpleCrypto::QX509Store::loadLocations - Load locations for X509 store.
 /// \param store - OpenSSL X509_STORE.
-/// \param file - Qt QFile that will be loaded.
-/// \return Returns 'true' on success and 'false', if error happened.
+/// \param file - Qt QFile not null object.
+/// \return Returns 'true' on success or "false" on failure.
 ///
 bool QSimpleCrypto::QX509Store::loadLocations(X509_STORE* store, const QFile& file)
 {
     try {
         /* Initialize QFileInfo to read information about file */
-        QFileInfo info(file);
+        QFileInfo fileInfo(file);
 
-        if (!X509_STORE_load_locations(store, info.fileName().toLocal8Bit(), info.absoluteDir().path().toLocal8Bit())) {
-            throw std::runtime_error("Couldn't load locations for X509_STORE. X509_STORE_load_locations(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
+        if (fileInfo.exists()) {
+            if (!X509_STORE_load_locations(store, fileInfo.fileName().toLocal8Bit(), fileInfo.absoluteDir().path().toLocal8Bit())) {
+                throw std::runtime_error("Couldn't load locations for X509_STORE. X509_STORE_load_locations(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
+            }
+
+            return true;
         }
 
-        return true;
+        return false;
     } catch (const std::runtime_error& exception) {
         std::throw_with_nested(exception);
     } catch (...) {
@@ -205,19 +216,23 @@ bool QSimpleCrypto::QX509Store::loadLocations(X509_STORE* store, const QFile& fi
 }
 
 ///
-/// \brief QSimpleCrypto::QX509Store::loadLocations
+/// \brief QSimpleCrypto::QX509Store::loadLocations - Load locations for X509 store.
 /// \param store - OpenSSL X509_STORE.
-/// \param fileInfo - Qt QFileInfo.
-/// \return Returns 'true' on success and 'false', if error happened.
+/// \param fileInfo - Qt QFileInfo not null object.
+/// \return Returns 'true' on success or "false" on failure.
 ///
 bool QSimpleCrypto::QX509Store::loadLocations(X509_STORE* store, const QFileInfo& fileInfo)
 {
     try {
-        if (!X509_STORE_load_locations(store, fileInfo.fileName().toLocal8Bit(), fileInfo.absoluteDir().path().toLocal8Bit())) {
-            throw std::runtime_error("Couldn't load locations for X509_STORE. X509_STORE_load_locations(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
+        if (fileInfo.exists()) {
+            if (!X509_STORE_load_locations(store, fileInfo.fileName().toLocal8Bit(), fileInfo.absoluteDir().path().toLocal8Bit())) {
+                throw std::runtime_error("Couldn't load locations for X509_STORE. X509_STORE_load_locations(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
+            }
+
+            return true;
         }
 
-        return true;
+        return false;
     } catch (const std::runtime_error& exception) {
         std::throw_with_nested(exception);
     } catch (...) {
