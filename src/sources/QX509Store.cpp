@@ -60,7 +60,7 @@ bool QSimpleCrypto::QX509Store::addLookup(X509_STORE* store, X509_LOOKUP_METHOD*
 /// \param depth - That is the maximum number of untrusted CA certificates that can appear in a chain. Example: 0.
 /// \return Returns 'true' on success and 'false', if error happened.
 ///
-bool QSimpleCrypto::QX509Store::setDepth(X509_STORE* store, const int& depth)
+bool QSimpleCrypto::QX509Store::setDepth(X509_STORE* store, const quint32 depth)
 {
     try {
         if (!X509_STORE_set_depth(store, depth)) {
@@ -81,10 +81,9 @@ bool QSimpleCrypto::QX509Store::setDepth(X509_STORE* store, const int& depth)
 /// \param flag - The verification flags consists of zero or more of the following flags ored together. Example: X509_V_FLAG_CRL_CHECK.
 /// \return Returns 'true' on success and 'false', if error happened.
 ///
-bool QSimpleCrypto::QX509Store::setFlag(X509_STORE* store, const unsigned long& flag)
+bool QSimpleCrypto::QX509Store::setFlag(X509_STORE* store, const quint32 flag)
 {
     try {
-
         if (!X509_STORE_set_flags(store, flag)) {
             throw std::runtime_error("Couldn't set flag for X509_STORE. X509_STORE_set_flags(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
@@ -103,7 +102,7 @@ bool QSimpleCrypto::QX509Store::setFlag(X509_STORE* store, const unsigned long& 
 /// \param purpose - Verification purpose in param to purpose. Example: X509_PURPOSE_ANY.
 /// \return Returns 'true' on success and 'false', if error happened.
 ///
-bool QSimpleCrypto::QX509Store::setPurpose(X509_STORE* store, const int& purpose)
+bool QSimpleCrypto::QX509Store::setPurpose(X509_STORE* store, const quint8 purpose)
 {
     try {
         if (!X509_STORE_set_purpose(store, purpose)) {
@@ -124,7 +123,7 @@ bool QSimpleCrypto::QX509Store::setPurpose(X509_STORE* store, const int& purpose
 /// \param trust - Trust Level. Example: X509_TRUST_SSL_SERVER.
 /// \return Returns 'true' on success and 'false', if error happened.
 ///
-bool QSimpleCrypto::QX509Store::setTrust(X509_STORE* store, const int& trust)
+bool QSimpleCrypto::QX509Store::setTrust(X509_STORE* store, const quint8 trust)
 {
     try {
         if (!X509_STORE_set_trust(store, trust)) {

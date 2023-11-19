@@ -48,7 +48,7 @@ public:
     /// \param depth - That is the maximum number of untrusted CA certificates that can appear in a chain. Example: 0.
     /// \return Returns 'true' on success and 'false', if error happened.
     ///
-    bool setDepth(X509_STORE* store, const int& depth);
+    bool setDepth(X509_STORE* store, const quint32 depth);
 
     ///
     /// \brief setFlag
@@ -56,7 +56,7 @@ public:
     /// \param flag - The verification flags consists of zero or more of the following flags ored together. Example: X509_V_FLAG_CRL_CHECK.
     /// \return Returns 'true' on success and 'false', if error happened.
     ///
-    bool setFlag(X509_STORE* store, const unsigned long& flag);
+    bool setFlag(X509_STORE* store, const quint32 flag);
 
     ///
     /// \brief setFlag
@@ -64,7 +64,7 @@ public:
     /// \param purpose - Verification purpose in param to purpose. Example: X509_PURPOSE_ANY.
     /// \return Returns 'true' on success and 'false', if error happened.
     ///
-    bool setPurpose(X509_STORE* store, const int& purpose);
+    bool setPurpose(X509_STORE* store, const quint8 purpose);
 
     ///
     /// \brief setTrust
@@ -72,7 +72,7 @@ public:
     /// \param trust - Trust Level. Example: X509_TRUST_SSL_SERVER.
     /// \return Returns 'true' on success and 'false', if error happened.
     ///
-    bool setTrust(X509_STORE* store, const int& trust);
+    bool setTrust(X509_STORE* store, const quint8 trust);
 
     ///
     /// \brief setDefaultPaths
