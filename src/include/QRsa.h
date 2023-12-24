@@ -39,7 +39,7 @@ public:
     ///
     ///          https://www.openssl.org/docs/manmaster/man3/RSA_generate_key_ex.html
     ///
-    /// \return Returns 'OpenSSL RSA structure' or 'nullptr', if error happened. Returned value must be cleaned up with 'RSA_free()' to avoid memory leak.
+    /// \return Returns 'OpenSSL EVP RSA structure' or 'nullptr', if error happened. Returned value must be cleaned up with 'EVP_PKEY_free()' to avoid memory leak.
     ///
     [[nodiscard]] EVP_PKEY* generateRsaKeys(quint32 bits = 2048, quint32 rsaBigNumber = 3);
 
