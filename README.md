@@ -71,7 +71,7 @@ int main() {
     QByteArray aad = "AABBCCDDEEFF";
     QByteArray tag = "AABBCCDDEEFF";
 
-    QSimpleCrypto::QAEAD aead;
+    QSimpleCrypto::QAead aead;
     QByteArray encrypted = aead.encryptAesGcm("Hello World", key, iv, &tag, aad);
     QByteArray decrypted = aead.decryptAesGcm(bytes, key, iv, &tag, aad);    
 }
