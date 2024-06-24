@@ -91,6 +91,12 @@ public:
     /// \return Returns encrypted data on success or "" on failure.
     ///
     [[nodiscard]] QByteArray decrypt(QByteArray cipherText, EVP_PKEY* key, const quint16 padding = RSA_PKCS1_OAEP_PADDING);
+
+    [[nodiscard]] QByteArray savePrivateKeyToByteArray(EVP_PKEY* key, QByteArray password, const EVP_CIPHER* cipher);
+    [[nodiscard]] QByteArray savePublicKeyToByteArray(EVP_PKEY* key);
+
+    [[nodiscard]] EVP_PKEY* getPublicKeyFromByteArray(const QByteArray& publicKeyData);
+    [[nodiscard]] EVP_PKEY* getPrivateKeyFromByteArray(const QByteArray& privateKeyData, const QByteArray& password);
 };
 } // namespace QSimpleCrypto
 

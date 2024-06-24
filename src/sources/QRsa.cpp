@@ -309,3 +309,137 @@ QByteArray QSimpleCrypto::QRsa::decrypt(QByteArray cipherText, EVP_PKEY* key, co
         throw;
     }
 }
+
+QByteArray QSimpleCrypto::QRsa::savePrivateKeyToByteArray(EVP_PKEY* key, QByteArray password, const EVP_CIPHER* cipher)
+{
+    QByteArray privateKeyData;
+
+    try {
+        /* Create a memory BIO */
+        BIO* mem = BIO_new(BIO_s_mem());
+        if (!mem) {
+            throw std::runtime_error("Couldn't create BIO.");
+        }
+
+        /* Write private key to BIO */
+        if (!PEM_write_bio_PrivateKey(mem, key, cipher, reinterpret_cast<unsigned char*>(password.data()), password.size(), nullptr, nullptr)) {
+            BIO_free(mem);
+            throw std::runtime_error("Couldn't save private key. PEM_write_bio_PrivateKey(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
+        }
+
+        /* Get the data from the BIO */
+        BUF_MEM* memPtr;
+        BIO_get_mem_ptr(mem, &memPtr);
+        privateKeyData = QByteArray(memPtr->data, memPtr->length);
+
+        /* Clean up BIO */
+        BIO_free(mem);
+    } catch (const std::exception& exception) {
+        std::throw_with_nested(exception);
+    } catch (...) {
+        throw;
+    }
+
+    return privateKeyData;
+}
+
+QByteArray QSimpleCrypto::QRsa::savePublicKeyToByteArray(EVP_PKEY* key)
+{
+    QByteArray publicKeyData;
+
+    try {
+        /* Create a memory BIO */
+        BIO* mem = BIO_new(BIO_s_mem());
+        if (!mem) {
+            throw std::runtime_error("Couldn't create BIO.");
+        }
+
+        /* Write public key to BIO */
+        if (!PEM_write_bio_PUBKEY(mem, key)) {
+            BIO_free(mem);
+            throw std::runtime_error("Couldn't save public key. PEM_write_bio_PUBKEY(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
+        }
+
+        /* Get the data from the BIO */
+        BUF_MEM* memPtr;
+        BIO_get_mem_ptr(mem, &memPtr);
+        publicKeyData = QByteArray(memPtr->data, memPtr->length);
+
+        /* Clean up BIO */
+        BIO_free(mem);
+    } catch (const std::exception& exception) {
+        std::throw_with_nested(exception);
+    } catch (...) {
+        throw;
+    }
+
+    return publicKeyData;
+}
+
+EVP_PKEY* QSimpleCrypto::QRsa::getPublicKeyFromByteArray(const QByteArray& publicKeyData)
+{
+    try {
+        /* Initialize memory BIO */
+        BIO* mem = BIO_new_mem_buf(publicKeyData.data(), publicKeyData.size());
+        if (!mem) {
+            throw std::runtime_error("Couldn't create BIO.");
+        }
+
+        /* Initialize EVP_PKEY */
+        EVP_PKEY* keyStore = nullptr;
+        if (!(keyStore = EVP_PKEY_new())) {
+            BIO_free(mem);
+            throw std::runtime_error("Couldn't initialize keyStore. EVP_PKEY_new(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
+        }
+
+        /* Read public key from BIO */
+        if (!PEM_read_bio_PUBKEY(mem, &keyStore, nullptr, nullptr)) {
+            BIO_free(mem);
+            EVP_PKEY_free(keyStore);
+            throw std::runtime_error("Couldn't read public key. PEM_read_bio_PUBKEY(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
+        }
+
+        /* Clean up BIO */
+        BIO_free(mem);
+
+        return keyStore;
+    } catch (const std::exception& exception) {
+        std::throw_with_nested(exception);
+    } catch (...) {
+        throw;
+    }
+}
+
+EVP_PKEY* QSimpleCrypto::QRsa::getPrivateKeyFromByteArray(const QByteArray& privateKeyData, const QByteArray& password)
+{
+    try {
+        /* Initialize memory BIO */
+        BIO* mem = BIO_new_mem_buf(privateKeyData.data(), privateKeyData.size());
+        if (!mem) {
+            throw std::runtime_error("Couldn't create BIO.");
+        }
+
+        /* Initialize EVP_PKEY */
+        EVP_PKEY* keyStore = nullptr;
+        if (!(keyStore = EVP_PKEY_new())) {
+            BIO_free(mem);
+            throw std::runtime_error("Couldn't initialize keyStore. EVP_PKEY_new(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
+        }
+
+        /* Read public key from BIO */
+        if (!PEM_read_bio_PrivateKey(mem, &keyStore, nullptr, static_cast<void*>(const_cast<char*>(password.data())))) {
+            BIO_free(mem);
+            EVP_PKEY_free(keyStore);
+            throw std::runtime_error("Couldn't read public key. PEM_read_bio_PrivateKey(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
+        }
+
+        /* Clean up BIO */
+        BIO_free(mem);
+
+        return keyStore;
+    } catch (const std::exception& exception) {
+        std::throw_with_nested(exception);
+    } catch (...) {
+        throw;
+    }
+}
