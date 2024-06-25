@@ -20,10 +20,11 @@ QSimpleCrypto::QRsa::QRsa()
 ///
 EVP_PKEY* QSimpleCrypto::QRsa::generateRsaKeys(quint32 bits, quint32 rsaPrimeNumber)
 {
+    EVP_PKEY_CTX* rsaKeysContext = nullptr;
     try {
         /* Initialize RSA */
         EVP_PKEY* rsaKeys = nullptr;
-        EVP_PKEY_CTX* rsaKeysContext = EVP_PKEY_CTX_new_from_name(nullptr, "RSA", nullptr);
+        rsaKeysContext = EVP_PKEY_CTX_new_from_name(nullptr, "RSA", nullptr);
         if (!rsaKeysContext) {
             throw std::runtime_error("Couldn't initialize EVP_PKEY_CTX. EVP_PKEY_CTX_new_from_name(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
@@ -59,10 +60,17 @@ EVP_PKEY* QSimpleCrypto::QRsa::generateRsaKeys(quint32 bits, quint32 rsaPrimeNum
             throw std::runtime_error("Couldn't generate EVP_PKEY key. EVP_PKEY_generate(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
 
+        EVP_PKEY_CTX_free(rsaKeysContext);
         return rsaKeys;
     } catch (const std::exception& exception) {
+        if (rsaKeysContext) {
+            EVP_PKEY_CTX_free(rsaKeysContext);
+        }
         std::throw_with_nested(exception);
     } catch (...) {
+        if (rsaKeysContext) {
+            EVP_PKEY_CTX_free(rsaKeysContext);
+        }
         throw;
     }
 }
@@ -209,9 +217,10 @@ EVP_PKEY* QSimpleCrypto::QRsa::getPrivateKeyFromFile(const QByteArray& filePath,
 ///
 QByteArray QSimpleCrypto::QRsa::encrypt(QByteArray plainText, EVP_PKEY* key, const quint16 padding)
 {
+    EVP_PKEY_CTX* rsaKeyContext = nullptr;
     try {
         /* Initialize CTX for 'key' */
-        EVP_PKEY_CTX* rsaKeyContext = EVP_PKEY_CTX_new(key, nullptr);
+        rsaKeyContext = EVP_PKEY_CTX_new(key, nullptr);
         if (!rsaKeyContext) {
             throw std::runtime_error("Couldn't initialize EVP_PKEY_CTX. EVP_PKEY_CTX_new(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
@@ -247,10 +256,17 @@ QByteArray QSimpleCrypto::QRsa::encrypt(QByteArray plainText, EVP_PKEY* key, con
             throw std::runtime_error("Couldn't encrypt data. EVP_PKEY_encrypt(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
 
+        EVP_PKEY_CTX_free(rsaKeyContext);
         return QByteArray(reinterpret_cast<char*>(cipherText.get()), encryptedDataLength);
     } catch (const std::exception& exception) {
+        if (rsaKeyContext) {
+            EVP_PKEY_CTX_free(rsaKeyContext);
+        }
         std::throw_with_nested(exception);
     } catch (...) {
+        if (rsaKeyContext) {
+            EVP_PKEY_CTX_free(rsaKeyContext);
+        }
         throw;
     }
 }
@@ -264,9 +280,10 @@ QByteArray QSimpleCrypto::QRsa::encrypt(QByteArray plainText, EVP_PKEY* key, con
 ///
 QByteArray QSimpleCrypto::QRsa::decrypt(QByteArray cipherText, EVP_PKEY* key, const quint16 padding)
 {
+    EVP_PKEY_CTX* rsaKeyContext = nullptr;
     try {
         /* Initialize CTX for 'key' */
-        EVP_PKEY_CTX* rsaKeyContext = EVP_PKEY_CTX_new(key, nullptr);
+        rsaKeyContext = EVP_PKEY_CTX_new(key, nullptr);
         if (!rsaKeyContext) {
             throw std::runtime_error("Couldn't initialize EVP_PKEY_CTX. EVP_PKEY_CTX_new(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
@@ -302,10 +319,17 @@ QByteArray QSimpleCrypto::QRsa::decrypt(QByteArray cipherText, EVP_PKEY* key, co
             throw std::runtime_error("Couldn't encrypt data. EVP_PKEY_encrypt(). Error: " + QByteArray(ERR_error_string(ERR_get_error(), nullptr)));
         }
 
+        EVP_PKEY_CTX_free(rsaKeyContext);
         return QByteArray(reinterpret_cast<char*>(plainText.get()), decryptedDataLength);
     } catch (const std::exception& exception) {
+        if (rsaKeyContext) {
+            EVP_PKEY_CTX_free(rsaKeyContext);
+        }
         std::throw_with_nested(exception);
     } catch (...) {
+        if (rsaKeyContext) {
+            EVP_PKEY_CTX_free(rsaKeyContext);
+        }
         throw;
     }
 }
